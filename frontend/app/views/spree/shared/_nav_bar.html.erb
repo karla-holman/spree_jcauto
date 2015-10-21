@@ -1,0 +1,17 @@
+<nav class="navbar col-md-2" id="top-nav-bar">
+  <ul id="nav-bar" class="nav navbar-nav navbar-left" data-hook>
+  	<li>
+  		<%= link_to("/") do %>
+          <%= image_tag "Logo.png", height: '40', width: '60', style: "padding: 0px; margin-top: -10px;" %>
+        <% end %>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar col-md-3" id="top-nav-bar">
+	<ul id="nav-bar" class="nav navbar-nav navbar-left" data-hook>
+  	<li data-hook>
+      <%= render :partial => 'spree/shared/search' %>
+    </li>
+  </ul>
+</nav>
+

@@ -1,0 +1,66 @@
+<header id="header" class="header-container" data-hook>
+  <div class="container" style="height: 100px">
+    <div class="row">
+      <%= render :partial => 'spree/shared/nav_bar' %>
+      <nav class="navbar col-md-5 col-md-offset-2" id="top-nav-bar">
+        <ul id="nav-bar" class="nav navbar-nav navbar-right" data-hook>
+          <% if spree_current_user %>
+            <li><%= link_to Spree.t(:my_account), spree.account_path %></li>
+            <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
+            <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
+          <% else %>
+            <li id="link-to-login"><%= link_to Spree.t(:login), spree.login_path %></li>
+            <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
+          <% end %>
+          <li id="link-to-cart" data-hook>
+            <noscript>
+              <%= link_to Spree.t(:cart), '/cart' %>
+            </noscript>
+            &nbsp;
+          </li>
+          <script>Spree.fetch_cart()</script>
+        </ul>
+      </nav>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="navbar navbar-default" id="neon-nav-bar">
+<div class="container" data-spy="affix" data-offset-top="200" id="nav">
+  <div id="main-nav-bar" class="container">
+    <ul class="nav navbar-nav navbar-left" data-hook>
+      <li id="home-link" data-hook><%= link_to "About Us", "/" %></li>
+      <li id="home-link" data-hook><%= link_to "Gallery", "/" %></li>
+      <li id="home-link" data-hook><%= link_to "Parts", spree.products_path %></li>
+      <li id="home-link" data-hook><%= link_to "Services", spree.products_path %></li>
+    </ul>
+
+    <div id="wings" style="width: 600px" data-hook>
+      <%= link_to("/") do %>
+        <%= image_tag "wings.png", height: '100', width: '600' %>
+      <% end %>
+    </div>
+
+    <div id="header-logo" style="width: 200px" data-hook>
+      <%= link_to("/") do %>
+        <%= image_tag "Sign.png", height: '265', width: '200' %>
+      <% end %>
+    </div>
+
+    <div id="header-logo-affix" style="width: 350px" data-hook>
+      <%= link_to("/") do %>
+        <%= image_tag "Sign-short.png", height: '150', width: '350' %>
+      <% end %>
+    </div>
+
+    <ul class="nav navbar-nav navbar-right">
+      <li id="home-link" data-hook><%= link_to "Community", spree.products_path %></li>
+      <li id="home-link" data-hook><%= link_to "Cars for Sale", spree.products_path %></li>
+      <li id="home-link" data-hook><%= link_to "Contact Us", spree.products_path %></li>
+    </ul>
+  </div>
+
+  <!-- <%= render :partial => 'spree/shared/main_nav_bar' if store_menu? %> -->
+  </div>
+</nav>
+
