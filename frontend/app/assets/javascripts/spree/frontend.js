@@ -4,5 +4,3 @@
 //= require spree/frontend/cart
 //= require spree/frontend/checkout
 //= require spree/frontend/product
-
-$('#nav').affix();

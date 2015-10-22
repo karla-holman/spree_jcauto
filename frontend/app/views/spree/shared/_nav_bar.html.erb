@@ -1,4 +1,4 @@
-<nav class="navbar col-md-2" id="top-nav-bar">
+<div class="col-md-2" id="nav-logo">
   <ul id="nav-bar" class="nav navbar-nav navbar-left" data-hook>
   	<li>
   		<%= link_to("/") do %>
@@ -6,8 +6,9 @@
         <% end %>
     </li>
   </ul>
-</nav>
-<nav class="navbar col-md-3" id="top-nav-bar">
+</div>
+
+<div class="col-md-3">
 	<ul id="nav-bar" class="nav navbar-nav navbar-left" data-hook>
   	<li data-hook>
       <%= render :partial => 'spree/shared/search' %>
