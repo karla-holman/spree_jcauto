@@ -1,14 +1,4 @@
-<div class="col-md-2" id="nav-logo">
-  <ul id="nav-bar" class="nav navbar-nav navbar-left" data-hook>
-  	<li>
-  		<%= link_to("/") do %>
-          <%= image_tag "Logo.png", height: '40', width: '60', style: "padding: 0px; margin-top: -10px;" %>
-        <% end %>
-    </li>
-  </ul>
-</div>
-
-<div class="col-md-3">
+<div class="col-md-5">
 	<ul id="nav-bar" class="nav navbar-nav navbar-left" data-hook>
   	<li data-hook>
       <%= render :partial => 'spree/shared/search' %>

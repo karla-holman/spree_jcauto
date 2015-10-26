@@ -1,12 +1,9 @@
-<div id="header" class="header-container" data-hook>
-  <div class="container" data-spy="affix" data-offset-top="150" id="secondNav" >
-    <div id="main-nav-bar" class="container">
+<div class="header-container" data-spy="affix" data-offset-top="10" id="secondNav" data-hook>
+  <div class="container">
+    <div class="container">
       <div class="row">
         <%= render :partial => 'spree/shared/nav_bar' %>
-        <div class="col-md-4" id="affix-space">
-          
-        </div>
-        <nav class="navbar col-md-5" id="top-nav-bar">
+        <div class="col-md-7" id="top-nav-bar">
           <ul id="nav-bar" class="nav navbar-nav navbar-right" data-hook>
             <% if spree_current_user %>
               <li><%= link_to Spree.t(:my_account), spree.account_path %></li>
@@ -24,14 +21,14 @@
             </li>
             <script>Spree.fetch_cart()</script>
           </ul>
-        </nav>
+        </div>
       </div><!-- End Row -->
     </div><!-- End Container -->
   </div><!-- End Affix -->
 </div><!-- End Header -->
 
-<nav class="navbar navbar-default" id="neon-nav-bar">
-  <div class="container" data-spy="affix" data-offset-top="150" id="nav">
+<nav class="navbar navbar-default" data-spy="affix" data-offset-top="10" id="nav">
+  <div class="container">
     <div id="main-nav-bar" class="container">
       <ul class="nav navbar-nav navbar-left" data-hook>
         <li id="home-link" data-hook><%= link_to "About Us", "/" %></li>
@@ -40,21 +37,9 @@
         <li id="home-link" data-hook><%= link_to "Services", spree.products_path %></li>
       </ul>
 
-      <div id="wings" style="width: 600px" data-hook>
+      <div id="header-logo" style="width: 250px" data-hook>
         <%= link_to("/") do %>
-          <%= image_tag "wings.png", height: '100', width: '600' %>
-        <% end %>
-      </div>
-
-      <div id="header-logo" style="width: 200px" data-hook>
-        <%= link_to("/") do %>
-          <%= image_tag "Sign.png", height: '265', width: '200' %>
-        <% end %>
-      </div>
-
-      <div id="header-logo-affix" style="width: 350px" data-hook>
-        <%= link_to("/") do %>
-          <%= image_tag "Logo-neon-02.png", height: '150', width: '375' %>
+          <%= image_tag "Logo-new.png", height: '200', width: '250' %>
         <% end %>
       </div>
 
@@ -69,3 +54,6 @@
   </div>
 </nav>
 
+<div class="header-img">
+  <%= image_tag "Header Image.png", style: "width: 100%; visibility: hidden;" %>
+</div>
