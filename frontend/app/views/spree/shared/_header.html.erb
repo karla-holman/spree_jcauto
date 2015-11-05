@@ -49,9 +49,12 @@
   <div class="collapse navbar-collapse container" id="primary-nav">
     <div id="main-nav-bar" class="container">
       <ul class="nav navbar-nav navbar-left" data-hook>
-        <li id="home-link" data-hook><%= link_to "About Us", "/about" %></li>
-        <li id="home-link" data-hook><%= link_to "Gallery", "/gallery" %></li>
-        <li id="home-link" data-hook><%= link_to "Parts", "/parts" %></li>
+
+        <li id="home-link" class="<%= @page === 'about' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "About Us", "/about" %></li>
+
+        <li id="home-link" class="<%= @page === 'gallery' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Gallery", "/gallery" %></li>
+
+        <li id="home-link" class="<%= @page === 'parts' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Parts", "/parts" %></li>
         <li id="home-link" data-hook><%= link_to "Services", spree.products_path %></li>
       </ul>
 
@@ -65,9 +68,13 @@
       </div>
 
       <ul class="nav navbar-nav navbar-right">
-        <li id="home-link" data-hook><%= link_to "Community", "/community" %></li>
-        <li id="home-link" data-hook><%= link_to "Cars for Sale", spree.products_path %></li>
-        <li id="home-link" data-hook><%= link_to "Contact Us", spree.products_path %></li>
+
+        <li id="home-link" class="<%= @page === 'community' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Community", "/community" %></li>
+
+        <li id="home-link" class="<%= @page === 'sale' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Cars for Sale", spree.products_path %></li>
+
+        <li id="home-link" class="<%= @page === 'contact' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Contact Us", spree.products_path %></li>
+
       </ul>
 
       <!-- Not displayed when width > $screen-md-min -->
