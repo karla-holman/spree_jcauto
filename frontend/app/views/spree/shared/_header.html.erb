@@ -11,21 +11,21 @@
         <%= render :partial => 'spree/shared/nav_bar' %>
         <div class="col-xs-12 col-sm-4 col-md-5" id="top-nav-bar">
           <ul id="nav-bar" class="nav navbar-nav navbar-right" data-hook>
-            <% if spree_current_user %>
-              <li>
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                  Account <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li><%= link_to Spree.t(:my_account), spree.account_path %></li>
-                   <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
+            <li>
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                Account <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <% if spree_current_user %>
+                      <li><%= link_to Spree.t(:my_account), spree.account_path %></li>
+                       <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
+                      <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
+                <% else %>
+                  <li id="link-to-login"><%= link_to Spree.t(:login), spree.login_path %></li>
                   <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
-                </ul>
-              </li>
-            <% else %>
-              <li id="link-to-login"><%= link_to Spree.t(:login), spree.login_path %></li>
-              <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
-            <% end %>
+                <% end %>
+              </ul>
+            </li>
             <li id="link-to-cart" data-hook>
               <noscript>
                 <%= link_to Spree.t(:cart), '/cart' %>
