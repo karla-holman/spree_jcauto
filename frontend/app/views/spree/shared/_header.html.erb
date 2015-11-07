@@ -9,7 +9,7 @@
             <a href="/">JC AUTO <span style="font-family: 'Cookie'; font-size: 1.1em; font-weight: 400">Restoration</span></a>
         </div>
         <%= render :partial => 'spree/shared/nav_bar' %>
-        <div class="col-xs-12 col-sm-4 col-md-5" id="top-nav-bar">
+        <div class="col-xs-12 col-sm-3 col-md-5" id="top-nav-bar">
           <ul id="nav-bar" class="nav navbar-nav navbar-right" data-hook>
             <li>
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -55,7 +55,28 @@
   </div>
   <div class="collapse navbar-collapse container" id="primary-nav">
     <div id="main-nav-bar" class="container">
+      <!-- Not displayed when width > $screen-md-min -->
+      <div id="collapseSearch" style="width: 100%">
+        <%= render :partial => 'spree/shared/nav_bar' %>
+      </div>
       <ul class="nav navbar-nav navbar-left" data-hook>
+        <span id = "collapseAccount">
+          <% if spree_current_user %>
+            <li data-hook><%= link_to Spree.t(:my_account), spree.account_path %></li>
+            <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
+            <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
+          <% else %>
+            <li id="link-to-login"><%= link_to Spree.t(:login), spree.login_path %></li>
+            <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
+          <% end %>
+          <li id="link-to-cart" data-hook>
+              <!-- <noscript> -->
+                <%= link_to Spree.t(:cart), '/cart' %>
+              <!-- </noscript>
+              &nbsp; -->
+            </li>
+            <!-- <script>Spree.fetch_cart()</script> -->
+        </span>
 
         <li id="home-link" class="<%= @page === 'about' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "About Us", "/about" %></li>
 
@@ -81,34 +102,11 @@
         <li id="home-link" class="<%= @page === 'sale' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Cars for Sale", spree.products_path %></li>
 
         <li id="home-link" class="<%= @page === 'contact' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Contact Us", spree.products_path %></li>
-
-        <span id = "collapseAccount">
-          <% if spree_current_user %>
-            <li data-hook><%= link_to Spree.t(:my_account), spree.account_path %></li>
-            <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
-            <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
-          <% else %>
-            <li id="link-to-login"><%= link_to Spree.t(:login), spree.login_path %></li>
-            <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
-          <% end %>
-          <li id="link-to-cart" data-hook>
-            <noscript>
-              <%= link_to Spree.t(:cart), '/cart' %>
-            </noscript>
-            &nbsp;
-            <script>Spree.fetch_cart()</script>
-          </li>
-        </span>
       </ul>
 
       <ul class="nav navbar-nav navbar-right" id="collapseAccount">
         
       </ul>
-
-      <!-- Not displayed when width > $screen-md-min -->
-      <div id="collapseSearch" style="width: 100%">
-        <%= render :partial => 'spree/shared/nav_bar' %>
-      </div>
     </div><!-- Main Nav Bar -->
     <!-- <%= render :partial => 'spree/shared/main_nav_bar' if store_menu? %> -->
   </div><!-- primary-nav -->
