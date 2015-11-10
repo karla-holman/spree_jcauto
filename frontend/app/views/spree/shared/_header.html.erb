@@ -83,6 +83,7 @@
         <li id="home-link" class="<%= @page === 'gallery' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Gallery", "/gallery" %></li>
 
         <li id="home-link" class="<%= @page === 'parts' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Parts", "/parts" %></li>
+
         <li id="home-link" data-hook><%= link_to "Services", spree.products_path %></li>
       </ul>
 
@@ -101,7 +102,7 @@
 
         <li id="home-link" class="<%= @page === 'sale' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Cars for Sale", spree.products_path %></li>
 
-        <li id="home-link" class="<%= @page === 'contact' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Contact Us", spree.products_path %></li>
+        <li id="home-link" class="<%= @page === 'contact' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Contact Us", "/contact" %></li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right" id="collapseAccount">
