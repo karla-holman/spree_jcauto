@@ -84,7 +84,7 @@
 
         <li id="home-link" class="<%= @page === 'parts' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Parts", "/parts" %></li>
 
-        <li id="home-link" data-hook><%= link_to "Services", spree.products_path %></li>
+        <li id="home-link" class="<%= @page === 'services' ? 'current-page' : 'non-current-page' %>" data-hook><%= link_to "Services", "/services" %></li>
       </ul>
 
       <div id="header-logo-affix">
