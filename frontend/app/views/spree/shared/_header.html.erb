@@ -9,7 +9,7 @@
             <a href="/">JC AUTO <span style="font-family: 'Cookie'; font-size: 1.1em; font-weight: 400">Restoration</span></a>
         </div>
         <%= render :partial => 'spree/shared/nav_bar' %>
-        <div class="col-xs-12 col-sm-3 col-md-5" id="top-nav-bar">
+        <div class="col-xs-12 col-sm-4 col-md-5" id="top-nav-bar">
           <ul id="nav-bar" class="nav navbar-nav navbar-right" data-hook>
             <li>
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -71,7 +71,7 @@
           <% end %>
           <li id="link-to-cart" data-hook>
               <!-- <noscript> -->
-                <%= link_to Spree.t(:cart), '/cart' %>
+                <%= link_to Spree.t(:cart), '/store/cart' %>
               <!-- </noscript>
               &nbsp; -->
             </li>
@@ -116,8 +116,8 @@
 <div class="header-img">
     <div class="center" id="about-overlay">
       <h4 class="inverse" style="font-size: 2em; text-align: center; line-height: 1.0em;">Serving the</h4>
-      <h3 class="inverse" style="font-size: 2em; text-align: center; line-height: 1em; margin-top: -10px;">MoPar Community Since</h3>
-      <h1 class="inverse" style="font-size: 8em; text-align: center; line-height: 1em">-1978-</h1>
+      <h2 class="inverse" style="font-size: 2em; text-align: center; line-height: 1em; margin-top: -10px;">MoPar Community Since</h2>
+      <h2 class="inverse" style="font-size: 8em; text-align: center; line-height: 1em">-1978-</h2>
     </div>
     <%= image_tag "Header Image.png", style: "width: 100%; visibility: hidden;" %>
 </div>

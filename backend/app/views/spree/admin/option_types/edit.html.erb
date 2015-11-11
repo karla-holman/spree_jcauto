@@ -13,9 +13,9 @@
 <%= form_for [:admin, @option_type] do |f| %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h1 class="panel-title">
+      <h2 class="panel-title">
         <%= Spree.t(:option_values) %>
-      </h1>
+      </h2>
     </div>
     <div class="panel-body">
       <%= render :partial => 'form', :locals => { :f => f } %>

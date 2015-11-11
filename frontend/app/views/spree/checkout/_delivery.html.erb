@@ -1,6 +1,6 @@
 <div class="panel panel-default" id='shipping_method' data-hook>
   <div class="panel-heading">
-    <h3 class="panel-title"><%= Spree.t(:delivery) %></h3>
+    <h2 class="panel-title"><%= Spree.t(:delivery) %></h2>
   </div>
   <div class="panel-body" data-hook="shipping_method_inner">
     <div id="methods">
@@ -55,9 +55,9 @@
 
       <% if @differentiator.try(:missing?) %>
         <div class="shipment unshippable">
-          <h3 class="stock-location" data-hook="stock-location">
+          <h2 class="stock-location" data-hook="stock-location">
             <%= Spree.t(:unshippable_items) %>
-          </h3>
+          </h2>
           <table class="table stock-contents" data-hook="stock-missing">
             <colgroup>
               <col style="width: 10%;" />

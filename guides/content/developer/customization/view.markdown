@@ -135,7 +135,7 @@ For example, spree/products/show.html.erb looks as follows:
 
       <div id="product-description" data-hook="product_description">
 
-        <h1 class="product-title" itemprop="name"><%%= accurate_title %></h1>
+        <h2 class="product-title" itemprop="name"><%%= accurate_title %></h2>
 
         <div itemprop="description" data-hook="description">
           <%%= product_description(product) rescue Spree.t(:product_has_no_description) %>
@@ -205,7 +205,7 @@ Given the following Erb file:
 <%% if products.empty? %>
  <%%= Spree.t(:no_products_found) %>
 <%% elsif params.key?(:keywords) %>
-  <h3><%%= Spree.t(:products) %></h3>
+  <h2><%%= Spree.t(:products) %></h2>
 <%% end %>
 ```
 
@@ -217,7 +217,7 @@ Would be seen by Deface as:
   <erb[loud]> Spree.t(:no_products_found) </erb>
   <erb[silent]> elsif params.key?(:keywords) </erb>
 
-  <h3><erb[loud]> Spree.t(:products) </erb></h3>
+  <h2><erb[loud]> Spree.t(:products) </erb></h2>
 
   <erb[silent]> end </erb>
 </html>

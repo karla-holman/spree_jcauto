@@ -1,6 +1,6 @@
 <div class="panel panel-default" id="payment" data-hook>
   <div class="panel-heading">
-    <h3 class="panel-title"><%= Spree.t(:payment_information) %></h3>
+    <h2 class="panel-title"><%= Spree.t(:payment_information) %></h2>
   </div>
   <div class="panel-body" data-hook="checkout_payment_step">
     <% if @payment_sources.present? %>

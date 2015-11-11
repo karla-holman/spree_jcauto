@@ -1,6 +1,6 @@
 #main-sidebar {
   position: fixed;
-  top: $navbar-height + 2px;
+  top: $navbar-height + 1px;
   bottom: 0;
   left: 0;
   padding: 0;
@@ -8,7 +8,7 @@
   display: block;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-  background-color: lighten($gray-lighter, 5);
+  background-color: #fbfbfb;
   border-right: 1px solid darken($gray-lighter, 5);
 
   a {
@@ -21,7 +21,7 @@
 
   ul.nav-sidebar {
     > li {
-      border-bottom: 1px solid $gray-lighter;
+      border-bottom: 1px solid #e2e2e2;
 
       > a {
         text-transform: uppercase;
@@ -29,7 +29,7 @@
         font-size: 12px;
         font-weight: 500;
         padding: 15px;
-        color: $gray;
+        color: #363636;
 
         .glyphicon {
           font-size: 18px;
@@ -47,26 +47,34 @@
           margin-top: -8px;
         }
       }
+
+       > a:hover {
+          background-color: #A4A6A9;
+          color: #fff;
+          transition: all 0.25s ease-in-out 0s; 
+      }
     }
   }
 
   ul.nav.nav-pills {
-    background-color: white;
+    background-color: #fff;
     border-top: 1px solid $gray-lighter;
 
     li {
       a {
         padding: 5px 15px;
         font-size: 12px;
+        color: #363636;
 
         &:hover {
           border-radius: 0;
+          color: $brand-yellow-dark;
         }
       }
 
       &.selected {
         a {
-          color: $brand-success
+          color: $brand-primary
         }
       }
     }

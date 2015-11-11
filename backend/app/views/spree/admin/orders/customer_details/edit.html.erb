@@ -7,9 +7,9 @@
 <% if can? :edit, @order.user %>
   <div id="select-customer" class="panel panel-default" data-hook>
     <div class="panel-heading">
-      <h1 class="panel-title">
+      <h2 class="panel-title">
         <%= Spree.t(:customer_search) %>
-      </h1>
+      </h2>
     </div>
     <div class="panel-body">
       <%= hidden_field_tag :customer_search,  nil, class: 'error-message' %>

@@ -2,6 +2,8 @@
 
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
+@import "bootstrap-mincer";
+@import "bootstrap-compass";
 
 @import 'components/sidebar';
 @import 'components/tables';

@@ -2,15 +2,13 @@
 
 <header class="header <%= admin ? "logged-in" : "logged-out" %>">
 
-  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="navbar-header col-sm-3 col-md-2">
-          <%= link_to(
-            image_tag(Spree::Config[:admin_interface_logo], id: 'logo'),
-            spree.admin_path,
-            class: "logo navbar-brand"
-          ) %>
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="nav" style="top: 0">
+    <div id="main-nav-bar">
+        <div class="navbar-header col-xs-6 col-sm-4 col-md-4 col-lg-4">
+          <div id="header-logo-spree">
+            <%= link_to spree.admin_path do %>JC AUTO <span style="font-family: 'Cookie'; font-size: 1.1em; font-weight: 400">Restoration</span><% end %>
+          </div>
+
           <% if admin %>
             <span class="navbar-toggle" id="sidebar-toggle">
               <span class="icon-bar"></span>
@@ -21,8 +19,30 @@
         </div>
 
         <% if admin %>
-          <div class="col-sm-9 col-md-10">
-            <div class="navbar-right" data-hook="admin_login_navigation_bar"></div>
+          <div class="col-xs-6 col-sm-8 col-md-8">
+            <div class="navbar-right" data-hook="admin_login_navigation_bar" id="admin-login"></div>
+
+            <button type="button" class="btn btn-primary navbar-toggle collapsed" style="height: 30px; padding: 0 0 10 0" data-toggle="collapse" data-target="#primary-nav" aria-expanded="false" id="primaryToggleButton">Menu
+            </button>
+            <div class="collapse navbar-collapse container" id="primary-nav">
+
+              <ul class="dropdown-menu">
+                <li class="user-body">
+                  <div class="col-xs-12 text-center" data-hook="store-frontend-link">
+                    <a target="_blank" href="/store/">Go Back To Store</a>
+                  </div>
+                </li>
+
+                <li class="user-footer" id="login-nav">
+                  <div class="pull-left" data-hook="user-account-link">
+                    <a class="btn btn-default btn-flat" href="/store/users/1/edit">Account</a>
+                  </div>
+                  <div class="pull-right" data-hook="user-logout-link">
+                    <a class="btn btn-default btn-flat" href="/store/admin/logout">Logout</a>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         <% end %>
       </div>

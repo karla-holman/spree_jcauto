@@ -1,7 +1,7 @@
 <div class="panel-heading">
-  <h1 class="panel-title">
+  <h2 class="panel-title">
     <%= Spree.t(:add_stock) %>
-  </h1>
+  </h2>
 </div>
 <div class="panel-body">
   <%= form_for [:admin, Spree::StockMovement.new], url: admin_stock_items_path do |f| %>
