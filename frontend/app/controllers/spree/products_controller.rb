@@ -24,6 +24,9 @@ module Spree
           part_cast_words << word
         elsif word.length === year_length
           brand_words << word
+        # tie in with database later
+        elsif "chrysler dodge plymouth imperial desoto truck"
+          brand_words << word
         end
       end
 
