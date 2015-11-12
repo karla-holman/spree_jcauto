@@ -9,8 +9,34 @@ module Spree
     respond_to :html
 
     def index
+      # Constants
+      part_number_length = 7
+      year_length = 4
+      part_cast_words = []
+      brand_words = []
+      taxon_words = []
+
+      # get all keywords for part/cast number search
+      search_words = params[:keywords].split
+      # Handle special search values
+      search_words.each do |word|
+        if word.length === part_number_length
+          part_cast_words << word
+        elsif word.length === year_length
+          brand_words << word
+        end
+      end
+
+      # Get general search results
       @searcher = build_searcher(params.merge(include_images: true))
-      @products = @searcher.retrieve_products
+
+      # Hash of { "scope" => base_scope } for each scope type
+      @products = @searcher.retrieve_products(part_cast_words, taxon_words, brand_words) # get all products that match name and description
+
+      @part_number_id = Spree::Property.where("name=?", "Part Number")
+      @cast_number_id = Spree::Property.where("name=?", "Cast Number")
+
+      # Find all taxonomy's
       @taxonomies = Spree::Taxonomy.includes(root: :children)
     end
 

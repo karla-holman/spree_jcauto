@@ -53,7 +53,7 @@
 .alert-alert { @extend .alert-info; }
 
 .product-body {
-  height: 170px;
+  height: auto; //170 px
 }
 
 .progress-steps {

@@ -1,5 +1,7 @@
 module Spree
   class Product < Spree::Base
+
+    # Defines both class and instance accessors for class attributes (ex. Product.search_scopes => [array of search_scopes])
     cattr_accessor :search_scopes do
       []
     end
@@ -103,6 +105,18 @@ module Spree
         .where(property_conditions(property))
     end
 
+    # a scope that finds all products with a property value
+    add_search_scope :with_part_cast_number do |value|
+      joins(:properties)
+        .where("#{ProductProperty.table_name}.value = ?", value)
+        # .where(property_conditions("Part Number"))
+    end
+
+    add_search_scope :with_sku do |sku|
+      joins(:variants)
+        .where("#{Variant.table_name}.sku = ?", sku)
+    end
+
     add_search_scope :with_option do |option|
       option_types = OptionType.table_name
       conditions = case option
@@ -143,6 +157,11 @@ module Spree
     # Finds all products that have a name or meta_keywords containing the given words.
     add_search_scope :in_name_or_keywords do |words|
       like_any([:name, :meta_keywords], prepare_words(words))
+    end
+
+    # Finds all products that have a name or meta_keywords containing the given words.
+    add_search_scope :in_application_meta_keywords do |words|
+      like_any([:meta_keywords], prepare_words(words))
     end
 
     # Finds all products that have a name, description, meta_description or meta_keywords containing the given keywords.

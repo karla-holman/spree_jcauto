@@ -161,6 +161,7 @@ module Spree
     def self.like_any(fields, values)
       where fields.map { |field|
         values.map { |value|
+          # Create relational table of matches
           arel_table[field].matches("%#{value}%")
         }.inject(:or)
       }.inject(:or)

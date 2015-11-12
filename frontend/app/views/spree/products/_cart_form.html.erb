@@ -29,7 +29,7 @@
     <% if @product.price_in(current_currency) and !@product.price.nil? %>
       <div data-hook="product_price" class="col-md-5">
         <div id="product-price">
-          <h6 class="product-section-title"><%= Spree.t(:price) %></h6>
+          <h3 class="product-section-title"><%= Spree.t(:price) %></h3>
           <div>
             <span class="lead price selling" itemprop="price">
               <%= display_price(@product) %>
@@ -57,6 +57,21 @@
           </div>
         </div>
       </div>
+      <div class="col-md-7">
+        <h3 class="product-section-title">Application</h3>
+        <div class="btn-group">
+          <% if !@product.meta_keywords.nil? %>
+            <% @product.meta_keywords.split(/\W+/).each do |keyword| %>
+              <button type="button" class="btn btn-default">
+                <%= keyword %>
+              </button>
+            <% end %>
+          <% else %>
+            No applications listed.
+          <% end %>
+        </div>
+      </div>
+
     <% else %>
       <div id="product-price">
         <br>

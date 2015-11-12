@@ -5,6 +5,7 @@ module Spree
         attr_accessor :properties
         attr_accessor :current_user
         attr_accessor :current_currency
+        # logger = Logger.new('C:\Users\JC Auto 1\Desktop\Karla\base.log')
 
         def initialize(params)
           self.current_currency = Spree::Config[:currency]
@@ -12,14 +13,17 @@ module Spree
           prepare(params)
         end
 
-        def retrieve_products
-          @products = get_base_scope
+        def retrieve_products(part_num_words, taxon_words, brand_words)
+          # logger.debug("Debug-Logging: Base (16), calling get_base_scope")
+          @products = get_base_scope(part_num_words, taxon_words, brand_words)
           curr_page = page || 1
 
           unless Spree::Config.show_products_without_price
-            @products = @products.where("spree_prices.amount IS NOT NULL").where("spree_prices.currency" => current_currency)
+            @products["base"] = @products["base"].where("spree_prices.amount IS NOT NULL").where("spree_prices.currency" => current_currency)
           end
-          @products = @products.page(curr_page).per(per_page)
+          @products["base"] = @products["base"].page(curr_page).per(per_page)
+
+          @products
         end
 
         def method_missing(name)
@@ -31,13 +35,32 @@ module Spree
         end
 
         protected
-          def get_base_scope
+          def get_base_scope(part_num_words, taxon_words, brand_words)
+            # Get all available products
             base_scope = Spree::Product.active
+
+            # returns products in child taxons
             base_scope = base_scope.in_taxon(taxon) unless taxon.blank?
+
+            # Get new scope based on base_scope (matches name and description)
+            if part_num_words.length > 0
+              byebug
+              part_num_scope = perform_custom_search(base_scope, part_num_words, "with_part_cast_number")
+            end
+            if taxon_words.length > 0
+              taxon_scope = perform_custom_search(base_scope, taxon_words, "taxon_words")
+            end
+            if brand_words.length > 0
+              brand_scope = perform_custom_search(base_scope, brand_words, "in_application_meta_keywords")
+            end
+
+            # Handle regular search
             base_scope = get_products_conditions_for(base_scope, keywords)
             base_scope = add_search_scopes(base_scope)
+
             base_scope = add_eagerload_scopes(base_scope)
-            base_scope
+
+            base_scope_hash = {"base" => base_scope, "part_num" => part_num_scope, "taxon" => taxon_scope, "brand_model_year" => brand_scope}
           end
 
           def add_eagerload_scopes scope
@@ -61,21 +84,48 @@ module Spree
             scope
           end
 
-          def add_search_scopes(base_scope)
-            search.each do |name, scope_attribute|
-              scope_name = name.to_sym
+          # find custom search results - return first match for each
+          def perform_custom_search(base_scope, word_list, list_type)
+            scope_name = list_type.to_sym # "with_part_number"
+            found_match = false
+            word_list.each do |scope_attribute| 
               if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
+                byebug
+                # Invokes scope_name method, passing *scope_attributes
+                if(!base_scope.send(scope_name, scope_attribute).empty? && !found_match)
+                  base_scope = base_scope.send(scope_name, scope_attribute)
+                  found_match = true
+                end
+              else
+                base_scope = base_scope.merge(Spree::Product.ransack({scope_name => scope_attribute}).result)
+              end
+            end if word_list
+            if(found_match)
+              base_scope
+            else
+              nil
+            end
+          end 
+
+          # add filters to search results
+          def add_search_scopes(base_scope)
+            filter.each do |name, scope_attribute|
+              scope_name = name.to_sym # "with_part_number"
+              # :search_scopes defined in scopes.rb, Returns true if obj responds to the given method
+              if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
+                # Invokes scope_name method, passing *scope_attributes
                 base_scope = base_scope.send(scope_name, *scope_attribute)
               else
                 base_scope = base_scope.merge(Spree::Product.ransack({scope_name => scope_attribute}).result)
               end
-            end if search
+            end if filter
             base_scope
           end
 
           # method should return new scope based on base_scope
           def get_products_conditions_for(base_scope, query)
-            unless query.blank?
+            unless query.blank? # search query
+              # Get name and desdcription for each product and check for match
               base_scope = base_scope.like_any([:name, :description], query.split)
             end
             base_scope
@@ -85,6 +135,7 @@ module Spree
             @properties[:taxon] = params[:taxon].blank? ? nil : Spree::Taxon.find(params[:taxon])
             @properties[:keywords] = params[:keywords]
             @properties[:search] = params[:search]
+            @properties[:filter] = params[:filter]
             @properties[:include_images] = params[:include_images]
 
             per_page = params[:per_page].to_i

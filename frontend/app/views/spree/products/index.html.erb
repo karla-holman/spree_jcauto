@@ -1,4 +1,5 @@
 <% if "spree/products" == params[:controller] && @taxon || !@taxonomies.empty? %>
+  <% puts "Debug-Logging: Start Sidebar" %>
   <% content_for :sidebar do %>
     <div data-hook="homepage_sidebar_navigation">
       <% if "spree/products" == params[:controller] && @taxon %>
@@ -9,13 +10,27 @@
     </div>
   <% end %>
 <% end %>
+<% puts "Debug-Logging: End Sidebar" %>
 
 <% if params[:keywords] %>
+  <% puts "Debug-Logging: Listing results" %>
   <div data-hook="search_results">
-    <% if @products.empty? %>
-      <h6 class="search-results-title"><%= Spree.t(:no_products_found) %></h6>
-    <% else %>
-      <%= render :partial => 'spree/shared/products', :locals => { :products => @products, :taxon => @taxon } %>
+    <h2 class="search-results-title">Search Results for "<%= params[:keywords] %>"</h2>
+    <% if !@products["base"].empty? %>
+      <h3>Search results</h3>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :taxon => @taxon } %>
+    <% end %>
+    <% if !@products["part_num"].nil? %>
+      <h3>Parts with Matching Part or Cast Number</h3>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["part_num"], :taxon => @taxon } %>
+    <% end %>
+    <% if !@products["taxon"].nil? %>
+      <h3>Parts with Matching Taxons</h3>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["taxon"], :taxon => @taxon } %>
+    <% end %>
+    <% if !@products["brand_model_year"].nil? %>
+      <h3>Parts with Matching Brand, Model, or year</h3>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["brand_model_year"], :taxon => @taxon } %>
     <% end %>
   </div>
 <% else %>

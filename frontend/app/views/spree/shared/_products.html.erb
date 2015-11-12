@@ -1,5 +1,5 @@
 <%
-  paginated_products = @searcher.retrieve_products if params.key?(:keywords)
+  paginated_products = @searcher.retrieve_products([], [], []) if params.key?(:keywords)
   paginated_products ||= products
 %>
 
@@ -14,23 +14,69 @@
     <div data-hook="products_search_results_heading_no_results_found">
       <%= Spree.t(:no_products_found) %>
     </div>
-  <% elsif params.key?(:keywords) %>
-    <div data-hook="products_search_results_heading_results_found">
-      <h6 class="search-results-title"><%= Spree.t(:search_results, keywords: h(params[:keywords])) %></h6>
-    </div>
   <% end %>
 </div>
 
 <% if products.any? %>
+  <!-- Test display -->
+  <table class="table table-hover">
+    <tr>
+      <th>Image</th>
+      <th>Part Number</th>
+      <th>Cast Number</th>
+      <th>Part Name</th>
+      <th>Price</th>
+    </tr>
+    <% products.each do |product| %>
+      <!-- Spree Setup -->
+      <% url = spree.product_url(product, taxon_id: @taxon.try(:id)) %>
+      <% cache(@taxon.present? ? [I18n.locale, current_currency, @taxon, product] : [I18n.locale, current_currency, product]) do %>
+      <!-- End Spree Setup -->
+      
+      <tr>
+        <td style="vertical-align: middle"><!-- Image -->
+          <%= link_to small_image(product, itemprop: "image"), url, itemprop: 'url' %>
+        </td>
+        <td style="vertical-align: middle"><!-- Part Number -->
+          <% if !product.product_properties.where("property_id=?", 1).empty? %>
+            <%= product.product_properties.where("property_id=?", 1).first.value %>
+          <% else %>
+            N/A
+          <% end %>
+        </td>
+        <td style="vertical-align: middle"><!-- Cast Number -->
+          <% if !product.product_properties.where("property_id=?", 2).empty? %>
+            <%= product.product_properties.where("property_id=?", 2).first.value %>
+          <% else %>
+            N/A
+          <% end %>
+        </td>
+        <td style="vertical-align: middle"><!-- Name -->
+          <%= link_to truncate(product.name, length: 50), url, class: 'info', itemprop: "name", title: product.name %>
+        </td>
+        <td style="vertical-align: middle"><!-- Price -->
+          <span class="price selling lead" itemprop="price"><%= display_price(product) %></span>
+        </td>
+      </tr>
+      <% end %>
+    <% end %>
+  </table>
+
+<!-- 
   <div id="products" class="row" data-hook>
     <% products.each do |product| %>
       <% url = spree.product_url(product, taxon_id: @taxon.try(:id)) %>
-      <div id="product_<%= product.id %>" class="col-md-3 col-sm-6 product-list-item" data-hook="products_list_item" itemscope itemtype="https://schema.org/Product">
+      <div id="product_<%= product.id %>" class="col-md-4 col-sm-6 product-list-item" data-hook="products_list_item" itemscope itemtype="https://schema.org/Product">
         <div class="panel panel-default">
           <% cache(@taxon.present? ? [I18n.locale, current_currency, @taxon, product] : [I18n.locale, current_currency, product]) do %>
             <div class="panel-body text-center product-body">
               <%= link_to small_image(product, itemprop: "image"), url, itemprop: 'url' %><br/>
               <%= link_to truncate(product.name, length: 50), url, class: 'info', itemprop: "name", title: product.name %>
+                <% product.product_properties.each do |product_property| %>
+                  <p>
+                    <strong><%= product_property.property.presentation %></strong> <%= product_property.value %>
+                  <p>
+                <% end %>
             </div>
             <div class="panel-footer text-center">
               <span itemprop="offers" itemscope itemtype="https://schema.org/Offer">
@@ -43,6 +89,7 @@
     <% end %>
     <% reset_cycle("classes") %>
   </div>
+  -->
 <% end %>
 
 <% if paginated_products.respond_to?(:num_pages) %>
