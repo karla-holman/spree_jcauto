@@ -25,7 +25,7 @@ module Spree
         elsif word.length === year_length
           brand_words << word
         # tie in with database later
-        elsif "chrysler dodge plymouth imperial desoto truck"
+        elsif "chrysler dodge plymouth imperial desoto truck".include?(word)
           brand_words << word
         end
       end

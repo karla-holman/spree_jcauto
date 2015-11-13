@@ -15,6 +15,7 @@ Spree::Core::Engine.add_routes do
       resources :images
       resources :variants
       resources :product_properties
+      resources :product_applications
     end
 
     concern :order_routes do

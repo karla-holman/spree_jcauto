@@ -1,0 +1,58 @@
+<%= render 'spree/admin/shared/product_tabs', current: :properties %>
+<%= render 'spree/admin/shared/error_messages', target: @product %>
+
+<% content_for :page_actions do %>
+  <%= button_link_to(Spree.t(:add_product_properties), "javascript:;", { icon: 'add', :'data-target' => "tbody#product_properties", class: 'btn-success spree_add_fields' }) %>
+  <span class="js-new-ptype-link"><%= button_link_to Spree.t(:select_from_prototype), available_admin_prototypes_url, { icon: 'properties', remote: true, 'data-update' => 'prototypes', class: 'btn-default' } %></span>
+<% end if can? :create, Spree::Application %>
+<% @application = Spree::Application.new %>
+  <% byebug %>
+<%= form_for @application, url: {action: "create"} do |f| %>
+  <h3> Edit Applications </h3>
+  <fieldset>
+    <div id="prototypes" data-hook></div>
+
+    <table class="table sortable" data-hook data-sortable-link="<%= update_positions_admin_product_product_properties_url %>">
+      <thead>
+        <tr data-hook="product_properties_header">
+          <th><%= Spree.t(:brand) %></th>
+          <th><%= Spree.t(:model) %></th>
+          <th><%= Spree.t(:start_year) %></th>
+          <th><%= Spree.t(:end_year) %></th>
+          <th class="actions"></th>
+        </tr>
+      </thead>
+      <tbody id="product_properties">
+        <tr>
+          <td>
+            <%= f.collection_select :brand_id, Spree::Brand.order(:name), :id, :name, :prompt => "Select a brand" %>
+          </td>
+          <td>
+            <%= f.collection_select :model_id, Spree::Model.order(:name), :id, :name, :prompt => "Select a model" %>
+          </td>
+          <td>
+            <%= f.date_select :start_year, :order => [:year], :start_year => 1900, :end_year => Time.now.year, :prompt => {:year => "Select year"} %>
+          </td>
+          <td>
+            <%= f.date_select :end_year, :order => [:year], :start_year => 1900, :end_year => Time.now.year, :prompt => {:year => "Select year"} %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <%= render('spree/admin/shared/edit_resource_links') if can? :update, Spree::ProductApplication %>
+
+    <%= hidden_field_tag 'clear_product_properties', 'true' %>
+  </fieldset>
+<% end %>
+
+<%= javascript_tag do %>
+  var properties = <%= raw(@properties.to_json) %>;
+  $('#product_properties').on('keydown', 'input.autocomplete', function() {
+    already_auto_completed = $(this).is('ac_input');
+    if (!already_auto_completed) {
+      $(this).autocomplete({source: properties});
+      $(this).focus();
+    }
+  });
+<% end %>
