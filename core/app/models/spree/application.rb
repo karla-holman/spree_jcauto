@@ -1,20 +1,40 @@
 module Spree
 	class Application < Spree::Base
+	    # has_and_belongs_to_many :prototypes, join_table: 'spree_applications_prototypes'
 		belongs_to :model
-		belongs_to :brand
-		has_and_belongs_to_many :products, :join_table => "spree_product_applications"
+		belongs_to :make
 
-		validates :start_year, numericality: true
-		validates :start_year, :inclusion => {:in => 1900..2020 }
-		validates :end_year, numericality: true
-		validates :end_year, :inclusion => {:in => 1900..2020 }
+	    has_many :product_applications, dependent: :delete_all, inverse_of: :application
+	    has_many :products, through: :product_applications
 
-		validate :start_year_cannot_be_greater_than_end_year
+	    # validates :name, :presentation, presence: true
 
-		def start_year_cannot_be_greater_than_end_year
-			if start_year > end_year
-				errors.add(:start_year, "can't be greater than end year")
-			end
-		end
+	    scope :sorted, -> { order(:model) }
+
+	    after_touch :touch_all_products
+	    before_save :update_name
+	    after_create :update_name_first
+
+	    self.whitelisted_ransackable_attributes = ['make_id']
+	    self.whitelisted_ransackable_attributes = ['model_id']
+
+	    private
+
+	    def touch_all_products
+	      products.update_all(updated_at: Time.current)
+	    end
+
+	    def update_name
+	       if self.name
+		       make_name = self.make ? make.name : "No Make"
+		       model_name = self.model ? model.name : ""
+		       self.update_column(:name, make_name + " " + model_name)
+		    end
+	    end
+
+	    def update_name_first
+	    	self.name = "new name"
+	    	self.save
+	    end
 	end
 end

@@ -1,5 +1,5 @@
 module Spree
-	class Brand < Spree::Base
+	class Make < Spree::Base
 		has_many :models
 	end
 end

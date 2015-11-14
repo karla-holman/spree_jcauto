@@ -16,6 +16,9 @@
     <% end if can?(:admin, Spree::Variant) %>
     <%= content_tag :li, class: ('active' if current == :properties) do %>
       <%= link_to_with_icon 'list-alt', Spree.t(:properties), spree.admin_product_product_properties_url(@product) %>
+    <% end if can?(:admin, Spree::ProductApplication) %>
+    <%= content_tag :li, class: ('active' if current == :applications) do %>
+      <%= link_to_with_icon 'list-alt', Spree.t(:applications), spree.admin_product_product_applications_url(@product) %>
     <% end if can?(:admin, Spree::ProductProperty) %>
     <%= content_tag :li, class: ('active' if current == :stock) do %>
       <%= link_to_with_icon 'home', Spree.t(:stock), stock_admin_product_url(@product) %>

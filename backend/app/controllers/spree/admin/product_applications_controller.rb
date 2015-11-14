@@ -6,12 +6,13 @@ module Spree
       before_action :setup_application, only: :index
 
       private
+        # Used for form auto complete
         def find_applications
           @applications = Spree::Application.pluck(:name)
         end
 
         def setup_application
-          @product.applications.build
+          @product.product_applications.build
         end
     end
   end

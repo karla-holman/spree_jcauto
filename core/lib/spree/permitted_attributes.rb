@@ -13,6 +13,8 @@ module Spree
       :product_attributes,
       :product_properties_attributes,
       :property_attributes,
+      :product_applications_attributes,
+      :applications_attributes,
       :return_authorization_attributes,
       :shipment_attributes,
       :source_attributes,
@@ -56,6 +58,8 @@ module Spree
 
     @@product_properties_attributes = [:property_name, :value, :position]
 
+    @@product_applications_attributes = [:name, :start_year, :end_year, :application_name ]
+
     @@product_attributes = [
       :name, :description, :available_on, :permalink, :meta_description,
       :meta_keywords, :price, :sku, :deleted_at, :prototype_id,
@@ -66,6 +70,8 @@ module Spree
     ]
 
     @@property_attributes = [:name, :presentation]
+
+    @@application_attributes = [:name, :make_id, :model_id]
 
     @@return_authorization_attributes = [:amount, :memo, :stock_location_id, :inventory_units_attributes, :return_authorization_reason_id]
 

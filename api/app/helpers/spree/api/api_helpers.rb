@@ -4,6 +4,7 @@ module Spree
       ATTRIBUTES = [
         :product_attributes,
         :product_property_attributes,
+        :product_application_attributes,
         :variant_attributes,
         :image_attributes,
         :option_value_attributes,
@@ -25,6 +26,7 @@ module Spree
         :payment_source_attributes,
         :user_attributes,
         :property_attributes,
+        :application_attributes,
         :stock_location_attributes,
         :stock_movement_attributes,
         :stock_item_attributes,
@@ -54,6 +56,10 @@ module Spree
 
       @@product_property_attributes = [
         :id, :product_id, :property_id, :value, :property_name
+      ]
+
+      @@product_application_attributes = [
+        :id, :product_id, :application_id, :name, :application_name, :start_year, :end_year
       ]
 
       @@variant_attributes = [
@@ -137,6 +143,8 @@ module Spree
       @@user_attributes = [:id, :email, :created_at, :updated_at]
 
       @@property_attributes = [:id, :name, :presentation]
+
+      @@application_attributes = [:id, :make_id, :model_id, :name]
 
       @@stock_location_attributes = [
         :id, :name, :address1, :address2, :city, :state_id, :state_name,

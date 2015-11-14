@@ -24,7 +24,7 @@ Spree::Core::Engine.add_routes do
           post :update_positions
         end
       end
-      resources :applications
+      resources :product_applications
       resources :images do
         collection do
           post :update_positions

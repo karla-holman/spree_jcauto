@@ -33,7 +33,8 @@ module Spree
     has_many :classifications, dependent: :delete_all, inverse_of: :product
     has_many :taxons, through: :classifications
     has_and_belongs_to_many :promotion_rules, join_table: :spree_products_promotion_rules
-    has_and_belongs_to_many :applications, :join_table => "spree_product_applications"
+    has_many :product_applications, dependent: :destroy, inverse_of: :product
+    has_many :applications, through: :product_applications
 
     belongs_to :tax_category, class_name: 'Spree::TaxCategory'
     belongs_to :shipping_category, class_name: 'Spree::ShippingCategory', inverse_of: :products
@@ -97,6 +98,8 @@ module Spree
     attr_accessor :option_values_hash
 
     accepts_nested_attributes_for :product_properties, allow_destroy: true, reject_if: lambda { |pp| pp[:property_name].blank? }
+    # http://makandracards.com/makandra/1346-popular-mistakes-when-using-nested-forms
+    accepts_nested_attributes_for :product_applications, allow_destroy: true, reject_if: lambda { |pa| pa[:start_year].blank? }
 
     alias :options :product_option_types
 
@@ -186,11 +189,13 @@ module Spree
     end
 
     def property(property_name)
+      byebug
       return nil unless prop = properties.find_by(name: property_name)
       product_properties.find_by(property: prop).try(:value)
     end
 
     def set_property(property_name, property_value)
+      byebug
       ActiveRecord::Base.transaction do
         # Works around spree_i18n #301
         property = if Property.exists?(name: property_name)
@@ -201,6 +206,30 @@ module Spree
         product_property = ProductProperty.where(product: self, property: property).first_or_initialize
         product_property.value = property_value
         product_property.save!
+      end
+    end
+
+    def application(application_name)
+      return nil unless app = applications.find_by(name: application_name)
+
+      # Return name of correct application
+      product_applications.find_by(application: app).try(:start_year)
+    end
+
+    def set_application(application_name, start_year)
+      byebug
+      ActiveRecord::Base.transaction do
+        # Works around spree_i18n #301
+        application = if Application.exists?(name: application_name)
+          # Return first found
+          Application.where(name: application_name).first
+        else
+          # Otherwise create a new one
+          Application.create(name: application_name)
+        end
+        product_application = ProductApplication.where(product: self, application: application).first_or_initialize
+        # product_application.name = property_value
+        product_application.save!
       end
     end
 
