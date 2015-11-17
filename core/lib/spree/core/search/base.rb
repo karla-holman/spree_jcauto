@@ -44,19 +44,17 @@ module Spree
 
             # Get new scope based on base_scope (matches name and description)
             if part_num_words.length > 0
-              byebug
               part_num_scope = perform_custom_search(base_scope, part_num_words, "with_part_cast_number")
             end
             if taxon_words.length > 0
               taxon_scope = perform_custom_search(base_scope, taxon_words, "taxon_words")
             end
             if make_model_year_words[:keywords].length > 0
-              byebug
-              brand_scope = perform_custom_search(base_scope, make_model_year_words[:keywords], "in_application_meta_keywords")
+              application_scope = perform_custom_search(base_scope, make_model_year_words[:keywords], "in_application_meta_keywords")
             end
             if make_model_year_words[:make_id] && make_model_year_words[:model_id] && make_model_year_words[:year]
-              byebug
-              brand_scope = perform_custom_search(base_scope, make_model_year_words, "in_make_model_year")
+              make_model_year_words.delete(:keywords)
+              application_filter_scope = perform_custom_filter(base_scope, make_model_year_words, "in_make_model_year")
             end
 
             # Handle regular search
@@ -65,7 +63,7 @@ module Spree
 
             base_scope = add_eagerload_scopes(base_scope)
 
-            base_scope_hash = {"base" => base_scope, "part_num" => part_num_scope, "taxon" => taxon_scope, "brand_model_year" => brand_scope}
+            base_scope_hash = {"base" => base_scope, "part_num" => part_num_scope, "taxon" => taxon_scope, "application" => application_scope, "application_filter" => application_filter_scope}
           end
 
           def add_eagerload_scopes scope
@@ -94,8 +92,8 @@ module Spree
             scope_name = list_type.to_sym # "with_part_number"
             found_match = false
             word_list.each do |scope_attribute| 
+              byebug
               if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
-                byebug
                 # Invokes scope_name method, passing *scope_attributes
                 if(!base_scope.send(scope_name, scope_attribute).empty? && !found_match)
                   base_scope = base_scope.send(scope_name, scope_attribute)
@@ -110,6 +108,26 @@ module Spree
             else
               nil
             end
+          end 
+
+          # find custom search results - return all matches
+          # word_list: Hash containing conditions and values to search on (ex. {:make_id => "1"})
+          def perform_custom_filter(base_scope, word_list, list_type)
+            scope_name = list_type.to_sym # "with_part_number"
+            # word_list.each do |scope_attribute| 
+              byebug
+              # word_list = {:make_id => "1", :model_id => "1", :year => 1955}
+              if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
+                # Invokes scope_name method, passing *scope_attributes
+                if(base_scope.send(scope_name, word_list) && !base_scope.send(scope_name, word_list).empty?)
+                  base_scope = base_scope.send(scope_name, word_list)
+                end
+              #else
+                # base_scope = base_scope.merge(Spree::Product.ransack({scope_name => scope_attribute}).result)
+              end
+            # end if word_list
+
+            base_scope
           end 
 
           # add filters to search results

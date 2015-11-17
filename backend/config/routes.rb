@@ -73,6 +73,18 @@ Spree::Core::Engine.add_routes do
 
     delete '/product_applications/:id', to: "product_applications#destroy", as: :product_application
 
+    resources :makes do
+      collection do
+        get :filtered
+      end
+    end
+
+    resources :models do
+      collection do
+        get :filtered
+      end
+    end
+
     resources :prototypes do
       member do
         get :select

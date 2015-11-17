@@ -1,12 +1,12 @@
 <% content_for :page_title do %>
-  <%= plural_resource_name(Spree::Application) %>
+  <%= Spree.t(:makes) %>
 <% end %>
 
 <% content_for :page_actions do %>
-  <%= button_link_to Spree.t(:new_application), new_object_url, { :class => "btn-success", :icon => 'add', 'data-update' => 'new_application', :id => 'new_property_link' } %>
-  <%= button_link_to Spree.t(:edit_makes), admin_makes_path, { :class => "btn-success", :icon => 'pencil', 'data-update' => 'edit_make', :id => 'edit_make_link' } %>
+  <%= button_link_to Spree.t(:new_make), new_object_url, class: "btn-success", icon: 'add', id: 'admin_new_role_link' %>
   <%= button_link_to Spree.t(:edit_models), admin_models_path, { :class => "btn-success", :icon => 'pencil', 'data-update' => 'edit_model', :id => 'edit_model_link' } %>
-<% end %>
+  <%= button_link_to Spree.t(:edit_applications), admin_applications_path, { :class => "btn-success", :icon => 'pencil', 'data-update' => 'edit_application', :id => 'edit_application_link' } %>
+<% end if can? :create, Spree::Make %>
 
 <% content_for :table_filter do %>
   <div data-hook="admin_property_sidebar">
@@ -26,39 +26,35 @@
       <div class="form-actions" data-hook="admin_applications_index_search_buttons">
         <%= button Spree.t(:search), 'search' %>
       </div>
-
+      
     <% end %>
   </div>
 <% end %>
 
-<% if @applications.any? %>
-  <!-- Prevent nil each bug -->
-  <% my_apps = @applications %>
+<% if @makes.any? %>
   <table class="table" id='listing_properties' data-hook>
     <thead>
       <tr data-hook="listing_properties_header">
-        <th><%= Spree.t(:make) %></th>
-        <th><%= Spree.t(:model) %></th>
+        <th><%= Spree.t(:make_id) %></th>
         <th class="actions"></th>
       </tr>
     </thead>
     <tbody>
-      <% my_apps.each do |app| %>
-        <tr id="<%= spree_dom_id app %>" data-hook="listing_applications_row">
-          <td><%= app.make.name %></td>
-          <td><%= app.model ? app.model.name : "no model specified" %></td>
-          <td class="actions actions-2 text-right">
-            <%= link_to_edit(app, :no_text => true) %>
-            <%= link_to_delete(app, :no_text => true) %>
+      <% @makes.each do |make|%>
+        <tr id="<%= spree_dom_id make %>" data-hook="listing_applications_row">
+          <td><%= make.name %></td>
+          <td class="actions text-right">
+            <%= link_to_edit(make, no_text: true) if can? :edit, make %>
+            <%= link_to_delete(make, no_text: true) if can? :destroy, make %>
           </td>
         </tr>
       <% end %>
     </tbody>
   </table>
 <% else %>
-  <div class="alert alert-info no-objects-found">
-    <%= Spree.t(:no_resource_found, resource: plural_resource_name(Spree::Property)) %>,
-    <%= link_to Spree.t(:add_one), new_object_url %>!
+  <div class="alert alert-warning">
+    <%= Spree.t(:no_resource_found, resource: plural_resource_name(Spree::Make)) %>,
+    <%= link_to(Spree.t(:add_one), new_object_url) if can? :create, Spree::Make %>!
   </div>
 <% end %>
 

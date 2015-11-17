@@ -1,0 +1,14 @@
+<div data-hook="admin_role_form_fields">
+  <div data-hook="role_name" class="form-group">
+    <%= f.label :name, Spree.t(:name) %> <span class="required">*</span>
+    <%= f.text_field :name, class: 'form-control' %>
+    <%= f.label :make_id, Spree.t(:make) %> <span class="required">*</span>
+    <%= f.select :make_id, Spree::Make.all.collect {|m| [ m.name, m.id ] }, {:include_blank => "Select Make"}, {:class => "form-control"} %>
+    <%= f.label :start_year, Spree.t(:start_year) %> <span class="required">*</span>
+    <%= f.select :start_year, (Time.zone.now.year - 100)..(Time.zone.now.year + 1), {:include_blank => "Select Start Year"}, {:class => "form-control"} %>
+    <%= f.label :end_year, Spree.t(:end_year) %> <span class="required">*</span>
+    <%= f.select :end_year, (Time.zone.now.year - 100)..(Time.zone.now.year + 1), {:include_blank => "Select End Year"}, {:class => "form-control"} %>
+  </div>
+
+  <div data-hook="additional_role_fields"></div>
+</div>

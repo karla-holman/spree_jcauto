@@ -38,6 +38,13 @@ module Spree
       end
     end
 
+    def self.application_conditions(make, model)
+      applications = Application.table_name
+      
+      { "#{applications}.make_id" => make, "#{applications}.model_id" => model }
+
+    end
+
     add_simple_scopes simple_scopes
 
     add_search_scope :ascend_by_master_price do
@@ -171,8 +178,9 @@ module Spree
 
     # Finds all products that have a name, description, meta_description or meta_keywords containing the given keywords.
     add_search_scope :in_make_model_year do |words|
-      byebug
-      like_any([:name, :description, :meta_description, :meta_keywords], prepare_words(words))
+      joins(:applications)
+        .where("#{ProductApplication.table_name}.start_year < ? AND #{ProductApplication.table_name}.end_year > ?", words[:year], words[:year])
+        .where(application_conditions(words[:make_id], words[:model_id]))
     end
 
     # Finds all products that have the ids matching the given collection of ids.

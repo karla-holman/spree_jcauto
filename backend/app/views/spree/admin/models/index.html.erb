@@ -1,0 +1,67 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:models) %>
+<% end %>
+
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:new_model), new_object_url, class: "btn-success", icon: 'add', id: 'admin_new_role_link' %>
+  <%= button_link_to Spree.t(:edit_makes), admin_makes_path, { :class => "btn-success", :icon => 'pencil', 'data-update' => 'edit_make', :id => 'edit_make_link' } %>
+  <%= button_link_to Spree.t(:edit_applications), admin_applications_path, { :class => "btn-success", :icon => 'pencil', 'data-update' => 'edit_application', :id => 'edit_application_link' } %>
+<% end if can? :create, Spree::Model %>
+
+<% content_for :table_filter do %>
+  <div data-hook="admin_property_sidebar">
+    <%= search_form_for [:admin, @search] do |f| %>
+
+      <%- locals = {:f => f} %>
+      <% byebug %>
+      <div class="row">
+        <div class="col col-md-12">
+          <div data-hook="admin_property_index_search" class="form-group">
+            <%= f.label :name_cont, Spree.t(:name) %>
+            <%= f.text_field :name_cont, :class => "form-control js-quick-search-target" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions" data-hook="admin_applications_index_search_buttons">
+        <%= button Spree.t(:search), 'search' %>
+      </div>
+
+    <% end %>
+  </div>
+<% end %>
+
+<% if @models.any? %>
+  <table class="table" id='listing_properties' data-hook>
+    <thead>
+      <tr data-hook="listing_properties_header">
+        <th><%= Spree.t(:model_id) %></th>
+        <th><%= Spree.t(:make_id) %></th>
+        <th><%= Spree.t(:start_year) %></th>
+        <th><%= Spree.t(:end_year) %></th>
+        <th class="actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @models.each do |model|%>
+        <tr id="<%= spree_dom_id model %>" data-hook="listing_applications_row">
+          <td><%= model.name %></td>
+          <td><%= model.make.name %></td>
+          <td><%= model.start_year %></td>
+          <td><%= model.end_year %></td>
+          <td class="actions text-right">
+            <%= link_to_edit(model, no_text: true) if can? :edit, model %>
+            <%= link_to_delete(model, no_text: true) if can? :destroy, model %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-warning">
+    <%= Spree.t(:no_resource_found, resource: plural_resource_name(Spree::Model)) %>,
+    <%= link_to(Spree.t(:add_one), new_object_url) if can? :create, Spree::Model %>!
+  </div>
+<% end %>
+
+<%= paginate @collection %>

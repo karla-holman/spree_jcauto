@@ -1,5 +1,4 @@
 <% if "spree/products" == params[:controller] && @taxon || !@taxonomies.empty? %>
-  <% puts "Debug-Logging: Start Sidebar" %>
   <% content_for :sidebar do %>
     <div data-hook="homepage_sidebar_navigation">
       <% if "spree/products" == params[:controller] && @taxon %>
@@ -10,10 +9,8 @@
     </div>
   <% end %>
 <% end %>
-<% puts "Debug-Logging: End Sidebar" %>
 
 <% if params[:keywords] %>
-  <% puts "Debug-Logging: Listing results" %>
   <div data-hook="search_results">
     <h2 class="search-results-title">Search Results for "<%= params[:keywords] %>"</h2>
     <% if !@products["base"].empty? %>
@@ -28,9 +25,21 @@
       <h3>Parts with Matching Taxons</h3>
       <%= render :partial => 'spree/shared/products', :locals => { :products => @products["taxon"], :taxon => @taxon } %>
     <% end %>
-    <% if !@products["make_model_year"].nil? %>
-      <h3>Parts with Matching Brand, Model, or year</h3>
-      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["make_model_year"], :taxon => @taxon } %>
+    <% if !@products["application"].nil? %>
+      <h3>Parts with Matching Make, Model, or year</h3>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["application"], :taxon => @taxon } %>
+    <% end %>
+  </div>
+<% elsif params[:make_id] %>
+  <div data-hook="search_results">
+    <% make = Spree::Make.where("id=?", params[:make_id]).first.name %>
+    <% model = Spree::Model.where("id=?", params[:model_id]).first.name %>
+    <% year = params[:year] %>
+
+    <h2 class="search-results-title">Search Results for <%= "#{make} #{model} #{year}" %></h2>
+    <% if !@products["application_filter"].nil? %>
+      <h3>Parts applicable for all <%= "#{make} #{model} #{year}" %></h3>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["application_filter"], :taxon => @taxon } %>
     <% end %>
   </div>
 <% else %>
