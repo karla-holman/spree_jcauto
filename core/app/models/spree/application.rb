@@ -7,7 +7,7 @@ module Spree
 	    has_many :product_applications, dependent: :delete_all, inverse_of: :application
 	    has_many :products, through: :product_applications
 
-	    # validates :name, :presentation, presence: true
+	    # validates :make_id, :model_id, presence: true
 
 	    scope :sorted, -> { order(:model) }
 

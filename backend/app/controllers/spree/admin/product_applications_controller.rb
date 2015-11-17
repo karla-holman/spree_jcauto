@@ -8,10 +8,12 @@ module Spree
       private
         # Used for form auto complete
         def find_applications
+          # get list of all applications to auto populate
           @applications = Spree::Application.pluck(:name)
         end
 
         def setup_application
+          # create new product application "row"
           @product.product_applications.build
         end
     end

@@ -1,0 +1,41 @@
+<div data-hook="admin_property_form" class="row">
+  <div class="col-md-6">
+    <%= f.field_container :make, class: ['form-group'] do %>
+      <%= f.label :make, Spree.t(:make) %> <span class="required">*</span>
+      <%= f.collection_select :make_id, Spree::Make.order(:name), :id, :name, {:prompt => "Select a Make"}, {:class=>'form-control'} %>
+      <!--%= f.text_field :make, :class => 'form-control' %-->
+      <%= f.error_message_on :make %>
+    <% end %>
+  </div>
+  <div class="col-md-6">
+    <%= f.field_container :model, class: ['form-group'] do %>
+      <%= f.label :model, Spree.t(:model) %>
+      <%= f.collection_select :model_id, Spree::Model.order(:name), :id, :name, {:prompt => "Select a Model"}, {:class=>'form-control'} %>
+      <% Spree::Make.all.each do |make| %>
+        <%= f.collection_select(:model_id, Spree::Model.where("make_id=?", make.id).order(:name), :id, :name, {:prompt => "Select a Model"}, {:class=>'form-control', :id => "application_model_id_"+ (make.id).to_s, :style => "display: none;" }) %>
+      <% end %>
+      <!--%= f.text_field :model, :class => 'form-control' %-->
+      <%= f.error_message_on :model %>
+    <% end %>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $( "select#application_make_id" ).change(function () {
+    var str = "";
+    var value = "";
+    $( "select#application_make_id option:selected" ).each(function() {
+      str += $( this ).text() + " ";
+      value = $( this ).val();
+    });
+    console.log(str + " Value: " + value);
+    // Hide all except selected
+    $( "#application_model_field select" ).each(function(){
+      $( this ).hide();
+    });
+
+    $( "select#application_model_id_" + value).show();
+    //$( "div" ).text( str );
+  })
+  .change();
+</script>

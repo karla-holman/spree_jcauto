@@ -28,9 +28,9 @@
       <h3>Parts with Matching Taxons</h3>
       <%= render :partial => 'spree/shared/products', :locals => { :products => @products["taxon"], :taxon => @taxon } %>
     <% end %>
-    <% if !@products["brand_model_year"].nil? %>
+    <% if !@products["make_model_year"].nil? %>
       <h3>Parts with Matching Brand, Model, or year</h3>
-      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["brand_model_year"], :taxon => @taxon } %>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["make_model_year"], :taxon => @taxon } %>
     <% end %>
   </div>
 <% else %>

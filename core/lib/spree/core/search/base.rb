@@ -13,9 +13,9 @@ module Spree
           prepare(params)
         end
 
-        def retrieve_products(part_num_words, taxon_words, brand_words)
+        def retrieve_products(part_num_words, taxon_words, make_model_year_words)
           # logger.debug("Debug-Logging: Base (16), calling get_base_scope")
-          @products = get_base_scope(part_num_words, taxon_words, brand_words)
+          @products = get_base_scope(part_num_words, taxon_words, make_model_year_words)
           curr_page = page || 1
 
           unless Spree::Config.show_products_without_price
@@ -35,7 +35,7 @@ module Spree
         end
 
         protected
-          def get_base_scope(part_num_words, taxon_words, brand_words)
+          def get_base_scope(part_num_words, taxon_words, make_model_year_words)
             # Get all available products
             base_scope = Spree::Product.active
 
@@ -50,8 +50,13 @@ module Spree
             if taxon_words.length > 0
               taxon_scope = perform_custom_search(base_scope, taxon_words, "taxon_words")
             end
-            if brand_words.length > 0
-              brand_scope = perform_custom_search(base_scope, brand_words, "in_application_meta_keywords")
+            if make_model_year_words[:keywords].length > 0
+              byebug
+              brand_scope = perform_custom_search(base_scope, make_model_year_words[:keywords], "in_application_meta_keywords")
+            end
+            if make_model_year_words[:make_id] && make_model_year_words[:model_id] && make_model_year_words[:year]
+              byebug
+              brand_scope = perform_custom_search(base_scope, make_model_year_words, "in_make_model_year")
             end
 
             # Handle regular search

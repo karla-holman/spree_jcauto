@@ -24,7 +24,11 @@ Spree::Core::Engine.add_routes do
           post :update_positions
         end
       end
-      resources :product_applications
+      resources :product_applications do
+        collection do
+          post :update_positions
+        end
+      end
       resources :images do
         collection do
           post :update_positions
@@ -60,6 +64,14 @@ Spree::Core::Engine.add_routes do
     end
 
     delete '/product_properties/:id', to: "product_properties#destroy", as: :product_property
+
+    resources :applications do
+      collection do
+        get :filtered
+      end
+    end
+
+    delete '/product_applications/:id', to: "product_applications#destroy", as: :product_application
 
     resources :prototypes do
       member do

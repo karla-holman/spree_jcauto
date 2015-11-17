@@ -13,28 +13,40 @@ module Spree
       part_number_length = 7
       year_length = 4
       part_cast_words = []
-      brand_words = []
+      make_model_year_words = {:keywords => []}
       taxon_words = []
 
       # get all keywords for part/cast number search
-      search_words = params[:keywords].split
+      search_words = params[:keywords]? params[:keywords].split : []
       # Handle special search values
       search_words.each do |word|
         if word.length === part_number_length
           part_cast_words << word
         elsif word.length === year_length
-          brand_words << word
+          make_model_year_words[:keywords] << word
         # tie in with database later
         elsif "chrysler dodge plymouth imperial desoto truck".include?(word)
-          brand_words << word
+          make_model_year_words[:keywords] << word
         end
+      end
+
+      # check make/model/year params
+      byebug 
+      if params[:make_id]
+        make_model_year_words[:make_id] = params[:make_id]
+      end
+      if params[:model_id]
+        make_model_year_words[:make_id] = params[:make_id]
+      end
+      if params[:year]
+        make_model_year_words[:make_id] = params[:year]
       end
 
       # Get general search results
       @searcher = build_searcher(params.merge(include_images: true))
 
       # Hash of { "scope" => base_scope } for each scope type
-      @products = @searcher.retrieve_products(part_cast_words, taxon_words, brand_words) # get all products that match name and description
+      @products = @searcher.retrieve_products(part_cast_words, taxon_words, make_model_year_words) # get all products that match name and description
 
       @part_number_id = Spree::Property.where("name=?", "Part Number")
       @cast_number_id = Spree::Property.where("name=?", "Cast Number")
