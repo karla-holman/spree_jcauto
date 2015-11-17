@@ -10,10 +10,18 @@ module Spree
 
 	  	validate :start_year_cannot_be_greater_than_end_year
 
+	  	after_create :create_application_if_not_exist
+
 	  	def start_year_cannot_be_greater_than_end_year
-  		if start_year > end_year
-  			errors.add(:start_year, "can't be greater than end year")
+	  		if start_year > end_year
+	  			errors.add(:start_year, "can't be greater than end year")
+	  		end
   		end
-  	end
+
+  		def create_application_if_not_exist
+  			unless application = Application.find_by(make_id: make_id, model_id: id)
+          		application = Application.create(make_id: make_id, model_id: id)
+          	end
+        end
 	end
 end
