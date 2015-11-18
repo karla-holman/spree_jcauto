@@ -184,7 +184,7 @@ module Spree
     # Finds all products that have a name, description, meta_description or meta_keywords containing the given keywords.
     add_search_scope :in_make_model_year do |words|
       joins(:applications)
-        .where("#{ProductApplication.table_name}.start_year < ? AND #{ProductApplication.table_name}.end_year > ?", words[:year], words[:year])
+        .where("#{ProductApplication.table_name}.start_year <= ? AND #{ProductApplication.table_name}.end_year >= ?", words[:year], words[:year])
         .where(application_conditions(words[:make_id], words[:model_id]))
     end
 

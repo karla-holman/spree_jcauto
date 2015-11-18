@@ -117,7 +117,8 @@ module Spree
               # word_list = {:make_id => "1", :model_id => "1", :year => 1955}
               if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
                 # Invokes scope_name method, passing *scope_attributes
-                if(base_scope.send(scope_name, word_list) && !base_scope.send(scope_name, word_list).empty?)
+                if(base_scope.send(scope_name, word_list))
+                  # Filter down based on params
                   base_scope = base_scope.send(scope_name, word_list)
                 end
               #else
