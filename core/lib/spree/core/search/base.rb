@@ -49,7 +49,7 @@ module Spree
             if taxon_words.length > 0
               taxon_scope = perform_custom_search(base_scope, taxon_words, "taxon_words")
             end
-            if make_model_year_words[:keywords].length > 0
+            if make_model_year_words[:keywords] && make_model_year_words[:keywords].length > 0
               application_scope = perform_custom_search(base_scope, make_model_year_words[:keywords], "in_application_meta_keywords")
             end
             if make_model_year_words[:make_id] && make_model_year_words[:year]
@@ -62,7 +62,6 @@ module Spree
             base_scope = add_search_scopes(base_scope)
 
             base_scope = add_eagerload_scopes(base_scope)
-
             base_scope_hash = {"base" => base_scope, "part_num" => part_num_scope, "taxon" => taxon_scope, "application" => application_scope, "application_filter" => application_filter_scope}
           end
 

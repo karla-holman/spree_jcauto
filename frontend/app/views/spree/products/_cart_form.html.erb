@@ -2,7 +2,7 @@
   <div class="row" id="inside-product-cart-form" data-hook="inside_product_cart_form" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
     <% if @product.variants_and_option_values(current_currency).any? %>
       <div id="product-variants" class="col-md-6">
-        <h2 class="product-section-title"><%= Spree.t(:variants) %></h2>
+        <h3 class="product-section-title"><%= Spree.t(:variants) %></h3>
         <ul class="list-group">
           <% @product.variants_and_option_values(current_currency).each_with_index do |variant, index| %>
             <li>
@@ -57,21 +57,6 @@
           </div>
         </div>
       </div>
-      <div class="col-md-7">
-        <h3 class="product-section-title">Application</h3>
-        <div class="btn-group">
-          <% if !@product.meta_keywords.nil? %>
-            <% @product.meta_keywords.split(/\W+/).each do |keyword| %>
-              <button type="button" class="btn btn-default">
-                <%= keyword %>
-              </button>
-            <% end %>
-          <% else %>
-            No applications listed.
-          <% end %>
-        </div>
-      </div>
-
     <% else %>
       <div id="product-price">
         <br>
@@ -80,3 +65,5 @@
     <% end %>
   </div>
 <% end %>
+
+<hr>

@@ -1,5 +1,5 @@
 <% unless @product_properties.empty? %>  
-  <h2 class="product-section-title"><%= Spree.t('properties')%></h2>
+  <h3 class="product-section-title"><%= Spree.t('properties')%></h3>
   <table id="product-properties" class="table table-striped" data-hook>
     <tbody>
       <% @product_properties.each do |product_property| %>
@@ -9,6 +9,30 @@
           <td><%= product_property.value %></td>
         </tr>
       <% end %>
+      <% reset_cycle('properties') %>
+    </tbody>
+  </table>
+<% end %>
+
+<% unless @product_applications.empty? %>  
+  <h3 class="product-section-title">Applications</h3>
+  <table id="product-properties" class="table table-striped" data-hook>
+    <thead>
+      <tr>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Years</th>
+      </tr>
+    </thead>
+    <tbody>
+        <% @product.product_applications.each do |product_application| %>
+          <% css_class = cycle('even', 'odd', :name => "properties") %>
+          <tr class="<%= css_class %>">
+            <td><%= product_application.application.make.name %></td>
+            <td><%= product_application.application.model ? product_application.application.model.name : "-" %></td>
+            <td><%= product_application.start_year.to_s + "-" + product_application.end_year.to_s %></td>
+          </tr>
+        <% end %>
       <% reset_cycle('properties') %>
     </tbody>
   </table>

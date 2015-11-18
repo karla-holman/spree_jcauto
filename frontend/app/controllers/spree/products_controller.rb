@@ -57,6 +57,7 @@ module Spree
     def show
       @variants = @product.variants_including_master.active(current_currency).includes([:option_values, :images])
       @product_properties = @product.product_properties.includes(:property)
+      @product_applications = @product.product_applications
       @taxon = Spree::Taxon.find(params[:taxon_id]) if params[:taxon_id]
       redirect_if_legacy_path
     end
