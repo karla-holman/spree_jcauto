@@ -52,7 +52,7 @@ module Spree
             if make_model_year_words[:keywords].length > 0
               application_scope = perform_custom_search(base_scope, make_model_year_words[:keywords], "in_application_meta_keywords")
             end
-            if make_model_year_words[:make_id] && make_model_year_words[:model_id] && make_model_year_words[:year]
+            if make_model_year_words[:make_id] && make_model_year_words[:year]
               make_model_year_words.delete(:keywords)
               application_filter_scope = perform_custom_filter(base_scope, make_model_year_words, "in_make_model_year")
             end
@@ -92,7 +92,6 @@ module Spree
             scope_name = list_type.to_sym # "with_part_number"
             found_match = false
             word_list.each do |scope_attribute| 
-              byebug
               if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
                 # Invokes scope_name method, passing *scope_attributes
                 if(!base_scope.send(scope_name, scope_attribute).empty? && !found_match)
@@ -115,7 +114,6 @@ module Spree
           def perform_custom_filter(base_scope, word_list, list_type)
             scope_name = list_type.to_sym # "with_part_number"
             # word_list.each do |scope_attribute| 
-              byebug
               # word_list = {:make_id => "1", :model_id => "1", :year => 1955}
               if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
                 # Invokes scope_name method, passing *scope_attributes

@@ -39,9 +39,14 @@ module Spree
     end
 
     def self.application_conditions(make, model)
+
       applications = Application.table_name
-      
-      { "#{applications}.make_id" => make, "#{applications}.model_id" => model }
+
+      if make && model
+        { "#{applications}.make_id" => make, "#{applications}.model_id" => model }
+      else
+        { "#{applications}.make_id" => make }
+      end
 
     end
 

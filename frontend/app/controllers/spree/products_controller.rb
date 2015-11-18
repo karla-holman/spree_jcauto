@@ -35,7 +35,7 @@ module Spree
         make_model_year_words[:make_id] = params[:make_id]
       end
       if params[:model_id]
-        make_model_year_words[:model_id] = params[:model_id]
+        make_model_year_words[:model_id] = params[:model_id] === "" ? nil : params[:model_id] 
       end
       if params[:year]
         make_model_year_words[:year] = params[:year]

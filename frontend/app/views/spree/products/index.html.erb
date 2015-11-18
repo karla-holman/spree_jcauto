@@ -33,7 +33,13 @@
 <% elsif params[:make_id] %>
   <div data-hook="search_results">
     <% make = Spree::Make.where("id=?", params[:make_id]).first.name %>
-    <% model = Spree::Model.where("id=?", params[:model_id]).first.name %>
+
+    <% if params[:model_id] === "" || !params[:model_id] %>
+        <% model = "(no model specified)" %>
+    <% else %>
+        <% model = Spree::Model.where("id=?", params[:model_id]).first.name %> 
+    <% end %>
+
     <% year = params[:year] %>
 
     <h2 class="search-results-title">Search Results for <%= "#{make} #{model} #{year}" %></h2>
