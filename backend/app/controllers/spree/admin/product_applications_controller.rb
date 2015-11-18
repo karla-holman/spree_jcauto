@@ -10,6 +10,7 @@ module Spree
         def find_applications
           # get list of all applications to auto populate
           @applications = Spree::Application.pluck(:name)
+          @models = Spree::Model.all
         end
 
         def setup_application

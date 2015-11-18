@@ -29,11 +29,11 @@
               <!-- %= f.collection_select :brand_id, Spree::Brand.order(:name), :id, :name, :prompt => "Select a brand" %-->
             </td>
             <td>
-              <%= apps_form.text_field :start_year, class: 'form-control' %>
+              <%= apps_form.text_field :start_year, class: 'datecomplete form-control' %>
               <!-- %= f.date_select :start_year, :order => [:year], :start_year => 1900, :end_year => Time.now.year, :prompt => {:year => "Select year"} %-->
             </td>
             <td>
-              <%= apps_form.text_field :end_year, class: 'form-control' %>
+              <%= apps_form.text_field :end_year, class: 'datecomplete form-control' %>
               <!--%= f.date_select :end_year, :order => [:year], :start_year => 1900, :end_year => Time.now.year, :prompt => {:year => "Select year"} %-->
             </td>
           </tr>
@@ -47,13 +47,62 @@
   </fieldset>
 <% end %>
 
-<%= javascript_tag do %>
+<script>
   var applications = <%= raw(@applications.to_json) %>;
+  //console.log(applications);
   $('#product_applications').on('keydown', 'input.autocomplete', function() {
+    console.log("Auto");
     already_auto_completed = $(this).is('ac_input');
     if (!already_auto_completed) {
       $(this).autocomplete({source: applications});
       $(this).focus();
     }
   });
-<% end %>
+
+  // Create hash to track start and end years
+  var starts = new Object();  // track each model's start year
+  var ends = new Object();    // track each model's end year
+  var models = <%= raw(@models.to_json) %>
+  var model = "";
+
+  // get all years
+  <% @models.each do |model| %>
+      starts["<%= model.make.name + ' ' + model.name %>"] = "<%= model.start_year %>";
+      ends["<%= model.make.name + ' ' + model.name %>"] = "<%= model.end_year %>";
+  <% end %>
+
+  // Add default list for no model
+  starts[""] = 1900;
+  ends[""] = new Date().getFullYear();
+
+  // Autocomplete with list of years
+  $('#product_applications').on('keydown', 'input.datecomplete', function() {
+
+    // Get value of #product_applications sibling input > tr > td > input
+    $first = $(this).parents('tr').children().first().children().first();
+    model = $first.val();
+
+    if (model in starts && model in ends){
+      // console.log("Found model " + model);
+      // model exists, do nothing
+    } else {
+      //console.log("No model, setting to empty string");
+      model = "";
+    }
+
+    var years = []; // Array of years to display for autocomplete
+    var count = 0;
+
+    // loop through years and add to autocomplete list
+    for(i = starts[model]; i <= ends[model]; i++) {
+      years[count] = i.toString();
+      count++;
+    }
+
+    already_auto_completed = $(this).is('ac_input');
+    if (!already_auto_completed) {
+      $(this).autocomplete({source: years});
+      $(this).focus();
+    }
+  });
+</script>
