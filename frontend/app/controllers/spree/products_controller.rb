@@ -20,9 +20,9 @@ module Spree
       search_words = params[:keywords]? params[:keywords].split : []
       # Handle special search values
       search_words.each do |word|
-        if word.length === part_number_length
+        if word.length === part_number_length && integer?(word)
           part_cast_words << word
-        elsif word.length === year_length
+        elsif word.length === year_length && integer?(word)
           make_model_year_words[:keywords] << word
         # tie in with database later
         elsif "chrysler dodge plymouth imperial desoto truck".include?(word)
@@ -92,6 +92,11 @@ module Spree
           params.merge!(id: @product.friendly_id)
           return redirect_to url_for(params), status: :moved_permanently
         end
+      end
+
+      # Determine if user search words are integer
+      def integer?(str)
+        /\A[+-]?\d+\z/ === str
       end
   end
 end
