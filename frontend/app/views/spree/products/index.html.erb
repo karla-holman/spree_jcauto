@@ -18,7 +18,7 @@
       <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :taxon => @taxon } %>
     <% end %>
     <% if !@products["part_num"].nil? %>
-      <h3>Parts with Matching Part or Cast Number</h3>
+      <h3>Parts with Matching Part Number, Cast Number, or Cross Reference</h3>
       <%= render :partial => 'spree/shared/products', :locals => { :products => @products["part_num"], :taxon => @taxon } %>
     <% end %>
     <% if !@products["taxon"].nil? %>

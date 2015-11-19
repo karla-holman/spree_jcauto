@@ -120,7 +120,7 @@ module Spree
     # a scope that finds all products with a property value
     add_search_scope :with_part_cast_number do |value|
       joins(:properties)
-        .where("#{ProductProperty.table_name}.value = ?", value)
+        .where("#{ProductProperty.table_name}.value like ?", "%"+value+"%")
         # .where(property_conditions("Part Number"))
     end
 
