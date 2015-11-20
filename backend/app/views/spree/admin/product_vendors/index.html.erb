@@ -38,7 +38,7 @@
 
     <%= render('spree/admin/shared/edit_resource_links') if can? :update, Spree::ProductVendor %>
 
-    <%= hidden_field_tag 'clear_product_properties', 'true' %>
+    <%= hidden_field_tag 'clear_product_vendors', 'true' %>
   </fieldset>
 <% end %>
 
