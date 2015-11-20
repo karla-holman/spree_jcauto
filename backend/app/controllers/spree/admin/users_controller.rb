@@ -34,6 +34,13 @@ module Spree
         end
       end
 
+      def activity
+        params[:q] = {} if params[:q].blank?
+        # @activities = PaperTrail::Version.order('created_at desc')
+        @search = PaperTrail::Version.ransack(params[:q])
+        @activities = @search.result.order('created_at desc').page(params[:page]).per(Spree::Config[:admin_products_per_page])
+      end
+
       def update
         if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
           params[:user].delete(:password)

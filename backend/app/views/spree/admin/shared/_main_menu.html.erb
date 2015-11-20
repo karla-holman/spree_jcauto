@@ -24,7 +24,7 @@
 
 <% if Spree.user_class && can?(:admin, Spree.user_class) %>
   <ul class="nav nav-sidebar">
-    <%= tab *Spree::BackendConfiguration::USER_TABS, url: spree.admin_users_path, icon: 'user' %>
+    <%= main_menu_tree Spree.t(:users), icon: "user", sub_menu: "users", url: "#sidebar-users" %>
   </ul>
 <% end %>
 

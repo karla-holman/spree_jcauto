@@ -46,6 +46,10 @@ module Spree
         def determine_backorderable
           stock_item.backorderable = params[:stock_item].present? && params[:stock_item][:backorderable].present?
         end
+
+        def current_user
+        try_spree_current_user
+      end
     end
   end
 end

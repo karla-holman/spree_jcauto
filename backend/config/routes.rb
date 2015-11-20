@@ -29,6 +29,7 @@ Spree::Core::Engine.add_routes do
           post :update_positions
         end
       end
+
       resources :images do
         collection do
           post :update_positions
@@ -47,6 +48,8 @@ Spree::Core::Engine.add_routes do
     end
 
     get '/variants/search', to: "variants#search", as: :search_variants
+
+    get '/activities', to: "users#activity"
 
     resources :option_types do
       collection do

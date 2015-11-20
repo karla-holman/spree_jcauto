@@ -3,7 +3,6 @@
     <%= button_link_to Spree.t(:new_product), new_object_url, { class: "btn-success", icon: 'add', id: 'admin_new_product' } %>
   <% end %>
 <% end %>
-
 <%= render partial: 'spree/admin/shared/product_tabs', locals: {current: :details} %>
 <%= render partial: 'spree/admin/shared/error_messages', locals: { target: @product } %>
 

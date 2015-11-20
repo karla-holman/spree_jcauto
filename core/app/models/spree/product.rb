@@ -71,6 +71,8 @@ module Spree
 
     has_many :variant_images, -> { order(:position) }, source: :images, through: :variants_including_master
 
+    has_paper_trail :on => [:update, :destroy], :ignore => [:updated_at]
+
     after_create :set_master_variant_defaults
     after_create :add_associations_from_prototype
     after_create :build_variants_from_option_values_hash, if: :option_values_hash
@@ -189,13 +191,11 @@ module Spree
     end
 
     def property(property_name)
-      byebug
       return nil unless prop = properties.find_by(name: property_name)
       product_properties.find_by(property: prop).try(:value)
     end
 
     def set_property(property_name, property_value)
-      byebug
       ActiveRecord::Base.transaction do
         # Works around spree_i18n #301
         property = if Property.exists?(name: property_name)
@@ -217,7 +217,6 @@ module Spree
     end
 
     def set_application(application_name, start_year)
-      byebug
       ActiveRecord::Base.transaction do
         # Works around spree_i18n #301
         application = if Application.exists?(name: application_name)

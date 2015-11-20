@@ -47,6 +47,7 @@
 //= require spree/backend/variant_management
 //= require spree/backend/zone
 //= require_tree .
+//= require local_time
 
 Spree.routes.clear_cache = Spree.pathFor('admin/general_settings/clear_cache')
 Spree.routes.checkouts_api = Spree.pathFor('api/checkouts')

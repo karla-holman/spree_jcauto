@@ -1,0 +1,122 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:user_activity) %>
+<% end %>
+
+<!-- 
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:new_user), new_admin_user_url, :class => "btn-success", :icon => 'add', :id => 'admin_new_user_link' %>
+<% end %>
+
+-->
+ 
+<% content_for :table_filter_title do %>
+  <%= Spree.t(:search) %>
+<% end %>
+<!-- % content_for :table_filter do % -->
+  <div data-hook="admin_users_index_search">
+    <h3>Filter Results</h3>
+    <%= search_form_for [:admin, @search], url: spree.admin_activities_url do |f| %>
+    <div class="form-group">
+      <div class="col-md-4">
+        <%= f.label Spree.t(:user) %>
+        <%= f.select :whodunnit_eq, options_for_select(Spree::User.all.collect {|u| [ u.email, u.id ] }), {:prompt => "Select User"}, {:class=> "form-control"} %> 
+      </div>
+      <div class="col-md-4">
+        <%= f.label "Find Product Updates" %>
+        <%= f.select :item_id_eq, options_for_select(Spree::Product.all.collect {|p| [ p.property("Part Number"), p.id ] }), {:prompt => "Select Part Number"}, {:class=> "form-control"} %> 
+        <!-- %= f.text_field :item_id_eq, class: "form-control js-quick-search-target" % -->
+      </div>
+      <div class="col-md-4">
+        <%= f.label "Find Stock Location Updates"%>
+        <%= f.select :item_id_eq, options_for_select(Spree::StockItem.all.collect {|s| [ 
+          if s.variant.is_master 
+            s.variant.product.property("Part Number") + " " + s.stock_location.name
+          else
+            s.variant.sku + " " + s.variant.options_text + " " + s.stock_location.name
+          end, s.id ] }), {:prompt => "Select Part Number"}, {:class=> "form-control"} %> 
+        <!-- %= f.text_field :item_id_eq, class: "form-control js-quick-search-target" % -->
+      </div>
+    </div>
+ 
+    <div data-hook="admin_users_index_search_buttons" class="form-actions col-md-4" style="margin: 20px 0">
+        <%= button Spree.t(:search), 'search' %>
+    </div>
+
+    <% end %>
+  </div>
+<!-- % end % -->
+
+<hr>
+
+<table class="table" id="listing_users" data-hook>
+  <thead>
+    <tr data-hook="admin_users_index_headers">
+      <th>
+        <%= sort_link @search,:item, Spree.t(:item), {}, {:title => 'users_email_title'} %>
+      </th>
+      <th>
+        <%= sort_link @search,:object_changes, Spree.t(:changes), {}, {:title => 'users_email_title'} %>
+      </th>
+      <th>
+        <%= sort_link @search,:created_at, Spree.t(:created_at), {}, {:title => 'users_email_title'} %>
+      </th>
+      <th>
+        <%= sort_link @search,:whodunnit, Spree.t(:user), {}, {:title => 'users_email_title'} %>
+      </th>
+      <th data-hook="admin_users_index_header_actions" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @activities.each do |activity|%>
+      <tr id="<%= spree_dom_id activity %>" data-hook="admin_users_index_rows">
+        <td class='user_email'>
+          <% if activity.item_type === "Spree::Product" %>
+            <%= activity.item.property("Part Number")%>
+          <% elsif activity.item_type === "Spree::StockItem" %>
+            <%= activity.item.variant.sku %> at <%= activity.item.stock_location.name %>
+          <% end %>
+        </td>
+        <td class='user_email'>
+          <ul style="margin-top: 10px">
+            <% if activity.object_changes %>
+              <% count = 1 %>
+              <% changes = activity.object_changes.split("\n") %>
+              <% changes.shift %>
+              <% changes.each do |change| %>
+                <% if count == 3 %>
+                  to <strong><%= change.tr('-', '') %></strong></li>
+                  <% count = 0 %>
+                <% elsif count == 2 %>
+                  from <strong><%= change.tr('-', '') %></strong>
+                <% else %>
+                  <li>Changed <%= change.tr('-', '') %>
+                <% end %>
+                <% count += 1 %>
+              <% end %>
+            <% else %>
+              <li>Difference not logged</li>
+            <% end %>
+          </ul>
+        </td>
+        <td class='user_email'>
+          <% if activity.created_at.to_date <= Date.today.prev_week %>
+            <%= local_time(activity.created_at) %>
+          <% else %>
+            <%= local_time_ago(activity.created_at) %>
+          <% end %>
+        </td>
+        <td class='user_email'>
+          <% if activity.whodunnit %>
+            <%= Spree::User.where("id=?", activity.whodunnit).first.email %>
+          <% else %>
+            No User Logged
+          <% end %>
+        </td>
+        <!--td data-hook="admin_users_index_row_actions" class="actions actions-2 text-right"-->
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @activities %>

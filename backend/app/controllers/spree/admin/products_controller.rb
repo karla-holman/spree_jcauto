@@ -137,6 +137,10 @@ module Spree
         clone_admin_product_url resource
       end
 
+      def current_user
+        try_spree_current_user
+      end
+
       private
 
       def variant_stock_includes
