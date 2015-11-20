@@ -35,6 +35,8 @@ module Spree
     has_and_belongs_to_many :promotion_rules, join_table: :spree_products_promotion_rules
     has_many :product_applications, dependent: :destroy, inverse_of: :product
     has_many :applications, through: :product_applications
+    has_many :product_vendors, dependent: :destroy, inverse_of: :product
+    has_many :vendors, through: :product_vendors
 
     belongs_to :tax_category, class_name: 'Spree::TaxCategory'
     belongs_to :shipping_category, class_name: 'Spree::ShippingCategory', inverse_of: :products
@@ -102,6 +104,7 @@ module Spree
     accepts_nested_attributes_for :product_properties, allow_destroy: true, reject_if: lambda { |pp| pp[:property_name].blank? }
     # http://makandracards.com/makandra/1346-popular-mistakes-when-using-nested-forms
     accepts_nested_attributes_for :product_applications, allow_destroy: true, reject_if: lambda { |pa| pa[:start_year].blank? }
+    accepts_nested_attributes_for :product_vendors, allow_destroy: true, reject_if: lambda { |pv| pv[:vendor_part_number].blank? }
 
     alias :options :product_option_types
 
@@ -229,6 +232,29 @@ module Spree
         product_application = ProductApplication.where(product: self, application: application).first_or_initialize
         # product_application.name = property_value
         product_application.save!
+      end
+    end
+
+    def vendor(vendor_name)
+      return nil unless ven = vendors.find_by(name: vendor_name)
+
+      # Return part number of that vendor
+      product_vendors.find_by(vendor: ven).try(:vendor_part_number)
+    end
+
+    def set_vendor(vendor_name, vendor_part_number)
+      ActiveRecord::Base.transaction do
+        # Works around spree_i18n #301
+        vendor = if Vendor.exists?(name: vendor_name)
+          # Return first found
+          Vendor.where(name: vendor_name).first
+        else
+          # Otherwise create a new one
+          Vendor.create(name: vendor_name)
+        end
+        product_vendor = ProductVendor.where(product: self, vendor: vendor).first_or_initialize
+        product_vendor.vendor_part_number = vendor_part_number
+        product_vendor.save!
       end
     end
 

@@ -13,7 +13,6 @@
     <%= search_form_for [:admin, @search] do |f| %>
 
       <%- locals = {:f => f} %>
-      <% byebug %>
       <div class="row">
         <div class="col col-md-12">
           <div data-hook="admin_property_index_search" class="form-group">
@@ -57,7 +56,7 @@
   </table>
 <% else %>
   <div class="alert alert-info no-objects-found">
-    <%= Spree.t(:no_resource_found, resource: plural_resource_name(Spree::Property)) %>,
+    <%= Spree.t(:no_resource_found, resource: plural_resource_name(Spree::Application)) %>,
     <%= link_to Spree.t(:add_one), new_object_url %>!
   </div>
 <% end %>

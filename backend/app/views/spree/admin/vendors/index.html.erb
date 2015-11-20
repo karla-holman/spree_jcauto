@@ -1,0 +1,81 @@
+<% content_for :page_title do %>
+  <%= plural_resource_name(Spree::Vendor) %>
+<% end %>
+
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:new_vendor), new_object_url, { :class => "btn-success", :icon => 'add', 'data-update' => 'new_vendor', :id => 'new_property_link' } %>
+<% end %>
+
+<% content_for :table_filter do %>
+  <div data-hook="admin_property_sidebar">
+    <%= search_form_for [:admin, @search] do |f| %>
+
+      <%- locals = {:f => f} %>
+      <div class="row">
+        <div class="col col-md-6">
+          <div data-hook="admin_property_index_search" class="form-group">
+            <%= f.label :name_cont, Spree.t(:name) %>
+            <%= f.text_field :name_cont, :class => "form-control js-quick-search-target" %>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= f.label :phone_cont, Spree.t(:phone) + " (ex. 206-123-4567)" %>
+            <%= f.text_field :phone_cont, :class => "form-control" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions" data-hook="admin_vendors_index_search_buttons">
+        <%= button Spree.t(:search), 'search' %>
+      </div>
+
+    <% end %>
+  </div>
+<% end %>
+
+<% if @vendors.any? %>
+  <!-- Prevent nil each bug -->
+  <% my_vendors = @vendors %>
+  <table class="table" id='listing_properties' data-hook>
+    <thead>
+      <tr data-hook="listing_properties_header">
+        <th><%= Spree.t(:name) %></th>
+        <th><%= Spree.t(:address) %></th>
+        <th><%= Spree.t(:city) %></th>
+        <th><%= Spree.t(:state_or_province) %></th>
+        <th><%= Spree.t(:country) %></th>
+        <th><%= Spree.t(:phone) %></th>
+        <th><%= Spree.t(:email) %></th>
+        <th><%= Spree.t(:website) %></th>
+        <th class="actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% my_vendors.each do |vendor| %>
+        <tr id="<%= spree_dom_id vendor %>" data-hook="listing_vendors_row">
+          <td><%= vendor.name %></td>
+          <td><%= vendor.line_1 ? vendor.line_1 : "-" %> <%= vendor.line_2 ? vendor.line_2 : "" %></td>
+          <td><%= vendor.city ? vendor.city : "-" %></td>
+          <td><%= vendor.state ? vendor.state : "-" %></td>
+          <td><%= vendor.country ? vendor.country : "-" %></td>
+          <td><%= vendor.phone ? vendor.phone : "-" %></td>
+          <td><%= vendor.email ? vendor.email : "-" %></td>
+          <td><%= vendor.website ? vendor.website : "-" %></td>
+          <td class="actions actions-2 text-right">
+            <%= link_to_edit(vendor, :no_text => true) %>
+            <%= link_to_delete(vendor, :no_text => true) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: plural_resource_name(Spree::Vendor)) %>,
+    <%= link_to Spree.t(:add_one), new_object_url %>!
+  </div>
+<% end %>
+
+<%= paginate @collection %>

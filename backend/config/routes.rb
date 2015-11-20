@@ -30,6 +30,12 @@ Spree::Core::Engine.add_routes do
         end
       end
 
+      resources :product_vendors do
+        collection do
+          post :update_positions
+        end
+      end
+
       resources :images do
         collection do
           post :update_positions
@@ -75,6 +81,14 @@ Spree::Core::Engine.add_routes do
     end
 
     delete '/product_applications/:id', to: "product_applications#destroy", as: :product_application
+
+    resources :vendors do
+      collection do
+        get :filtered
+      end
+    end
+
+    delete '/product_vendors/:id', to: "product_vendors#destroy", as: :product_vendor
 
     resources :makes do
       collection do
