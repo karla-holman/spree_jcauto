@@ -32,6 +32,10 @@ module Spree
         variant.price
       end
 
+      def core_price
+        variant.core_price
+      end
+
       def amount
         price * quantity
       end

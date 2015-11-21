@@ -5,10 +5,11 @@ module Spree
 
     validate :check_price
     validates :amount, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+    validates :core, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
     validate :validate_amount_maximum
 
     extend DisplayMoney
-    money_methods :amount, :price
+    money_methods :amount, :price, :core_price
 
     self.whitelisted_ransackable_attributes = ['amount']
 
@@ -20,8 +21,16 @@ module Spree
       amount
     end
 
+    def core_price
+      core
+    end
+
     def price=(price)
       self[:amount] = Spree::LocalizedNumber.parse(price)
+    end
+
+    def core_price=(price)
+      self[:core] = Spree::LocalizedNumber.parse(price)
     end
 
     # Remove variant default_scope `deleted_at: nil`

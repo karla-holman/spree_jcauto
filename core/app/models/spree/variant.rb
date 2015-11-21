@@ -34,6 +34,7 @@ module Spree
 
     validates :cost_price, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
     validates :price,      numericality: { greater_than_or_equal_to: 0, allow_nil: true }
+    validates :core_price,      numericality: { greater_than_or_equal_to: 0, allow_nil: true }
     # validates_uniqueness_of :sku, allow_blank: true, conditions: -> { where(deleted_at: nil) }
 
     after_create :create_stock_items
@@ -160,6 +161,10 @@ module Spree
 
     def amount_in(currency)
       price_in(currency).try(:amount)
+    end
+
+    def core_price_in(currency)
+      price_in(currency).try(:core_price)
     end
 
     def price_modifier_amount_in(currency, options = {})

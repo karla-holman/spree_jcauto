@@ -64,7 +64,7 @@ module Spree
     has_many :line_items, through: :variants_including_master
     has_many :orders, through: :line_items
 
-    delegate_belongs_to :master, :sku, :price, :currency, :display_amount, :display_price, :weight, :height, :width, :depth, :is_master, :has_default_price?, :cost_currency, :price_in, :amount_in
+    delegate_belongs_to :master, :sku, :price, :core_price, :currency, :display_amount, :display_price, :weight, :height, :width, :depth, :is_master, :has_default_price?, :cost_currency, :price_in, :amount_in, :core_price_in
 
     delegate_belongs_to :master, :cost_price
 
@@ -307,7 +307,8 @@ module Spree
       values.each do |ids|
         variant = variants.create(
           option_value_ids: ids,
-          price: master.price
+          price: master.price,
+          core: master.core_price
         )
       end
       save
