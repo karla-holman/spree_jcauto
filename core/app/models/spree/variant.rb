@@ -167,6 +167,10 @@ module Spree
       price_in(currency).try(:core_price)
     end
 
+    def total_price_in(currency)
+      price_in(currency).try(:total_price)
+    end
+
     def price_modifier_amount_in(currency, options = {})
       return 0 unless options.present?
 

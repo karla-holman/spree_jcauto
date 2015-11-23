@@ -33,7 +33,6 @@ module Spree
     # returns the formatted full price for the variant, if at least one variant price differs from product price
     def variant_full_price(variant)
       product = variant.product
-      byebug
       #unless product.variants.active(current_currency).all? { |v| v.price == product.price && v.core_price ? v.core_price == 0 : true }
         new_price = "Price: " + Spree::Money.new(variant.price, { currency: current_currency }).to_html
         new_price += " Core: " + Spree::Money.new(variant.core_price ? variant.core_price : 0, { currency: current_currency }).to_html

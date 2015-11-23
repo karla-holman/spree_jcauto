@@ -38,10 +38,10 @@
       </div>
 
       <div data-hook="admin_product_form_price">
-        <%= f.field_container :core, class: ['form-group'] do %>
-          <%= f.label :core, raw(Spree.t(:core_price)) %>
-          <%= f.text_field :core, value: number_to_currency(@product.core, unit: ''), class: 'form-control', disabled: (cannot? :update, Spree::Price) %>
-          <%= f.error_message_on :core %>
+        <%= f.field_container :core_price, class: ['form-group'] do %>
+          <%= f.label :core_price, raw(Spree.t(:core_price)) %>
+          <%= f.text_field :core_price, value: number_to_currency(@product.core_price, unit: ''), class: 'form-control', disabled: (cannot? :update, Spree::Price) %>
+          <%= f.error_message_on :core_price %>
         <% end %>
       </div>
 

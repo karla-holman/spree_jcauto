@@ -8,14 +8,18 @@
             <li>
               <!-- %= label_tag "variant_id_#{ variant.id }" do %-->
                 <!-- span class="variant-description"-->
-                <p style="font-weight: 700"><%= radio_button_tag "variant_id", variant.id, index == 0, 'data-price' => variant.price_in(current_currency).money  %><%= variant_options variant %></p>
+                <p style="font-weight: 700; margin-bottom: 0px">
+                  <% price_in_currency = variant.price_in(current_currency) %>
+                  <%= radio_button_tag "variant_id", variant.id, index == 0, 'data-price' => price_in_currency.money, 'data-core' => price_in_currency.money_core, 'data-total' => price_in_currency.money_total %>
+                  <%= variant_options variant %>
+                </p>
                 <% if variant_price variant %>
                   <!--span class="price diff"-->
-                  <p style="margin-left: 20px;"><%= variant_price variant %></p>
+                  <p style="margin-left: 20px; margin-bottom: 0px"><%= variant_price variant %></p>
                 <% end %>
                 <% unless variant.can_supply? %>
                   <!--span class="out-of-stock"-->
-                  <p style="margin-left: 20px;"><%= Spree.t(:out_of_stock) %></p>
+                  <p style="margin-left: 20px; margin-bottom: 5px"><%= Spree.t(:out_of_stock) %></p>
                 <% end %>
               <!--% end %-->
             </li>
@@ -29,14 +33,70 @@
     <% if @product.price_in(current_currency) and !@product.price.nil? %>
       <div data-hook="product_price" class="col-md-5">
         <div id="product-price">
-          <h3 class="product-section-title"><%= Spree.t(:price) %></h3>
-          <div>
-            <span class="lead price selling" itemprop="price">
-              <%= display_price(@product) %>
-            </span>
-            <span itemprop="priceCurrency" content="<%= @product.currency %>"></span>
+          <h3><%= Spree.t(:price) %></h3>
+          <table id="product-properties" class="table table-striped" data-hook>
+            <tbody>
+              <% css_class = cycle('even', 'odd', :name => "prices_table") %>
+              <% if @product.core_price > 0 %>
+                <tr class="<%= css_class %>">
+                  <td>
+                    <strong><%= Spree.t(:core_charge) %></strong>
+                  </td>
+                  <td>
+                    <span class="core selling" itemprop="price">
+                      $<%= display_core_price(@product) %>
+                    </span>
+                    <span itemprop="priceCurrency" content="<%= @product.currency %>"></span>
+                  </td>
+                </tr>
+                <tr class="<%= css_class %>">
+                  <td>
+                    <strong><%= Spree.t(:price) %></strong>
+                  </td>
+                  <td>
+                    <span class="price selling" itemprop="price">
+                      <%= display_price(@product) %>
+                    </span>
+                    <span itemprop="priceCurrency" content="<%= @product.currency %>"></span>
+                  </td>
+                </tr>
+              <% end %>
+              <tr class="<%= css_class %>">
+                <td>
+                  <span class="lead"><strong>
+                    <%= Spree.t(:total) %>
+                  </strong></span>
+                </td>
+                <td>
+                  <span class="lead total selling" itemprop="price">
+                  $<%= display_total_price(@product) %>
+                  </span>
+                  <span itemprop="priceCurrency" content="<%= @product.currency %>"></span>
+                </td>
+              </tr>
+              <% reset_cycle('prices_table') %>
+            </tbody>
+          </table>
+          <!--
+          <div class="col-md-6">
+            <h3 class="product-section-title"><%= Spree.t(:core_charge) %></h3>
+            <div>
+              <span class="lead price selling" itemprop="price">
+                <%= display_core_price(@product) %>
+              </span>
+              <span itemprop="priceCurrency" content="<%= @product.currency %>"></span>
+            </div>
           </div>
-
+          <div class="col-md-6">
+            <h3 class="product-section-title"><%= Spree.t(:price) %></h3>
+            <div>
+              <span class="lead price selling" itemprop="price">
+                <%= display_price(@product) %>
+              </span>
+              <span itemprop="priceCurrency" content="<%= @product.currency %>"></span>
+            </div>
+          </div>
+          -->
           <% if @product.master.can_supply? %>
             <link itemprop="availability" href="https://schema.org/InStock" />
           <% elsif @product.variants.empty? %>

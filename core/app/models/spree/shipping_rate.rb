@@ -16,6 +16,7 @@ module Spree
     end
 
     def display_price
+      byebug
       price = display_base_price.to_s
       if tax_rate
         tax_amount = calculate_tax_amount

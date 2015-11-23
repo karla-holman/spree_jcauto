@@ -9,12 +9,20 @@ module Spree
     validate :validate_amount_maximum
 
     extend DisplayMoney
-    money_methods :amount, :price, :core_price
+    money_methods :amount, :price, :core_price, :total_price
 
     self.whitelisted_ransackable_attributes = ['amount']
 
     def money
       Spree::Money.new(amount || 0, { currency: currency })
+    end
+
+    def money_core
+      Spree::Money.new(core || 0, { currency: currency })
+    end
+
+    def money_total
+      Spree::Money.new(core + amount || 0, { currency: currency })
     end
 
     def price
@@ -23,6 +31,10 @@ module Spree
 
     def core_price
       core
+    end
+
+    def total_price
+      amount + core
     end
 
     def price=(price)

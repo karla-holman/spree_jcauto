@@ -16,8 +16,19 @@ module Spree
       end.sort_by { |c| c.name.parameterize }
     end
 
+    # return string version of price
     def display_price(product_or_variant)
       product_or_variant.price_in(current_currency).display_price.to_html
+    end
+
+    # return string version of core price
+    def display_core_price(product_or_variant)
+      product_or_variant.core_price_in(current_currency).to_s
+    end
+
+    # return string version of total (core+amount) price
+    def display_total_price(product_or_variant)
+      product_or_variant.total_price_in(current_currency).to_s
     end
 
     def link_to_tracking(shipment, options = {})

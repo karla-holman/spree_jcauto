@@ -30,6 +30,16 @@ Spree.ready ($) ->
       ($ '#main-image').data 'selectedThumb', newImg
       ($ '#main-image').data 'selectedThumbId', thumb.attr('id')
 
+  Spree.updateVariantTotal = (variant) ->
+    variantPrice = variant.data('total')
+    ($ '.total.selling').text(variantPrice) if variantPrice
+  radios = ($ '#product-variants input[type="radio"]')
+
+  Spree.updateVariantCore = (variant) ->
+    variantPrice = variant.data('core')
+    ($ '.core.selling').text(variantPrice) if variantPrice
+  radios = ($ '#product-variants input[type="radio"]')
+
   Spree.updateVariantPrice = (variant) ->
     variantPrice = variant.data('price')
     ($ '.price.selling').text(variantPrice) if variantPrice
@@ -44,4 +54,6 @@ Spree.ready ($) ->
 
   radios.click (event) ->
     Spree.showVariantImages @value
+    Spree.updateVariantTotal ($ this)
+    Spree.updateVariantCore ($ this)
     Spree.updateVariantPrice ($ this)
