@@ -49,6 +49,8 @@ Spree.ready ($) ->
     selectedRadio = ($ '#product-variants input[type="radio"][checked="checked"]')
     Spree.showVariantImages selectedRadio.attr('value')
     Spree.updateVariantPrice selectedRadio
+    Spree.updateVariantTotal selectedRadio
+    Spree.updateVariantCore selectedRadio
 
   Spree.addImageHandlers()
 

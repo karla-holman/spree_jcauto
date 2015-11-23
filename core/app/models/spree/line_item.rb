@@ -40,7 +40,8 @@ module Spree
 
     def copy_price
       if variant
-        self.price = variant.price if price.nil?
+        byebug
+        self.price = (variant.price + variant.core_price) if price.nil?
         self.cost_price = variant.cost_price if cost_price.nil?
         self.currency = variant.currency if currency.nil?
       end
@@ -112,10 +113,10 @@ module Spree
 
       if currency
         self.currency = currency
-        self.price    = variant.price_in(currency).amount +
+        self.price    = variant.price_in(currency).amount + variant.core_price_in(currency) +
                         variant.price_modifier_amount_in(currency, opts)
       else
-        self.price    = variant.price +
+        self.price    = variant.price + variant.core_price +
                         variant.price_modifier_amount(opts)
       end
 
