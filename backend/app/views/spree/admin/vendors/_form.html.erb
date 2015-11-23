@@ -1,61 +1,81 @@
 <div data-hook="admin_vendor_form" class="row">
-    <div class="col-md-4">
-    <%= f.field_container :name, class: ['form-group'] do %>
-      <%= f.label :name, Spree.t(:name) %> <span class="required">*</span>
-      <%= f.text_field :name, :class => 'form-control' %>
-      <%= f.error_message_on :name %>
+  <div class="row">
+    <div class="col-md-4" data-hook="stock_location_names">
+      <div data-hook="stock_location_name">
+        <%= f.field_container :name, class: ['form-group']  do %>
+        <%= f.label :name, Spree.t(:name) %> <span class="required">*</span><br />
+        <%= f.text_field :name, class: 'form-control', required: true %>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-md-4" data-hook="stock_location_names">
+      <div data-hook="stock_location_name">
+        <%= f.field_container :email, class: ['form-group']  do %>
+        <%= f.label :email, Spree.t(:email) %><br />
+        <%= f.text_field :email, class: 'form-control', required: false %>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-md-4" data-hook="stock_location_names">
+      <div data-hook="stock_location_name">
+        <%= f.field_container :website, class: ['form-group']  do %>
+        <%= f.label :website, Spree.t(:website) %><br />
+        <%= f.text_field :website, class: 'form-control', required: false %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group" data-hook="stock_location_address1">
+    <%= f.label :address1, Spree.t(:street_address) %>
+    <%= f.text_field :address1, class: 'form-control' %>
+  </div>
+
+  <div class="form-group" data-hook="stock_location_address2">
+    <%= f.label :address2, Spree.t(:street_address_2) %>
+    <%= f.text_field :address2, class: 'form-control' %>
+  </div>
+
+  <div class="form-group" data-hook="stock_location_city">
+    <%= f.label :city, Spree.t(:city) %>
+    <%= f.text_field :city, class: 'form-control' %>
+  </div>
+
+  <div class="form-group" data-hook="stock_location_zipcode">
+    <%= f.label :zipcode, Spree.t(:zip) %>
+    <%= f.text_field :zipcode, class: 'form-control' %>
+  </div>
+
+  <div class="form-group" data-hook="stock_location_phone">
+    <%= f.label :phone, Spree.t(:phone) %>
+    <%= f.phone_field :phone, class: 'form-control' %>
+  </div>
+
+  <div class="form-group" data-hook="stock_location_country">
+    <%= f.label :country_id, Spree.t(:country) %>
+    <span id="country"><%= f.collection_select :country_id, available_countries, :id, :name, {}, { class: 'select2' } %></span>
+  </div>
+
+  <div class="form-group" data-hook="stock_location_state">
+    <% if f.object.country %>
+      <%= f.label :state_id, Spree.t(:state) %>
+      <span id="state" class="region">
+        <%= f.text_field :state_name, style: "#{f.object.country.states.empty? ? '' : 'display: none;'}", disabled: !f.object.country.states.empty?, class: 'state_name form-control' %>
+        <%= f.collection_select :state_id, f.object.country.states.sort, :id, :name, { include_blank: true }, {class: 'select2', style: "#{f.object.country.states.empty? ? 'display: none;' : '' };", disabled: f.object.country.states.empty?} %>
+      </span>
     <% end %>
   </div>
-  <div class="col-md-4">
-    <%= f.field_container :phone, class: ['form-group'] do %>
-      <%= f.label :phone, Spree.t(:phone) + " (ex. 206-123-4567)" %>
-      <%= f.text_field :phone, :class => 'form-control' %>
-      <%= f.error_message_on :phone %>
-    <% end %>
-  </div>
-  <div class="col-md-4">
-    <%= f.field_container :email, class: ['form-group'] do %>
-      <%= f.label :email, Spree.t(:email) %>
-      <%= f.text_field :email, :class => 'form-control' %>
-      <%= f.error_message_on :email %>
-    <% end %>
-  </div>
-  <div class="col-md-4">
-    <%= f.field_container :line_1, class: ['form-group'] do %>
-      <%= f.label :line_1, Spree.t(:address_line_1) %>
-      <%= f.text_field :line_1, :class => 'form-control' %>
-      <%= f.error_message_on :line_1 %>
-      <%= f.label :line_2, Spree.t(:address_line_2) %>
-      <%= f.text_field :line_2, :class => 'form-control' %>
-      <%= f.error_message_on :line_2 %>
-      <%= f.label :city, Spree.t(:city) %>
-      <%= f.text_field :city, :class => 'form-control' %>
-      <%= f.error_message_on :city %>
-      <%= f.label :state, Spree.t(:state_or_province) %>
-      <%= f.text_field :state, :class => 'form-control' %>
-      <%= f.error_message_on :state %>
-      <%= f.label :zip, Spree.t(:zip) %>
-      <%= f.text_field :zip, :class => 'form-control' %>
-      <%= f.error_message_on :zip %>
-    <% end %>
-  </div>
-  <div class="col-md-4">
-    <%= f.field_container :website, class: ['form-group'] do %>
-      <%= f.label :website, Spree.t(:website) %>
-      <%= f.text_field :website, :class => 'form-control' %>
-      <%= f.error_message_on :website %>
-    <% end %>
-    <%= f.field_container :notes, class: ['form-group'] do %>
-      <%= f.label :notes, Spree.t(:notes) %>
-      <%= text_area_tag :notes, nil, rows: 8, cols: 10, class: 'form-control'%>
-      <%= f.error_message_on :notes %>
-    <% end %>
-  </div>
-  <div class="col-md-4">
-    <%= f.field_container :contact_name, class: ['form-group'] do %>
-      <%= f.label :contact_name, Spree.t(:contact_name) %>
-      <%= f.text_field :contact_name, :class => 'form-control' %>
-      <%= f.error_message_on :contact_name %>
-    <% end %>
+
+  <div class="form-group" data-hook="stock_location_phone">
+    <%= f.label :notes, Spree.t(:notes) %>
+    <%= f.text_area :notes, cols: 20, rows: 8, class: 'form-control' %>
   </div>
 </div>
+
+<% content_for :head do %>
+  <%= javascript_tag do %>
+    $(document).ready(function(){
+      $('span#country .select2').on('change', function() { update_state(''); });
+    });
+  <% end %>
+<% end %>

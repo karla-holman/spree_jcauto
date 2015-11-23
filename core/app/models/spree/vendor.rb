@@ -5,6 +5,9 @@ module Spree
 	    has_many :product_vendors, dependent: :delete_all, inverse_of: :vendor
 	    has_many :products, through: :product_vendors
 
+	    belongs_to :state, class_name: 'Spree::State'
+    	belongs_to :country, class_name: 'Spree::Country'
+
 	    validates :name, presence: true
 	    # validates :make_id, :model_id, presence: true
 
@@ -16,6 +19,10 @@ module Spree
 
 	    self.whitelisted_ransackable_attributes = ['name']
 	    self.whitelisted_ransackable_attributes = ['phone']
+
+	    def state_text
+	      state.try(:abbr) || state.try(:name) || state_name
+	    end
 
 	    private
 

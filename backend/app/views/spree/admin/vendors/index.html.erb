@@ -56,7 +56,7 @@
       <% my_vendors.each do |vendor| %>
         <tr id="<%= spree_dom_id vendor %>" data-hook="listing_vendors_row">
           <td><%= vendor.name %></td>
-          <td><%= vendor.line_1 ? vendor.line_1 : "-" %> <%= vendor.line_2 ? vendor.line_2 : "" %></td>
+          <td><%= vendor.address1 ? vendor.address1 : "-" %> <%= vendor.address2 ? vendor.address2 : "" %></td>
           <td><%= vendor.city ? vendor.city : "-" %></td>
           <td><%= vendor.state ? vendor.state : "-" %></td>
           <td><%= vendor.country ? vendor.country : "-" %></td>
