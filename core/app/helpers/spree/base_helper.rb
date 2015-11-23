@@ -23,12 +23,12 @@ module Spree
 
     # return string version of core price
     def display_core_price(product_or_variant)
-      product_or_variant.core_price_in(current_currency).to_s
+      number_to_currency(product_or_variant.core_price_in(current_currency)).to_s
     end
 
     # return string version of total (core+amount) price
     def display_total_price(product_or_variant)
-      product_or_variant.total_price_in(current_currency).to_s
+      number_to_currency(product_or_variant.total_price_in(current_currency)).to_s
     end
 
     def link_to_tracking(shipment, options = {})

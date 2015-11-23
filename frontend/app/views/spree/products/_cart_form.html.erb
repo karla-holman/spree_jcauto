@@ -37,14 +37,27 @@
           <table id="product-properties" class="table table-striped" data-hook>
             <tbody>
               <% css_class = cycle('even', 'odd', :name => "prices_table") %>
-              <% if @product.core_price > 0 %>
+              <% core_price_present = false %>
+              <% 
+                if @product.core_price > 0
+                  core_price_present = true
+                else
+                  @product.variants.each do |variant|
+                    if variant.core_price > 0 
+                      core_price_present = true
+                      break
+                    end
+                  end
+                end
+              %>
+              <% if core_price_present %>
                 <tr class="<%= css_class %>">
                   <td>
                     <strong><%= Spree.t(:core_charge) %></strong>
                   </td>
                   <td>
                     <span class="core selling" itemprop="price">
-                      $<%= display_core_price(@product) %>
+                      <%= display_core_price(@product) %>
                     </span>
                     <span itemprop="priceCurrency" content="<%= @product.currency %>"></span>
                   </td>
@@ -69,7 +82,7 @@
                 </td>
                 <td>
                   <span class="lead total selling" itemprop="price">
-                  $<%= display_total_price(@product) %>
+                  <%= display_total_price(@product) %>
                   </span>
                   <span itemprop="priceCurrency" content="<%= @product.currency %>"></span>
                 </td>
