@@ -1,0 +1,8 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:general_settings) %>
+<% end %>
+
+<%= form_tag upload_excel_admin_general_settings_path, method: :post do %>
+  <%= text_field_tag @path %> 
+  <%= submit_tag 'Upload File' %>
+<% end %>
