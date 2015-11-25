@@ -159,7 +159,7 @@ Spree::Core::Engine.add_routes do
         post :dismiss_alert
         post :clear_cache
         get :upload
-        post :upload_excel
+        post :upload_product_excel
       end
     end
 

@@ -11,7 +11,7 @@
                 <p style="font-weight: 700; margin-bottom: 0px">
                   <% price_in_currency = variant.price_in(current_currency) %>
                   <%= radio_button_tag "variant_id", variant.id, index == 0, 'data-price' => price_in_currency.money, 'data-core' => price_in_currency.money_core, 'data-total' => price_in_currency.money_total %>
-                  <%= variant_options variant %>
+                  <%= variant_options variant %><%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>
                 </p>
                 <% if variant_price variant %>
                   <!--span class="price diff"-->

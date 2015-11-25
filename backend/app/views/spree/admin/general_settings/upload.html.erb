@@ -1,8 +1,76 @@
 <% content_for :page_title do %>
-  <%= Spree.t(:general_settings) %>
+  <%= Spree.t(:update_database_with_spreadsheet) %>
 <% end %>
 
-<%= form_tag upload_excel_admin_general_settings_path, method: :post do %>
-  <%= text_field_tag @path %> 
-  <%= submit_tag 'Upload File' %>
-<% end %>
+<div class="col-md-4">
+	<div class="panel panel-default">
+	  <div class="panel-heading"><h3>Add Products</h3></div>
+	  <div class="panel-body">
+	  	<p><strong>Note:</strong> The file must be .xlsx (created with Office 2007 or newer)</p>
+	    <%= form_tag 'upload_product_excel', :multipart => true do %>
+	    <div class="form-group">
+		   <label for="file">Upload excel File</label> <%= file_field_tag "file", class: "btn btn-default" %>
+		</div>
+		<%= submit_tag "Upload", class: "btn btn-primary" %>
+		<% end %>
+	  </div>
+	</div>
+</div>
+
+<div class="col-md-4">
+	<div class="panel panel-default">
+	  <div class="panel-heading"><h3>Update Inventory</h3></div>
+	  <div class="panel-body">
+	  	<p><strong>Note:</strong> The file must be .xlsx (created with Office 2007 or newer)</p>
+	    <%= form_tag 'upload_product_excel', :multipart => true do %>
+	    <div class="form-group">
+		   <label for="file">Upload excel File</label> <%= file_field_tag "file", class: "btn btn-default" %>
+		</div>
+   			<%= submit_tag "Upload", class: "btn btn-primary" %>
+		<% end %>
+	  </div>
+	</div>
+</div>
+
+<div class="col-md-4">
+	<div class="panel panel-default">
+	  <div class="panel-heading"><h3>Update Products</h3></div>
+	  <div class="panel-body">
+	  	<p><strong>Note:</strong> The file must be .xlsx (created with Office 2007 or newer)</p>
+	    <%= form_tag 'upload_product_excel', :multipart => true do %>
+	    <div class="form-group">
+		   <label for="file">Upload excel File</label> <%= file_field_tag "file", class: "btn btn-default" %>
+		</div>
+   			<%= submit_tag "Upload", class: "btn btn-primary" %>
+		<% end %>
+	  </div>
+	</div>
+</div>
+
+<% if @errors && @errors.length > 0 %>
+<h3>Errors</h3>
+<table id="product-properties" class="table table-striped" data-hook>
+	<tbody>
+		<% css_class = cycle('even', 'odd', :name => "errors_table") %>
+			<tr class="<%= css_class %>">
+				<th>Product Number</th>
+				<th>Condition</th>
+				<th>Message</th>
+			</tr>
+			<% @errors.each do |error| %>
+			    <tr class="<%= css_class %>">
+			      <td>
+			        <%= error[:part_number] %>
+			      </td>
+			      <td>
+			        <%= error[:condition] %>
+			      </td>
+			      <td>
+			        <%= error[:message] %>
+			      </td>
+			    </tr>
+			<% end %>
+	  	<% end %>
+	  	<% reset_cycle('errors_table') %>
+	</tbody>
+</table>

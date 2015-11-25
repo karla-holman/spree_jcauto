@@ -22,8 +22,8 @@
     <tr>
       <th>Image</th>
       <th>Part Number</th>
-      <th>Cast Number</th>
-      <th>Part Name</th>
+      <th>Description</th>
+      <th>Applications</th>
       <th>Price</th>
     </tr>
     <% products.each do |product| %>
@@ -38,20 +38,18 @@
         </td>
         <td style="vertical-align: middle"><!-- Part Number -->
           <% if !product.product_properties.where("property_id=?", 1).empty? %>
-            <%= product.product_properties.where("property_id=?", 1).first.value %>
+            <%= link_to truncate(product.property("Part Number"), length: 50), url, class: 'info', itemprop: "name", title: product.property("Part Number") %>
           <% else %>
             N/A
           <% end %>
         </td>
-        <td style="vertical-align: middle"><!-- Cast Number -->
-          <% if !product.product_properties.where("property_id=?", 2).empty? %>
-            <%= product.product_properties.where("property_id=?", 2).first.value %>
-          <% else %>
-            N/A
-          <% end %>
+        <td style="vertical-align: middle"><!-- Description -->
+          <%= product.description %>
         </td>
-        <td style="vertical-align: middle"><!-- Name -->
-          <%= link_to truncate(product.name, length: 50), url, class: 'info', itemprop: "name", title: product.name %>
+        <td style="vertical-align: middle"><!-- Description -->
+          <% product.applications.each do |application| %>
+            <%= application.name %>
+          <% end %>
         </td>
         <td style="vertical-align: middle"><!-- Price -->
           <span class="price selling lead" itemprop="price"><%= display_price(product) %></span>
