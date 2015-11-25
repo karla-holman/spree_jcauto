@@ -44,6 +44,7 @@ module Spree
 
       if make && model
         { "#{applications}.make_id" => make, "#{applications}.model_id" => model }
+        { "#{applications}.make_id" => make, "#{applications}.model_id" => nil }
       else
         { "#{applications}.make_id" => make }
       end

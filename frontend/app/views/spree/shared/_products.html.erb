@@ -47,8 +47,12 @@
           <%= product.description %>
         </td>
         <td style="vertical-align: middle"><!-- Description -->
-          <% product.applications.each do |application| %>
-            <%= application.name %>
+          <% unless product.product_applications.empty? %> 
+            <p> 
+            <% product.product_applications.each do |product_application| %>
+                <%= product_application.name %><br>
+            <% end %>
+            </p>
           <% end %>
         </td>
         <td style="vertical-align: middle"><!-- Price -->

@@ -23,6 +23,8 @@ module Spree
     @@value_core = Spree::OptionValue.where("name=?", "core").first
     @@value_restored = Spree::OptionValue.where("name=?", "restored").first
 
+    # Auto Abbreviations (Make and Model)
+
     # pass in file object from params[:file]
     def initialize(file)
       uploaded_file = file #params[:file]
@@ -34,8 +36,9 @@ module Spree
     # Import spreadsheet that fits product structure
     def import_product_file()
       @worksheet_products.each { |row|
-        @product_row = build_row_hash(row)
-        import_product()
+        if(@product_row = build_row_hash(row))
+          import_product()
+        end
       }
     end
 
@@ -45,6 +48,10 @@ module Spree
 
     # return hash of fields and values from spreadsheet
     def build_row_hash(row)
+      if(!row.cells[0].value)
+        return nil # Skip row if no name
+      end
+
       product_name = row.cells[0].value.to_s
 
       # If name is mopar part number
@@ -81,13 +88,12 @@ module Spree
         :core => row.cells[18].value,
         :available => row.cells[19].value,
         :online => row.cells[20].value,
-        :active => row.cells[21].value,
+        :active => row.cells[21].value
       }
 
     end
 
     def import_product()
-
       # create master product if not already exists - return existing product if already created
       if (matching_products = Spree::Product.where("name=?", @product_row[:name])).length > 0
         # Product and master variant exist
@@ -102,6 +108,9 @@ module Spree
         @new_product_variant = update_master_variant()
         # Update properties based on spreadsheet
         update_properties()
+
+        # add applications
+        add_applications()
       end
 
       # If option type exists
@@ -178,6 +187,99 @@ module Spree
       end
     end
 
+    # Update Applications
+    def add_applications()
+      applications = @product_row[:application]
+
+      # app_data = { :start_year => "60", :end_year => "9", :text => "300C; "}
+      @app_data = [] # store pieces of each application listed
+      my_app_data = scan_app(applications) # app is string "69-70 C ..."
+
+      # for each date and associated makes/models
+      @app_data.each do |app_data|
+        # get start date
+        start_year = "19" + app_data[:start_year]
+
+        # get end date
+        case app_data[:end_year]
+        when ""
+          end_year = start_year
+        when /\d{2}/ # end year gets 19 + year
+          end_year = "19" + app_data[:end_year]
+        when /\d{1}/ # end year gets first digit of start year
+          end_year = "19" + app_data[:start_year][0] + app_data[:end_year]
+        else
+          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not match end year " + app_data[:end_year].to_s }   
+        end
+
+        # get make, model, and notes
+        make_model_sets = app_data[:text].split(/[,;]/)
+
+        # Create product application for each date/app set
+        make_model_sets.each do |make_model_set|
+          my_notes = ""
+          my_make = nil
+          my_model = nil
+
+          if make_model_set.include? "exc"
+            my_notes = make_model_set
+          else
+            # split make, model and notes into text
+            words = make_model_set.split
+            words.each do |word|
+              make_match = false
+              model_match = false
+
+              word.gsub!(/\W/,"")
+              # try to match abbreviation
+              
+              if (check = (Spree::Make.where("abbreviation=? OR name=?", word, word).first))
+                my_make = check
+              elsif (check = (Spree::Model.where("abbreviation=? OR name=?", word, word).first))
+                my_model = check
+              else
+                my_notes += my_notes!="" ? " " + word : word
+              end
+            end
+          end
+
+          if(my_make && my_model)
+            my_application = Spree::Application.where("make_id=? AND model_id=?", my_make.id, my_model.id).first
+          elsif(my_make)
+            my_application = Spree::Application.where("make_id=? AND model_id IS ?", my_make.id, nil).first
+          end
+
+          if(my_application || my_notes != "")
+            Spree::ProductApplication.create :start_year => start_year.to_i,
+                                         :end_year => end_year.to_i,
+                                         :application => my_application,
+                                         :product => @new_product,
+                                         :notes => my_notes
+          end
+
+          if(!my_application)
+            @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could find make or model for " + make_model_set }
+          end
+        end # end make_model_sets "Plymouth Valiant "
+      end # end @app_data loop { :start_year => "60", :end_year => "9", :text => "Plymouth Valiant "}
+    end # end add_applications()
+
+    def scan_app(app)
+      if (!app)
+        return @app_data
+      end
+
+      date_range = app.scan(/(\d{2})-{0,1}(\d{0,2})\s(.*)/)
+
+      # if no sets left, 
+      if(date_range.length == 0)
+        return @app_data
+      else # scan extra string
+        scan_app(date_range[0][2].slice!(/\d{2}-{0,1}\d{0,2}\s.*/))
+        @app_data << { :start_year => date_range[0][0], :end_year => date_range[0][1], :text => date_range[0][2].strip}
+      end
+    end
+      
     # Update condition for this variant
     def update_condition_type()
       new_product_option_type = Spree::ProductOptionType.create :product_id => @new_product.id,

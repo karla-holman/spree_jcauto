@@ -20,7 +20,7 @@
     <thead>
       <tr>
         <th>Make</th>
-        <th>Model</th>
+        <th>Model/Notes</th>
         <th>Years</th>
       </tr>
     </thead>
@@ -29,7 +29,8 @@
           <% css_class = cycle('even', 'odd', :name => "properties") %>
           <tr class="<%= css_class %>">
             <td><%= product_application.application.make.name %></td>
-            <td><%= product_application.application.model ? product_application.application.model.name : "-" %></td>
+            <% notes = product_application.notes === "" ? "-" : product_application.notes %>
+            <td><%= product_application.application.model ? product_application.application.model.name + " " + notes : notes %></td>
             <td><%= product_application.start_year.to_s + "-" + product_application.end_year.to_s %></td>
           </tr>
         <% end %>

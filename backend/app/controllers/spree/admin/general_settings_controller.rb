@@ -44,12 +44,14 @@ module Spree
       def upload_product_excel
         begin
           my_excel = Spree::Excel.new(params[:file])
-          my_excel.import_product_file()
-          @errors = my_excel.get_errors
-        rescue
-          flash[:error] = "Unable to open file. Make sure it is .xlsx"
+        rescue Exception => e
+          flash[:error] = e.message
         end
 
+        if (my_excel)
+          my_excel.import_product_file()
+          @errors = my_excel.get_errors
+        end
         if @errors && @errors.length > 0
           flash[:error] = "Errors in upload, see table below"
         end

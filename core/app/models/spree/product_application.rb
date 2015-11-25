@@ -27,7 +27,7 @@ module Spree
 
     # Check if application years fit with model years
     def years_cannot_be_outside_model_date
-      if self.application.model
+      if self.application && self.application.model
         model_start = self.application.model.start_year
         model_end = self.application.model.end_year
         if self.start_year < model_start || self.start_year > model_end
@@ -63,13 +63,15 @@ module Spree
 
     # Set Up name and range
     def update_name
-       if self.name
-	       if application_name && range
-				self.update_column(:name, application_name + " " + range)
-	    	else
-				self.update_column(:name, "No application and/or range specified")
-	    	end
-	    end
+      if self.name
+        if application_name || self.notes != ""
+          my_notes = self.notes != "" ? " (" + self.notes + ")" : self.notes
+          my_app = application_name ? " " + application_name : ""
+          self.update_column(:name, range + my_app + my_notes)
+        else
+      	  self.update_column(:name, "No application and/or description specified")
+        end
+      end
     end
 
     def update_name_first
