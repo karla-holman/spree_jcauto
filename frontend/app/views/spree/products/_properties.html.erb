@@ -19,22 +19,26 @@
   <table id="product-properties" class="table table-striped" data-hook>
     <thead>
       <tr>
+        <th>Years</th>
         <th>Make</th>
         <th>Model/Notes</th>
-        <th>Years</th>
       </tr>
     </thead>
     <tbody>
         <% @product.product_applications.each do |product_application| %>
           <% css_class = cycle('even', 'odd', :name => "properties") %>
           <tr class="<%= css_class %>">
-            <td><%= product_application.application.make.name %></td>
-            <% notes = product_application.notes === "" ? "-" : product_application.notes %>
-            <td><%= product_application.application.model ? product_application.application.model.name + " " + notes : notes %></td>
             <td><%= product_application.start_year.to_s + "-" + product_application.end_year.to_s %></td>
+            <td><%= product_application.application && product_application.application.make ? product_application.application.make.name : "-" %></td>
+            <% notes = product_application.notes === "" ? "-" : product_application.notes %>
+            <td><%= product_application.application && product_application.application.model ? product_application.application.model.name + " " + notes : notes!="" ? notes : "-" %></td>
           </tr>
         <% end %>
       <% reset_cycle('properties') %>
     </tbody>
   </table>
 <% end %>
+
+<div>
+  <%= render :partial => 'taxons' %>
+</div>

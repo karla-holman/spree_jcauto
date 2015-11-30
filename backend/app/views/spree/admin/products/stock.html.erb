@@ -25,7 +25,7 @@
               <% end %>
             </td>
             <td>
-              <%= variant.sku_and_options_text %>
+              <%= variant.sku_and_options_text %><%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>
               <%= form_tag admin_product_variants_including_master_path(@product, variant, format: :js), method: :put, class: 'toggle_variant_track_inventory' do %>
                 <div class="checkbox">
                   <%= label_tag :track_inventory do %>
@@ -44,15 +44,17 @@
               <table class="table table-bordered no-marginb">
                 <thead>
                   <th><%= Spree.t(:stock_location) %></th>
+                  <th><%= Spree.t(:sub_location) %></th>
                   <th class="text-center"><%= Spree.t(:count_on_hand) %></th>
                   <th class="text-center"><%= Spree.t(:backorderable) %></th>
                   <th class="actions text-center"></th>
                 </thead>
                 <tbody>
                   <% variant.stock_items.each do |item| %>
-                    <% next unless @stock_locations.include?(item.stock_location) %>
+                    <% next unless (@stock_locations.include?(item.stock_location) && (item.sub_location || item.count_on_hand > 0)) %>
                     <tr id="stock-item-<%= item.id %>">
                       <td><%= item.stock_location.name %></td>
+                      <td><%= item.sub_location %></td>
                       <td class="text-center"><%= item.count_on_hand %></td>
                       <td class="text-center">
                         <%= form_tag admin_stock_item_path(item), method: :put, class: 'toggle_stock_item_backorderable' do %>

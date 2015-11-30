@@ -7,7 +7,7 @@ module Spree
     has_many :stock_movements, inverse_of: :stock_item
 
     validates_presence_of :stock_location, :variant
-    validates_uniqueness_of :variant_id, scope: [:stock_location_id, :deleted_at]
+    validates_uniqueness_of :variant_id, scope: [:sub_location, :deleted_at], unless: Proc.new { |b| b.sub_location.blank? }
 
     validates_numericality_of :count_on_hand,
                               greater_than_or_equal_to: 0,

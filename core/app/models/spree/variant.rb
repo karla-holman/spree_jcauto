@@ -155,6 +155,33 @@ module Spree
       self.option_values.detect { |o| o.option_type.name == opt_name }.try(:presentation)
     end
 
+    # return stock item containing sub location
+    def sub_location(sub_loc_name)
+      self.stock_items.detect { |l| l.sub_location == sub_loc_name }
+    end
+
+    # adds new sub location if it does not already exist
+    def add_sub_location(sub_loc_name, location)
+      # add sub_location if not listed for variant
+      if(!self.sub_location(sub_loc_name))
+        stock_location = self.stock_items.where("stock_location_id=? AND sub_location IS ?", location, nil)
+        # if no stock_location with no sub location
+        if(!stock_location || stock_location.length == 0)
+          # create a new stock_location
+          stock_location = Spree::StockItem.create :stock_location => location,
+                                                   :variant => self,
+                                                   :backorderable => false,
+                                                   :sub_location => sub_loc_name
+
+        else # otherwise update stock location's nil sub location with sub location
+          stock_location.first.update_attribute("sub_location", sub_loc_name)
+        end
+        true
+      else # return false if already listed
+        false
+      end
+    end
+
     def price_in(currency)
       prices.detect { |price| price.currency == currency } || Spree::Price.new(variant_id: id, currency: currency)
     end

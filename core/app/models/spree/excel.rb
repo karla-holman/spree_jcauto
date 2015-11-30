@@ -23,7 +23,14 @@ module Spree
     @@value_core = Spree::OptionValue.where("name=?", "core").first
     @@value_restored = Spree::OptionValue.where("name=?", "restored").first
 
-    # Auto Abbreviations (Make and Model)
+    # Stock Locations
+    @@loc_suite2 = Spree::StockLocation.where("admin_name=?", "Suite 2").first
+    @@loc_suite3 = Spree::StockLocation.where("admin_name=?", "Suite 3").first
+    @@loc_home = Spree::StockLocation.where("admin_name=?", "Home").first
+    @@loc_home_nfs = Spree::StockLocation.where("admin_name=?", "Home (nfs)").first
+    @@loc_warehouse = Spree::StockLocation.where("admin_name=?", "Warehouse").first
+    @@loc_east_racks = Spree::StockLocation.where("admin_name=?", "East Racks").first
+    @@loc_attic = Spree::StockLocation.where("admin_name=?", "George's Attic").first
 
     # pass in file object from params[:file]
     def initialize(file)
@@ -106,6 +113,7 @@ module Spree
         add_part_group_taxon()
 
         @new_product_variant = update_master_variant()
+
         # Update properties based on spreadsheet
         update_properties()
 
@@ -113,19 +121,12 @@ module Spree
         add_applications()
       end
 
-      # If option type exists
-      if(@new_product.option_types.where("name=?", "Condition").length > 0)
-          @new_product_variant = create_condition_variant()
-          # Check for existing values
-          if(!update_conditions_value())
-            # delete this variant if duplicate exists
-            @new_product_variant.delete
-          end
-      else # create option type and value
-        @new_product_condition = update_condition_type()
-        create_condition_variant()
-        update_conditions_value()
+      # If condition option type does not exist
+      if(@new_product.option_types.where("name=?", "Condition").length == 0)
+        update_condition_type
       end
+
+      update_conditions_value
       
     end
 
@@ -142,6 +143,7 @@ module Spree
                  :notes => @product_row[:notes]
     end
 
+    # parse part group number and add appropriate taxon
     def add_part_group_taxon()
       my_taxon = Spree::Taxon.where("description=?", @product_row[:category].to_s)
       my_taxonomy = Spree::Taxon.where("description=?", @product_row[:category].to_s.split('-')[0])
@@ -152,7 +154,7 @@ module Spree
       @new_product.taxons << my_taxonomy
     end
 
-    # Return new master variant
+    # Update and return master variant for new product
     def update_master_variant()
       @new_product_variant = Spree::Variant.where("product_id=?", @new_product.id).first
       @new_product_variant.update_column("sku", @product_row[:name])
@@ -166,7 +168,7 @@ module Spree
       @new_product_variant
     end
 
-    # Create properties for new variant
+    # Create properties for new product
     def update_properties()
       new_product_part_num = Spree::ProductProperty.create :value => @product_row[:name],
                      :product_id => @new_product.id,
@@ -187,7 +189,7 @@ module Spree
       end
     end
 
-    # Update Applications
+    # Update Applications for new product
     def add_applications()
       applications = @product_row[:application]
 
@@ -230,7 +232,7 @@ module Spree
               make_match = false
               model_match = false
 
-              word.gsub!(/\W/,"")
+              word.gsub!(/[\W&&[^-]]/,"")
               # try to match abbreviation
               
               if (check = (Spree::Make.where("abbreviation=? OR name=?", word, word).first))
@@ -260,10 +262,11 @@ module Spree
           if(!my_application)
             @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could find make or model for " + make_model_set }
           end
-        end # end make_model_sets "Plymouth Valiant "
-      end # end @app_data loop { :start_year => "60", :end_year => "9", :text => "Plymouth Valiant "}
+        end # end make_model_sets ex. "Plymouth Valiant "
+      end # end @app_data loop ex. { :start_year => "60", :end_year => "9", :text => "Plymouth Valiant "}
     end # end add_applications()
 
+    # build array of years and applications
     def scan_app(app)
       if (!app)
         return @app_data
@@ -280,14 +283,14 @@ module Spree
       end
     end
       
-    # Update condition for this variant
+    # Add condition option type for this product
     def update_condition_type()
       new_product_option_type = Spree::ProductOptionType.create :product_id => @new_product.id,
                           :option_type_id => @@condition.id
-
     end
 
-    def create_condition_variant()
+    # called if no condition value exists
+    def create_condition_variant(option_value)
       # Create condition variants
       @new_product_condition = Spree::Variant.create :sku => @product_row[:name],
               :is_master => false,
@@ -297,95 +300,78 @@ module Spree
               :stock_items_count => 0,
               :notes => ""
 
-      # @new_product_condition.update_column("weight", @product_row.weight) if @product_row.weight.present?
+      # Set price and core price
       @new_product_condition_price = Spree::Price.where("variant_id = ?", @new_product_condition.id)
       @new_product_condition_price.first.update_attribute("amount", @product_row[:price])
       @new_product_condition_price.first.update_attribute("core", @product_row[:core]) if @product_row[:core].present?
+      
+      # Add option value
+      @new_product_condition.option_values << option_value
 
       @new_product_condition
     end
 
+    # determine if new condition and/or stock location
     def update_conditions_value()
+      # get all condition variants
       option_type_values = @new_product.categorise_variants_from_option(@@condition)
-      added_value = false
-      case @product_row[:condition].to_s.downcase
+      notes = "" # for used parts with extra condition details
+
+      # determine condition value
+      value = case @product_row[:condition].to_s.downcase
         when /nos/
-          if(!option_type_values[@@value_nos])
-            @new_product_condition.option_values << @@value_nos
-            added_value = true
-          end
+          @@value_nos
         when /nors/
-          if(!option_type_values[@@value_nors])
-            @new_product_condition.option_values << @@value_nors
-            added_value = true
-          end
+          @@value_nors
         when /new/
-          if(!option_type_values[@@value_new])
-            @new_product_condition.option_values << @@value_new
-            added_value = true
-          end
+          @@value_new
         when /used/
           notes = @product_row[:condition].to_s.downcase
           notes.slice!("used")
-          notes = notes.chomp(" ").tr(",", "")
-
-          if(!option_type_values[@@value_used])
-            @new_product_condition.option_values << @@value_used
-            @new_product_condition.update_attribute("notes", notes)
-            added_value = true
-          else
-            if(option_type_values[@@value_used].first.notes != notes)
-              @new_product_condition.option_values << @@value_used
-              @new_product_condition.update_attribute("notes", notes)
-              added_value = true
-            end
-          end
+          notes = notes.tr(",", "").strip
+          @@value_used
         when /rebuilt/
-          if(!option_type_values[@@value_rebuilt])
-            @new_product_condition.option_values << @@value_rebuilt
-            added_value = true
-          end
+          @@value_rebuilt
         when /repro/
-          if(!option_type_values[@@value_repro])
-            @new_product_condition.option_values << @@value_repro
-            added_value = true
-          end
+          @@value_repro
         when /remolded/
-          if(!option_type_values[@@value_remolded])
-            @new_product_condition.option_values << @@value_remolded
-            added_value = true
-          end
+          @@value_remolded
         when /rechromed/
-          if(!option_type_values[@@value_rechromed])
-            @new_product_condition.option_values << @@value_rechromed
-            added_value = true
-          end
+          @@value_rechromed
         when /resleeved/
-          if(!option_type_values[@@value_resleeved])
-            @new_product_condition.option_values << @@value_resleeved
-            added_value = true
-          end
+          @@value_resleeved
         when /restored/
-          if(!option_type_values[@@value_restored])
-            @new_product_condition.option_values << @@value_restored
-            added_value = true
-          end
+          @@value_restored
         when /core/
-          if(!option_type_values[@@value_core])
-            @new_product_condition.option_values << @@value_core
-            added_value = true
-          end
+          @@value_core
         else
           @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not identify condition" }
-          added_value = true
+          return false
       end
 
-      if (!added_value)
-        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Existing Condition" }
-        @new_product_condition.delete
-        false
-      else 
-        true
+      if(!option_type_values[value]) # if value does not already exist
+        @new_product_condition = create_condition_variant(value) # create new variant with value
+        if(notes != "") # if used part with additional condition information
+          @new_product_condition.update_attribute("notes", notes)
+        end
+      else # otherwise check for used condition variations
+        if(notes != "") # if used note variants
+          if(option_type_values[value].first.notes != notes) # create new variant with notes if does not exist
+            @new_product_condition = create_condition_variant(value)
+            @new_product_condition.update_attribute("notes", notes)
+          else # if value and notes already exists get existing variant
+            @new_product_condition = option_type_values[value].first
+          end
+        else # otherwise get existing condition
+          @new_product_condition = option_type_values[value].first
+        end
+      end
+      # try to add new stock_item sub location
+      if(create_stock_item)
+        true # return true for new condition or location
+      else
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Existing Condition and location" }
+        false # return false for existing condition and location
       end
     end
 
@@ -393,6 +379,45 @@ module Spree
     # IMPORT STOCK ITEMS
     ################################################################
 
+    # return true if new stock location created
+    def create_stock_item
+
+      added_new_stock_item = false
+      # Get stock location for appropriate location
+      @product_row[:location].split(',').each do |sub_location|
+        sub_location.chomp!
+        stock_location = case sub_location.to_s.downcase
+        when /attic/
+          @@loc_attic
+        # JC10 OR buffalo display case 
+        when /jc\d{1,2}|buffalo|back\sshop/ 
+          @@loc_home
+        # F209 OR D105.3 OR file cabinet
+        when /[[:alpha:]]\d{3}|D\d{3}\.\d|file\scabinet|suite\s2/
+          @@loc_suite2
+        # NWC08
+        when /nw[[:alpha:]]\d{1,2}/
+          @@loc_suite3
+        #
+        when /[[:alpha:]]{2}\d{3}/
+          @@loc_warehouse
+        when /east\sracks/
+          @@loc_east_racks
+        else # if unidentifiable location
+          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Cannot identify location " + sub_location }
+          next # skip to next location
+        end
+
+        # if no exisiting sub location, add one
+        if(@new_product_condition.add_sub_location(sub_location, stock_location))
+          added_new_stock_item = true
+        end
+
+      end # end location loop
+
+      added_new_stock_item # return true if at least one new stock item added
+
+    end
 
     ################################################################
     # DISPLAY ERRORS
@@ -403,5 +428,12 @@ module Spree
       @errors
     end
 
+    def reset_for_test
+      Spree::Product.delete_all
+      Spree::ProductApplication.delete_all
+      Spree::Variant.delete_all
+      Spree::ProductProperty.delete_all
+      Spree::ProductOptionType.delete_all
+    end
   end
 end
