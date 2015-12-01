@@ -11,10 +11,12 @@ module Spree
       end
 
       def create
+        byebug
         variant = Variant.find(params[:variant_id])
         stock_location = StockLocation.find(params[:stock_location_id])
+        sub_location = params[:sub_location]
         stock_movement = stock_location.stock_movements.build(stock_movement_params)
-        stock_movement.stock_item = stock_location.set_up_stock_item(variant)
+        stock_movement.stock_item = stock_location.set_up_stock_item(variant, sub_location)
 
         if stock_movement.save
           flash[:success] = flash_message_for(stock_movement, :successfully_created)
