@@ -32,9 +32,7 @@
                     <%= check_box_tag 'track_inventory', 1, variant.track_inventory?,
                                       class: 'track_inventory_checkbox' %>
                     <%= Spree.t(:track_inventory) %>
-                    <%= hidden_field_tag 'variant[track_inventory]', variant.track_inventory?,
-			class: 'variant_track_inventory',
-			id: "variant_track_inventory_#{variant.id}" %>
+                    <%= hidden_field_tag 'variant[track_inventory]', variant.track_inventory?, class: 'variant_track_inventory', id: "variant_track_inventory_#{variant.id}" %>
                   <% end %>
                 </div>
               <% end if can?(:update, @product) && can?(:update, variant) %>
@@ -46,6 +44,7 @@
                   <th><%= Spree.t(:stock_location) %></th>
                   <th><%= Spree.t(:sub_location) %></th>
                   <th class="text-center"><%= Spree.t(:count_on_hand) %></th>
+                  <th class="text-center"><%= Spree.t(:add_or_remove_stock) %></th>
                   <th class="text-center"><%= Spree.t(:backorderable) %></th>
                   <th class="actions text-center"></th>
                 </thead>
@@ -53,20 +52,43 @@
                   <% variant.stock_items.each do |item| %>
                     <% next unless (@stock_locations.include?(item.stock_location) && (item.sub_location || item.count_on_hand > 0)) %>
                     <tr id="stock-item-<%= item.id %>">
-                      <td><%= item.stock_location.name %></td>
-                      <td><%= item.sub_location %></td>
-                      <td class="text-center"><%= item.count_on_hand %></td>
-                      <td class="text-center">
-                        <%= form_tag admin_stock_item_path(item), method: :put, class: 'toggle_stock_item_backorderable' do %>
-                          <%= check_box_tag 'stock_item[backorderable]', true,
-                                item.backorderable?,
-                                class: 'stock_item_backorderable',
-                                id: "stock_item_backorderable_#{item.stock_location.id}" %>
-                        <% end if can? :update, item %>
-                      </td>
-                      <td class="actions actions-1 text-center">
-                        <%= link_to_with_icon('delete', Spree.t(:remove), [:admin, item], method: :delete, remote: true, class: 'icon_link btn btn-danger btn-sm', data: { action: :remove, confirm: Spree.t(:are_you_sure) }, no_text: true) if can? :destroy, item %>
-                      </td>
+                        <td>
+                          <%= item.stock_location.name %>
+                        </td>
+                        <td>
+                          <%= item.sub_location %>
+                        </td>
+                        <td class="text-center">
+                            <%= item.count_on_hand %>
+                        </td>
+                        <td>
+                          <%= form_for [:admin, Spree::StockMovement.new], url: admin_stock_items_path do |f| %>
+                            <div class="col-md-8">
+                              <div class="form-group">
+                                  <%= hidden_field_tag(:stock_location_id, item.stock_location.id) %>
+                                  <%= hidden_field_tag(:variant_id, item.variant.id) %>
+                                  <%= hidden_field_tag(:sub_location, item.sub_location) %>
+                                  <%= f.field_container :quantity do %>
+                                    <%= f.number_field :quantity, class: 'form-control', value: 0 %>
+                                  <% end %>
+                              </div>
+                            </div>
+                            <div class="col-md-4" style="margin-top: 5px">
+                              <%= f.submit '+', class: 'icon_link btn btn-primary btn-sm' %>
+                            </div>
+                          <% end %>
+                        </td>
+                        <td class="text-center">
+                          <%= form_tag admin_stock_item_path(item), method: :put, class: 'toggle_stock_item_backorderable' do %>
+                            <%= check_box_tag 'stock_item[backorderable]', true,
+                                  item.backorderable?,
+                                  class: 'stock_item_backorderable',
+                                  id: "stock_item_backorderable_#{item.stock_location.id}" %>
+                          <% end if can? :update, item %>
+                        </td>
+                        <td class="actions actions-1 text-center">
+                          <%= link_to_with_icon('delete', Spree.t(:remove), [:admin, item], method: :delete, remote: true, class: 'icon_link btn btn-danger btn-sm', data: { action: :remove, confirm: Spree.t(:are_you_sure) }, no_text: true) if can? :destroy, item %>
+                        </td>
                     </tr>
                   <% end %>
                 </tbody>

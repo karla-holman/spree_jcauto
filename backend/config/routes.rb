@@ -201,6 +201,7 @@ Spree::Core::Engine.add_routes do
     end
 
     resources :stock_items, only: [:create, :update, :destroy]
+
     resources :tax_rates
 
     resources :trackers

@@ -28,7 +28,7 @@
         <div class="form-group">
           <%= f.field_container :sub_location do %>
             <%= label_tag :sub_location, Spree.t(:sub_location) %>
-            <%= text_field_tag 'sub_location' %>
+            <%= text_field_tag 'sub_location', nil, class: "form-control" %>
           <% end %>
         </div>
       </div>
