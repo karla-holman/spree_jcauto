@@ -49,6 +49,15 @@ module Spree
       }
     end
 
+    # Import spreadsheet that fits product structure
+    def import_inventory_file()
+      @worksheet_products.each { |row|
+        if(@inventory_row = build_inventory_hash(row))
+          import_inventory()
+        end
+      }
+    end
+
     ################################################################
     # IMPORT PRODUCT
     ################################################################
@@ -315,10 +324,42 @@ module Spree
     def update_conditions_value()
       # get all condition variants
       option_type_values = @new_product.categorise_variants_from_option(@@condition)
-      notes = "" # for used parts with extra condition details
+      @notes = "" # for used parts with extra condition details
 
       # determine condition value
-      value = case @product_row[:condition].to_s.downcase
+      if(!(value = determine_condition(@product_row[:condition])))
+        return false
+      end
+
+      if(!option_type_values[value]) # if value does not already exist
+        @new_product_condition = create_condition_variant(value) # create new variant with value
+        if(@notes != "") # if used part with additional condition information
+          @new_product_condition.update_attribute("notes", @notes)
+        end
+      else # otherwise check for used condition variations
+        if(@notes != "") # if used note variants
+          if(option_type_values[value].first.notes != @notes) # create new variant with notes if does not exist
+            @new_product_condition = create_condition_variant(value)
+            @new_product_condition.update_attribute("notes", @notes)
+          else # if value and notes already exists get existing variant
+            @new_product_condition = option_type_values[value].first
+          end
+        else # otherwise get existing condition
+          @new_product_condition = option_type_values[value].first
+        end
+      end
+      # try to add new stock_item sub location
+      if(create_stock_item)
+        true # return true for new condition or location
+      else
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Existing Condition and location" }
+        false # return false for existing condition and location
+      end
+    end
+
+    # return OptionValue object
+    def determine_condition(condition)
+      case condition.to_s.downcase
         when /nos/
           @@value_nos
         when /nors/
@@ -326,9 +367,9 @@ module Spree
         when /new/
           @@value_new
         when /used/
-          notes = @product_row[:condition].to_s.downcase
-          notes.slice!("used")
-          notes = notes.tr(",", "").strip
+          @notes = @product_row[:condition].to_s.downcase
+          @notes.slice!("used")
+          @notes = @notes.tr(",", "").strip
           @@value_used
         when /rebuilt/
           @@value_rebuilt
@@ -348,31 +389,6 @@ module Spree
           @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not identify condition" }
           return false
       end
-
-      if(!option_type_values[value]) # if value does not already exist
-        @new_product_condition = create_condition_variant(value) # create new variant with value
-        if(notes != "") # if used part with additional condition information
-          @new_product_condition.update_attribute("notes", notes)
-        end
-      else # otherwise check for used condition variations
-        if(notes != "") # if used note variants
-          if(option_type_values[value].first.notes != notes) # create new variant with notes if does not exist
-            @new_product_condition = create_condition_variant(value)
-            @new_product_condition.update_attribute("notes", notes)
-          else # if value and notes already exists get existing variant
-            @new_product_condition = option_type_values[value].first
-          end
-        else # otherwise get existing condition
-          @new_product_condition = option_type_values[value].first
-        end
-      end
-      # try to add new stock_item sub location
-      if(create_stock_item)
-        true # return true for new condition or location
-      else
-        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Existing Condition and location" }
-        false # return false for existing condition and location
-      end
     end
 
     ################################################################
@@ -387,21 +403,25 @@ module Spree
       @product_row[:location].split(',').each do |sub_location|
         sub_location.chomp!
         stock_location = case sub_location.to_s.downcase
-        when /attic/
+        when /george/
           @@loc_attic
-        # JC10 OR buffalo display case 
-        when /jc\d{1,2}|buffalo|back\sshop/ 
-          @@loc_home
+        # NFS no matter what - JC10 OR buffalo display case OR back shop
+        when /jc\d{1,2}|buffalo|back\sshop|attic/ 
+          @@loc_home_nfs
+        # NFS if listed as inactive
+        when /w\d{1,2}/ 
+          @product_row[:name] == "N" ? @@loc_home_nfs : @@loc_home
         # F209 OR D105.3 OR file cabinet
         when /[[:alpha:]]\d{3}|D\d{3}\.\d|file\scabinet|suite\s2/
           @@loc_suite2
         # NWC08
-        when /nw[[:alpha:]]\d{1,2}/
+        when /nw[[:alpha:]]\d{1,2}|ste3/
           @@loc_suite3
-        #
-        when /[[:alpha:]]{2}\d{3}/
+        # Warehouse
+        when /warehouse/
           @@loc_warehouse
-        when /east\sracks/
+        # West trailer OR east racks
+        when /east\sracks|west\strailer/
           @@loc_east_racks
         else # if unidentifiable location
           @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Cannot identify location " + sub_location }
@@ -417,6 +437,66 @@ module Spree
 
       added_new_stock_item # return true if at least one new stock item added
 
+    end
+
+    # return hash of fields and values from spreadsheet
+    def build_inventory_hash(row)
+      if(!row.cells[0].value)
+        return nil # Skip row if no name
+      end
+
+      product_name = row.cells[0].value.to_s
+
+      # Get name (and condition if specified)
+      if matches = product_name.match(/^(\d{7})(.*)/) 
+        product_name = matches[1]
+        condition = matches[2] != "" ? matches[2] : ""
+      end
+
+      @inventory_row = {
+        :name => product_name,
+        :condition => condition,
+        :location => row.cells[1].value,
+        :quantity => row.cells[3].value
+      }
+
+    end
+
+    def import_inventory()
+      byebug
+      # add inventory to existing part
+      if (matching_products = Spree::Product.where("name=?", @inventory_row[:name])).length > 0
+        # Product and master variant exist
+        @new_product = matching_products.first
+      else # if no part generate error
+        # Create product and master variant
+        @errors << { :part_number => @inventory_row[:name], :condition => @inventory_row[:condition], :message => "Cannot find part with inventory of " + @inventory_row[:quantity] }
+      end
+
+      # if no condition specified in name, add to first variant at location
+      if(@inventory_row[:condition] == "")
+        if(stock_item = @new_product.stock_items.detect { |l| l.sub_location == (@inventory_row[:location]) })
+          stock_item.adjust_count_on_hand(@inventory_row[:quantity])
+        else # location cannot be found for that part
+           @errors << { :part_number => @inventory_row[:name], :condition => @inventory_row[:condition], :message => "Cannot find variant with location of " + @inventory_row[:location]}
+        end
+      else
+        # determine condition value
+        if(value = determine_condition(@inventory_row[:condition]))
+          # get variant and stock item
+          option_type_values = @new_product.categorise_variants_from_option(@@condition)
+          variant = option_type_values[value].first
+          if(stock_item = variant.sub_location(@inventory_row[:location]))
+            # set stock item count
+            stock_item.adjust_count_on_hand(@inventory_row[:quantity])
+          else
+            @errors << { :part_number => @inventory_row[:name], :condition => @inventory_row[:condition], :message => "Cannot find variant with condition " + @inventory_row[:condition] + " and sub location of " + @inventory_row[:location] }
+          end
+        else
+          # value does not exist!
+          @errors << { :part_number => @inventory_row[:name], :condition => @inventory_row[:condition], :message => "Cannot find variant with condition of " + @inventory_row[:condition] }
+        end
+      end
     end
 
     ################################################################

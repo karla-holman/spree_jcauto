@@ -14,7 +14,7 @@
           <% end %>
         </div>
       </div>
-      <div class="col-md-5">
+      <div class="col-md-3">
         <div class="form-group">
           <%= f.field_container :stock_location do %>
             <%= label_tag :stock_location_id, Spree.t(:stock_location) %>
@@ -24,7 +24,16 @@
         </div>
       </div>
 
-      <div class="col-md-5">
+      <div class="col-md-3">
+        <div class="form-group">
+          <%= f.field_container :sub_location do %>
+            <%= label_tag :sub_location, Spree.t(:sub_location) %>
+            <%= text_field_tag 'sub_location' %>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="col-md-3">
         <div class="form-group">
           <%= f.field_container :variant_id do %>
             <%= label_tag 'variant_id', Spree.t(:variant) %>

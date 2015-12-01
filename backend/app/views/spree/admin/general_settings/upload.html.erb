@@ -22,7 +22,7 @@
 	  <div class="panel-heading"><h3>Update Inventory</h3></div>
 	  <div class="panel-body">
 	  	<p><strong>Note:</strong> The file must be .xlsx (created with Office 2007 or newer)</p>
-	    <%= form_tag 'upload_product_excel', :multipart => true do %>
+	    <%= form_tag 'upload_inventory_excel', :multipart => true do %>
 	    <div class="form-group">
 		   <label for="file">Upload excel File</label> <%= file_field_tag "file", class: "btn btn-default" %>
 		</div>
