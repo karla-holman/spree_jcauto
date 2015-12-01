@@ -4,7 +4,7 @@ module Spree
 		belongs_to :model
 		belongs_to :make
 
-	    has_many :product_applications, dependent: :delete_all, inverse_of: :application
+	    has_many :product_applications, dependent: :destroy, inverse_of: :application
 	    has_many :products, through: :product_applications
 
 	    # validates :make_id, :model_id, presence: true

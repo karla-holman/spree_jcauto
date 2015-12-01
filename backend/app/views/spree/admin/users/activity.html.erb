@@ -28,6 +28,7 @@
       </div>
       <div class="col-md-4">
         <%= f.label "Find Stock Location Updates"%>
+        <% byebug %>
         <%= f.select :item_id_eq, options_for_select(Spree::StockItem.all.collect {|s| [ 
           if s.variant.is_master 
             s.variant.product.property("Part Number") + " " + s.stock_location.name
@@ -70,7 +71,10 @@
     <% @activities.each do |activity|%>
       <tr id="<%= spree_dom_id activity %>" data-hook="admin_users_index_rows">
         <td class='user_email'>
-          <% if activity.item_type === "Spree::Product" %>
+          <% byebug %>
+          <% if !activity.item %>
+            N/A
+          <% elsif activity.item_type === "Spree::Product" %>
             <%= activity.item.property("Part Number")%>
           <% elsif activity.item_type === "Spree::StockItem" %>
             <%= activity.item.variant.sku %> at <%= activity.item.stock_location.name %>

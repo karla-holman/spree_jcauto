@@ -13,6 +13,8 @@ module Spree
                  allow_nil: true
               }
 
+    has_paper_trail :on => [:create], :ignore => [:updated_at]
+
     scope :recent, -> { order('created_at DESC') }
 
     self.whitelisted_ransackable_attributes = ['quantity']

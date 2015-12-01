@@ -141,10 +141,16 @@ module Spree
 
     # Return a new product from each row of worksheet
     def create_product()
+      # check for existing slug
+      slug = @product_row[:name]
+      if(Spree::Product.where("slug=?", slug).length > 0)
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Found duplicate slug (url) for " + slug }
+      end
+
       new_product = Spree::Product.create :name => @product_row[:name], 
                  :description => @product_row[:description],
                  :available_on => DateTime.new(2015,1,1),
-                 :slug => @product_row[:name],
+                 :slug => slug,
                  :tax_category_id => @@auto_tax_category_id, 
                  :shipping_category_id => @@shipping_category_id,
                  :promotionable => true,
@@ -504,14 +510,6 @@ module Spree
     # { :part_number => "", :condition => "", :message => "" }
     def get_errors
       @errors
-    end
-
-    def reset_for_test
-      Spree::Product.delete_all
-      Spree::ProductApplication.delete_all
-      Spree::Variant.delete_all
-      Spree::ProductProperty.delete_all
-      Spree::ProductOptionType.delete_all
     end
   end
 end
