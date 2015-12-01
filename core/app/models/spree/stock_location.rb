@@ -36,7 +36,7 @@ module Spree
     # @param variant_id [String] The id of a variant.
     #
     # @return [StockItem] Corresponding StockItem for the StockLocation's variant.
-    def stock_item(variant_id, sub_location)
+    def stock_item(variant_id, sub_location=nil)
       stock_items.where(variant_id: variant_id, sub_location: sub_location).order(:id).first
     end
 
@@ -48,7 +48,7 @@ module Spree
     # @param variant [Variant] Variant instance.
     #
     # @return [StockItem] Corresponding StockItem for the StockLocation's variant.
-    def stock_item_or_create(variant, sub_location)
+    def stock_item_or_create(variant, sub_location=nil)
       stock_item(variant, sub_location) || stock_items.create(variant_id: variant.id, sub_location: sub_location)
     end
 
