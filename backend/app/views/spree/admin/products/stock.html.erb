@@ -25,7 +25,9 @@
               <% end %>
             </td>
             <td>
-              <%= variant.sku_and_options_text %><%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>
+              <%= variant.sku %><br>
+              Condition: <%= variant.option_value("Condition") %>
+              <%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>
               <%= form_tag admin_product_variants_including_master_path(@product, variant, format: :js), method: :put, class: 'toggle_variant_track_inventory' do %>
                 <div class="checkbox">
                   <%= label_tag :track_inventory do %>

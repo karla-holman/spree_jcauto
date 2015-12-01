@@ -11,7 +11,6 @@ module Spree
       end
 
       def create
-        byebug
         variant = Variant.find(params[:variant_id])
         stock_location = StockLocation.find(params[:stock_location_id])
         sub_location = params[:sub_location]

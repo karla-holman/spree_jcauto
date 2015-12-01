@@ -20,14 +20,14 @@ module Spree
     end
 
     # Wrapper for creating a new stock item respecting the backorderable config
-    def propagate_variant(variant, sub_location)
+    def propagate_variant(variant, sub_location=nil)
       self.stock_items.create!(variant: variant, sub_location: sub_location, backorderable: self.backorderable_default)
     end
 
     # Return either an existing stock item or create a new one. Useful in
     # scenarios where the user might not know whether there is already a stock
     # item for a given variant
-    def set_up_stock_item(variant, sub_location)
+    def set_up_stock_item(variant, sub_location=nil)
       self.stock_item(variant, sub_location) || propagate_variant(variant, sub_location)
     end
 

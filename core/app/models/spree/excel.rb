@@ -463,7 +463,6 @@ module Spree
     end
 
     def import_inventory()
-      byebug
       # add inventory to existing part
       if (matching_products = Spree::Product.where("name=?", @inventory_row[:name])).length > 0
         # Product and master variant exist
@@ -485,8 +484,7 @@ module Spree
         if(value = determine_condition(@inventory_row[:condition]))
           # get variant and stock item
           option_type_values = @new_product.categorise_variants_from_option(@@condition)
-          variant = option_type_values[value].first
-          if(stock_item = variant.sub_location(@inventory_row[:location]))
+          if((variant = option_type_values[value]) && (stock_item = variant.first.sub_location(@inventory_row[:location])))
             # set stock item count
             stock_item.adjust_count_on_hand(@inventory_row[:quantity])
           else
