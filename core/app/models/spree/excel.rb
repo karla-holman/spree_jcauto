@@ -64,8 +64,11 @@ module Spree
 
     # return hash of fields and values from spreadsheet
     def build_row_hash(row)
-      if(!row.cells[0].value)
-        return nil # Skip row if no name
+      if(!row.cells[0].value) # skip empty rows
+        return nil # Skip row if no name or header
+      elsif(row.cells[0].datatype == "s" && row.cells[0].value.match(/name|item|\A\D*\Z/i))
+        @errors << { :part_number => "N/A", :condition => "N/A", :message => "Found and skipped excel header" }
+        return nil # Skip row if  header
       end
 
       product_name = row.cells[0].value.to_s
@@ -481,8 +484,11 @@ module Spree
 
     # return hash of fields and values from spreadsheet
     def build_inventory_hash(row)
-      if(!row.cells[0].value)
-        return nil # Skip row if no name
+      if(!row.cells[0].value) # skip empty rows
+        return nil # Skip row if no name or header
+      elsif(row.cells[0].datatype == "s" && row.cells[0].value.match(/name|item|\A\D*\Z/i))
+        @errors << { :part_number => "N/A", :condition => "N/A", :message => "Found and skipped excel header" }
+        return nil # Skip row if  header
       end
 
       product_name = row.cells[0].value.to_s
