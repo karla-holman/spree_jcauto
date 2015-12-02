@@ -8,6 +8,7 @@ module Spree
   	validates :start_year, :inclusion => {:in => 1900..Time.now.year }
   	validates :end_year, numericality: true
   	validates :end_year, :inclusion => {:in => 1900..Time.now.year }
+    validates :application_id, uniqueness: { scope: [:start_year, :end_year, :notes, :product_id] }
 
   	validate :start_year_cannot_be_greater_than_end_year
     validate :years_cannot_be_outside_model_date

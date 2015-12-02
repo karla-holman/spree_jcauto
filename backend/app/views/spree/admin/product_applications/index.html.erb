@@ -16,6 +16,7 @@
       <thead>
         <tr data-hook="product_properties_header">
           <th><%= Spree.t(:make_and_model) %></th>
+          <th><%= Spree.t(:notes) %></th>
           <th><%= Spree.t(:start_year) %></th>
           <th><%= Spree.t(:end_year) %></th>
           <th class="actions"></th>
@@ -26,6 +27,10 @@
           <tr>
             <td>
               <%= apps_form.text_field :application_name, class: 'autocomplete form-control' %>
+              <!-- %= f.collection_select :brand_id, Spree::Brand.order(:name), :id, :name, :prompt => "Select a brand" %-->
+            </td>
+            <td>
+              <%= apps_form.text_field :notes, class: 'form-control' %>
               <!-- %= f.collection_select :brand_id, Spree::Brand.order(:name), :id, :name, :prompt => "Select a brand" %-->
             </td>
             <td>

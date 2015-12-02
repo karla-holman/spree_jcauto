@@ -238,32 +238,37 @@ module Spree
           my_make = nil
           my_model = nil
 
-          if make_model_set.include? "exc"
-            my_notes = make_model_set
-          else
-            # split make, model and notes into text
-            words = make_model_set.split
-            words.each do |word|
-              make_match = false
-              model_match = false
+          if exceptions = make_model_set.match(/(.*)([\s\A]exc{0,1}[\.\s]{0,1}|[\s\A]except\s{0,1})(.*)/)
+            my_notes = "except " + exceptions[3].strip
+            make_model_set = exceptions[1].strip
+          end
 
-              word.gsub!(/[\W&&[^-]]/,"")
-              # try to match abbreviation
-              
-              if (check = (Spree::Make.where("abbreviation=? OR name=?", word, word).first))
-                my_make = check
-              elsif (check = (Spree::Model.where("abbreviation=? OR name=?", word, word).first))
-                my_model = check
-              else
-                my_notes += my_notes!="" ? " " + word : word
-              end
+          # split make, model and notes into text
+          words = make_model_set.split
+          words.each do |word|
+            next if word.match(/\d{1,2}-{1}\d{1,2}/) # don't keep if range for exception
+            make_match = false
+            model_match = false
+
+            word.gsub!(/[\W&&[^-]]/,"")
+            # try to match abbreviation
+
+            if (check = (Spree::Make.where("abbreviation=? OR name=?", word, word).first))
+              my_make = check
+            elsif (check = (Spree::Model.where("abbreviation=? OR name=?", word, word).first))
+              my_model = check
+            else
+              my_notes += my_notes!="" ? " " + word : word
             end
           end
+          
 
           if(my_make && my_model)
             my_application = Spree::Application.where("make_id=? AND model_id=?", my_make.id, my_model.id).first
           elsif(my_make)
             my_application = Spree::Application.where("make_id=? AND model_id IS ?", my_make.id, nil).first
+          elsif(my_model)
+            my_application = Spree::Application.where("model_id=?", my_model.id).first
           end
 
           if(my_application || my_notes != "")
@@ -283,19 +288,48 @@ module Spree
 
     # build array of years and applications
     def scan_app(app)
+      format_regular = true
       if (!app)
         return @app_data
       end
 
-      date_range = app.scan(/(\d{2})-{0,1}(\d{0,2})\s(.*)/)
+      # remove leading ;
+      app.sub!(/^\;/, "")
 
-      # if no sets left, 
+      # check for string starting with dates
+      date_range = app.scan(/\A\W*(\d{2})-{0,1}(\d{0,2})\s(.*)/)
+
+      # if no end of recursion, or reverse format (text first, then date) 
       if(date_range.length == 0)
-        return @app_data
-      else # scan extra string
-        scan_app(date_range[0][2].slice!(/\d{2}-{0,1}\d{0,2}\s.*/))
-        @app_data << { :start_year => date_range[0][0], :end_year => date_range[0][1], :text => date_range[0][2].strip}
+        # check if make/model are before date
+        if((date_range2 = app.scan(/(\D*)(\d{2})-{0,1}(\d{0,2})\s*(.*)/)).length == 0)
+          return @app_data
+        else # Set correct values
+          format_regular = false
+          date_range[0] = []
+          date_range[0][0] = date_range2[0][1] # set correct start year
+          date_range[0][1] = date_range2[0][2] # set correct end year
+          date_range[0][2] = date_range2[0][0] + " " + date_range2[0][3] # set correct text
+        end
       end
+
+      # else
+=begin
+      if(format_regular)
+        scan_app(date_range[0][2].slice!(/\d{2}-{0,1}\d{0,2}\s.*;/))
+      else
+        scan_app(date_range[0][2].slice!(/\D*\d{2}-{0,1}\d{0,2};/))
+      end
+
+=end
+      if(date_range[0][2].slice(/\;.*/)) # scan items separated by semi-colon
+        scan_app(date_range[0][2].slice!(/\;.*/))
+      else
+        scan_app(date_range[0][2].slice!(/\d{2}-{0,1}\d{0,2}\s.*/)) # scan dates remaining
+      end
+
+      @app_data << { :start_year => date_range[0][0], :end_year => date_range[0][1], :text => date_range[0][2].strip}
+      # end
     end
       
     # Add condition option type for this product
