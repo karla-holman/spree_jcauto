@@ -21,33 +21,17 @@
         <%= f.label Spree.t(:user) %>
         <%= f.select :whodunnit_eq, options_for_select(Spree::User.all.collect {|u| [ u.email, u.id ] }), {:prompt => "Select User"}, {:class=> "form-control"} %> 
       </div>
-      <div class="col-md-3">
-        <%= f.label Spree.t(:sub_location) %>
-        <%= f.text_field :object_cont, {:class=> "form-control"} %> 
-      </div>
       <div class="col-md-2">
-        <%= f.label "Find Product Updates" %>
-        <%= f.select :item_id_eq, options_for_select(Spree::Product.all.collect {|p| [ p.property("Part Number"), p.id ] }), {:prompt => "Select Part Number"}, {:class=> "form-control"} %> 
-        <!-- %= f.text_field :item_id_eq, class: "form-control js-quick-search-target" % -->
-      </div>
-      <div class="col-md-3">
-        <div class="form-group" data-hook="tax_category">
-          <%= f.label :item_id_eq, Spree.t(:product_updates) %>
-          <%= f.collection_select(:item_id_eq, Spree::Product.all, :id, :name, { :include_blank => Spree.t('match_choices.none') }, { :class => 'select2' }) %>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <%= f.label "Find Stock Location Updates"%>
-        <%= f.select :item_id_eq, options_for_select(Spree::StockItem.all.collect {|s| [ 
-          if s.variant.is_master 
-            s.variant.product.property("Part Number") + " " + s.stock_location.name
+        <%= f.label "Find Product Updates"%>
+        <%= f.select :object_cont, options_for_select(Spree::Variant.all.collect {|v| [ 
+          if v.is_master 
+            v.product.property("Part Number") + " (Product)"
           else
-            s.variant.sku + " " + s.variant.options_text + " " + s.stock_location.name
-          end, s.id ] }), {:prompt => "Select Part Number"}, {:class=> "form-control"} %> 
+            v.sku + " " + v.options_text
+          end, "variant_id: " + v.id.to_s ] }), {:include_blank => Spree.t('match_choices.none')}, {:class=> "select2"} %> 
         <!-- %= f.text_field :item_id_eq, class: "form-control js-quick-search-target" % -->
       </div>
     </div>
- 
     <div data-hook="admin_users_index_search_buttons" class="form-actions col-md-4" style="margin: 20px 0">
         <%= button Spree.t(:search), 'search' %>
     </div>
