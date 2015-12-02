@@ -2,13 +2,6 @@
   <%= Spree.t(:user_activity) %>
 <% end %>
 
-<!-- 
-<% content_for :page_actions do %>
-  <%= button_link_to Spree.t(:new_user), new_admin_user_url, :class => "btn-success", :icon => 'add', :id => 'admin_new_user_link' %>
-<% end %>
-
--->
- 
 <% content_for :table_filter_title do %>
   <%= Spree.t(:search) %>
 <% end %>
@@ -17,11 +10,11 @@
     <h3>Filter Results</h3>
     <%= search_form_for [:admin, @search], url: spree.admin_activities_url do |f| %>
     <div class="form-group">
-      <div class="col-md-3">
+      <div class="col-md-6">
         <%= f.label Spree.t(:user) %>
-        <%= f.select :whodunnit_eq, options_for_select(Spree::User.all.collect {|u| [ u.email, u.id ] }), {:prompt => "Select User"}, {:class=> "form-control"} %> 
+        <%= f.select :whodunnit_eq, options_for_select(Spree::User.all.collect {|u| [ u.email, u.id ] }), {:include_blank => Spree.t('match_choices.none')}, {:class=> "select2"} %> 
       </div>
-      <div class="col-md-2">
+      <div class="col-md-6">
         <%= f.label "Find Product Updates"%>
         <%= f.select :object_cont, options_for_select(Spree::Variant.all.collect {|v| [ 
           if v.is_master 
@@ -34,6 +27,7 @@
     </div>
     <div data-hook="admin_users_index_search_buttons" class="form-actions col-md-4" style="margin: 20px 0">
         <%= button Spree.t(:search), 'search' %>
+        <%= link_to Spree.t(:clear_filters), { action: 'activity' }, method: :get, class: "button-link", style: "margin-left: 20px" %>
     </div>
 
     <% end %>
