@@ -17,18 +17,27 @@
     <h3>Filter Results</h3>
     <%= search_form_for [:admin, @search], url: spree.admin_activities_url do |f| %>
     <div class="form-group">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <%= f.label Spree.t(:user) %>
         <%= f.select :whodunnit_eq, options_for_select(Spree::User.all.collect {|u| [ u.email, u.id ] }), {:prompt => "Select User"}, {:class=> "form-control"} %> 
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
+        <%= f.label Spree.t(:sub_location) %>
+        <%= f.text_field :object_cont, {:class=> "form-control"} %> 
+      </div>
+      <div class="col-md-2">
         <%= f.label "Find Product Updates" %>
         <%= f.select :item_id_eq, options_for_select(Spree::Product.all.collect {|p| [ p.property("Part Number"), p.id ] }), {:prompt => "Select Part Number"}, {:class=> "form-control"} %> 
         <!-- %= f.text_field :item_id_eq, class: "form-control js-quick-search-target" % -->
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
+        <div class="form-group" data-hook="tax_category">
+          <%= f.label :item_id_eq, Spree.t(:product_updates) %>
+          <%= f.collection_select(:item_id_eq, Spree::Product.all, :id, :name, { :include_blank => Spree.t('match_choices.none') }, { :class => 'select2' }) %>
+        </div>
+      </div>
+      <div class="col-md-2">
         <%= f.label "Find Stock Location Updates"%>
-        <% byebug %>
         <%= f.select :item_id_eq, options_for_select(Spree::StockItem.all.collect {|s| [ 
           if s.variant.is_master 
             s.variant.product.property("Part Number") + " " + s.stock_location.name
@@ -71,13 +80,15 @@
     <% @activities.each do |activity|%>
       <tr id="<%= spree_dom_id activity %>" data-hook="admin_users_index_rows">
         <td class='user_email'>
-          <% byebug %>
           <% if !activity.item %>
-            N/A
-          <% elsif activity.item_type === "Spree::Product" %>
-            <%= activity.item.property("Part Number")%>
+            <% my_item = activity.reify %>
+          <% else %>
+            <% my_item = activity.item %>
+          <% end %>
+          <% if activity.item_type === "Spree::Product" %>
+            Product <%= my_item.name %>
           <% elsif activity.item_type === "Spree::StockItem" %>
-            <%= activity.item.variant.sku %> at <%= activity.item.stock_location.name %>
+            <%= my_item.variant.sku %> at <%= my_item.stock_location.name %>, <%= my_item.sub_location %>
           <% end %>
         </td>
         <td class='user_email'>
@@ -97,8 +108,10 @@
                 <% end %>
                 <% count += 1 %>
               <% end %>
+            <% elsif activity.event %>
+              <%= activity.event %>
             <% else %>
-              <li>Difference not logged</li>
+              Difference not logged.
             <% end %>
           </ul>
         </td>

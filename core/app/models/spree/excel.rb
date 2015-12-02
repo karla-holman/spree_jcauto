@@ -475,7 +475,8 @@ module Spree
         @new_product = matching_products.first
       else # if no part generate error
         # Create product and master variant
-        @errors << { :part_number => @inventory_row[:name], :condition => @inventory_row[:condition], :message => "Cannot find part with inventory of " + @inventory_row[:quantity] }
+        @errors << { :part_number => @inventory_row[:name], :condition => @inventory_row[:condition], :message => "Cannot find existing part " + @inventory_row[:name] }
+        return false
       end
 
       # if no condition specified in name, add to first variant at location

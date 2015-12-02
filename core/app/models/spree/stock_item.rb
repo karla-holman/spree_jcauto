@@ -16,7 +16,7 @@ module Spree
 
     delegate :weight, :should_track_inventory?, to: :variant
 
-    has_paper_trail :on => [:update, :destroy], :ignore => [:updated_at]
+    has_paper_trail :on => [:update, :destroy], :only => [:variant_name, :count_on_hand], :ignore => [:updated_at]
     
     after_save :conditional_variant_touch, if: :changed?
     after_touch { variant.touch }
