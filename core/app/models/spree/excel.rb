@@ -234,22 +234,36 @@ module Spree
 
         # get make, model, and notes
         make_model_sets = app_data[:text].split(/[,;]/)
+        make_model_sets_enum = make_model_sets.to_enum
 
         # Create product application for each date/app set
-        make_model_sets.each do |make_model_set|
+        make_model_sets_enum.each do |make_model_set|
           my_notes = ""
+          my_exceptions = ""
           my_make = nil
           my_model = nil
 
-          if exceptions = make_model_set.match(/(.*)([\s\A]exc{0,1}[\.\s]{0,1}|[\s\A]except\s{0,1})(.*)/)
-            my_notes = "except " + exceptions[3].strip
+          # If exception, it includes remaining words
+          if (exceptions = make_model_set.match(/(.*|\A)(exc{0,1}[\.\s]{0,1})(.*)/)) | (exceptions = make_model_set.match(/(.*|\A)(except\s{0,1})(.*)/))
+            next_values = ""
+            while true
+              begin
+                next_values += next_values!="" ? " " + make_model_sets_enum.next : make_model_sets_enum.next
+              rescue StopIteration
+                break
+              end
+            end
+
+
+            my_exceptions = "except " + exceptions[3].strip + next_values
             make_model_set = exceptions[1].strip
+
           end
 
           # split make, model and notes into text
           words = make_model_set.split
-          words.each do |word|
-            next if word.match(/\d{1,2}-{1}\d{1,2}/) # don't keep if range for exception
+          words.each do |word| # loop through each to match to make, model, or notes
+            next if (word.match(/\d{1,2}-{1}\d{1,2}/) && exceptions) # don't keep if range for exception
             make_match = false
             model_match = false
 
@@ -274,6 +288,9 @@ module Spree
             my_application = Spree::Application.where("model_id=?", my_model.id).first
           end
 
+          # add exceptions to the end of notes
+          my_notes += (my_notes!="" && my_exceptions != "") ? " " + my_exceptions : my_exceptions
+
           if(my_application || my_notes != "")
             Spree::ProductApplication.create :start_year => start_year.to_i,
                                          :end_year => end_year.to_i,
@@ -283,7 +300,7 @@ module Spree
           end
 
           if(!my_application)
-            @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could find make or model for " + make_model_set }
+            @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not find make or model for " + make_model_set }
           end
         end # end make_model_sets ex. "Plymouth Valiant "
       end # end @app_data loop ex. { :start_year => "60", :end_year => "9", :text => "Plymouth Valiant "}
@@ -292,7 +309,7 @@ module Spree
     # build array of years and applications
     def scan_app(app)
       format_regular = true
-      if (!app)
+      if (!app) # end recursion
         return @app_data
       end
 
@@ -302,7 +319,7 @@ module Spree
       # check for string starting with dates
       date_range = app.scan(/\A\W*(\d{2})-{0,1}(\d{0,2})\s(.*)/)
 
-      # if no end of recursion, or reverse format (text first, then date) 
+      # if reverse format (text first, then date) 
       if(date_range.length == 0)
         # check if make/model are before date
         if((date_range2 = app.scan(/(\D*)(\d{2})-{0,1}(\d{0,2})\s*(.*)/)).length == 0)
@@ -316,15 +333,6 @@ module Spree
         end
       end
 
-      # else
-=begin
-      if(format_regular)
-        scan_app(date_range[0][2].slice!(/\d{2}-{0,1}\d{0,2}\s.*;/))
-      else
-        scan_app(date_range[0][2].slice!(/\D*\d{2}-{0,1}\d{0,2};/))
-      end
-
-=end
       if(date_range[0][2].slice(/\;.*/)) # scan items separated by semi-colon
         scan_app(date_range[0][2].slice!(/\;.*/))
       else
@@ -454,8 +462,8 @@ module Spree
         # NFS if listed as inactive
         when /w\d{1,2}/ 
           @product_row[:name] == "N" ? @@loc_home_nfs : @@loc_home
-        # F209 OR D105.3 OR file cabinet
-        when /[[:alpha:]]\d{3}|D\d{3}\.\d|file\scabinet|suite\s2/
+        # F209 OR D105.3 OR file cabinet OR h2
+        when /[[:alpha:]]\d{2,3}|D\d{3}\.\d|h\d|file\scabinet|suite\s2/
           @@loc_suite2
         # NWC08
         when /nw[[:alpha:]]\d{1,2}|ste3/
