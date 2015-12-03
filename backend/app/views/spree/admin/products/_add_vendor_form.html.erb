@@ -1,0 +1,47 @@
+<div class="panel-heading">
+  <h2 class="panel-title">
+    <%= Spree.t(:add_vendor) %>
+  </h2>
+</div>
+<div class="panel-body">
+  <%= form_for [:admin, Spree::ProductVendor.new], url: admin_product_vendors_path do |f| %>
+    <div data-hook="admin_stock_movements_form_fields" class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <%= f.field_container :vendor_id do %>
+            <%= f.label :vendor_id, Spree.t(:vendor) %>
+            <%= f.select 'vendor_id', options_from_collection_for_select(@vendors, :id, :name), {include_blank: true }, { class: 'select2' } %>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <%= f.field_container :vendor_part_number do %>
+            <%= f.label :vendor_part_number, Spree.t(:vendor_part_number) %>
+            <%= f.text_field :vendor_part_number, class: "form-control" %>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <%= f.field_container :vendor_price do %>
+            <%= f.label :vendor_price, Spree.t(:vendor_price) %>
+            <%= f.number_field :vendor_price, class: 'form-control', value: 0.00, :step => 'any' %>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <%= f.field_container :variant_id do %>
+            <%= f.label 'variant_id', Spree.t(:variant) %>
+            <%= f.select 'variant_id', options_from_collection_for_select(@variants, :id, :sku_and_options_text), {include_blank: true }, { class: 'select2' } %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions text-center" data-hook="buttons">
+      <%= button Spree.t(:add_vendor), 'plus' %>
+    </div>
+  <% end %>
+</div>

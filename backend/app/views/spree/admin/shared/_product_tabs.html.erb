@@ -27,7 +27,7 @@
     <% end if can?(:admin, Spree::ProductApplication) %>
 
     <%= content_tag :li, class: ('active' if current == :vendors) do %>
-      <%= link_to_with_icon 'upload', Spree.t(:vendors), spree.admin_product_product_vendors_url(@product) %>
+      <%= link_to_with_icon 'upload', Spree.t(:vendors), spree.vendor_admin_product_url(@product) %>
     <% end if can?(:admin, Spree::ProductVendor) %>
     
     <%= content_tag :li, class: ('active' if current == :stock) do %>

@@ -61,8 +61,8 @@
           <td><%= vendor.state ? vendor.state : "-" %></td>
           <td><%= vendor.country ? vendor.country : "-" %></td>
           <td><%= vendor.phone ? vendor.phone : "-" %></td>
-          <td><%= vendor.email ? vendor.email : "-" %></td>
-          <td><%= vendor.website ? vendor.website : "-" %></td>
+          <td><%= vendor.email ? (link_to vendor.email, "mailto:" + vendor.email) : "-" %></td>
+          <td><%= vendor.website ? (link_to vendor.website, vendor.website, :target => "_blank") : "-" %></td>
           <td class="actions actions-2 text-right">
             <%= link_to_edit(vendor, :no_text => true) %>
             <%= link_to_delete(vendor, :no_text => true) %>

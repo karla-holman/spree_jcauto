@@ -35,8 +35,6 @@ module Spree
     has_and_belongs_to_many :promotion_rules, join_table: :spree_products_promotion_rules
     has_many :product_applications, dependent: :destroy, inverse_of: :product
     has_many :applications, through: :product_applications
-    has_many :product_vendors, dependent: :destroy, inverse_of: :product
-    has_many :vendors, through: :product_vendors
 
     belongs_to :tax_category, class_name: 'Spree::TaxCategory'
     belongs_to :shipping_category, class_name: 'Spree::ShippingCategory', inverse_of: :products
@@ -64,7 +62,7 @@ module Spree
     has_many :line_items, through: :variants_including_master
     has_many :orders, through: :line_items
 
-    delegate_belongs_to :master, :sku, :price, :core_price, :total_price, :currency, :display_amount, :display_price, :weight, :height, :width, :depth, :is_master, :has_default_price?, :cost_currency, :price_in, :amount_in, :core_price_in, :total_price_in, :sub_location, :add_sub_location
+    delegate_belongs_to :master, :sku, :price, :core_price, :total_price, :currency, :display_amount, :display_price, :weight, :height, :width, :depth, :is_master, :has_default_price?, :cost_currency, :price_in, :amount_in, :core_price_in, :total_price_in, :sub_location, :add_sub_location, :product_vendors
 
     delegate_belongs_to :master, :cost_price
 
@@ -104,7 +102,6 @@ module Spree
     accepts_nested_attributes_for :product_properties, allow_destroy: true, reject_if: lambda { |pp| pp[:property_name].blank? }
     # http://makandracards.com/makandra/1346-popular-mistakes-when-using-nested-forms
     accepts_nested_attributes_for :product_applications, allow_destroy: true, reject_if: lambda { |pa| pa[:start_year].blank? }
-    accepts_nested_attributes_for :product_vendors, allow_destroy: true, reject_if: lambda { |pv| pv[:vendor_part_number].blank? }
 
     alias :options :product_option_types
 

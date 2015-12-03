@@ -76,6 +76,16 @@ module Spree
         end
       end
 
+      def vendor
+        @variants = @product.variants.includes(*variant_stock_includes)
+        @variants = [@product.master] if @variants.empty?
+        @vendors = Vendor.accessible_by(current_ability, :read)
+        if @vendors.empty?
+          flash[:error] = Spree.t(:vendor_management_requires_a_vendor)
+          redirect_to admin_vendors_path
+        end
+      end
+
       protected
 
       def find_resource

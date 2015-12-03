@@ -1,0 +1,84 @@
+<%= render partial: 'spree/admin/shared/product_tabs', locals: {current: :vendors} %>
+<%= render partial: 'spree/admin/shared/error_messages', locals: { target: @product } %>
+
+<% if can? :create, Spree::StockMovement %>
+  <div id="add_stock_form" class="panel panel-default">
+    <%= render 'add_vendor_form' %>
+  </div>
+<% end %>
+
+<div class="panel panel-default">
+  <table class="table table-bordered" id="listing_product_stock">
+    <thead>
+      <tr data-hook="admin_product_stock_management_index_headers">
+        <th colspan="2"><%= Spree.t(:variant) %></th>
+        <th colspan="3"><%= Spree.t(:vendor_info) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @variants.each do |variant| %>
+        <tr id="<%= spree_dom_id variant %>" data-hook="admin_product_stock_management_index_rows">
+          <td class="image text-center">
+            <% if variant.images.present? %>
+              <%= image_tag variant.images.first.attachment.url(:mini) %>
+            <% end %>
+          </td>
+          <td>
+            <%= variant.sku %><br>
+            Condition: <%= variant.option_value("Condition") %>
+            <%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>
+          </td>
+
+          <td colspan="3" class="stock_location_info">
+            <% if variant.vendors.present? %>
+              <table class="table table-bordered no-marginb">
+                <thead>
+                  <th><%= Spree.t(:vendor_name) %></th>
+                  <th><%= Spree.t(:vendor_part_number) %></th>
+                  <th><%= Spree.t(:vendor_price) %></th>
+                  <th class="text-center"><%= Spree.t(:view_vendor) %></th>
+                  <th class="actions text-center"></th>
+                </thead>
+                <tbody>
+                  <% variant.product_vendors.each do |item| %>
+                    <% next unless (@vendors.include?(item.vendor)) %>
+                    <tr id="stock-item-<%= item.id %>">
+                        <td>
+                          <%= item.vendor.name %>
+                        </td>
+                        <td>
+                          <%= item.vendor_part_number %>
+                        </td>
+                        <td>
+                          <%= form_for [:admin, item] do |f| %>
+                            <div class="col-md-8">
+                              <div class="form-group">
+                                  <%= f.field_container :vendor_price do %>
+                                    <%= f.number_field :vendor_price, class: 'form-control', value: item.vendor_price %>
+                                  <% end %>
+                              </div>
+                            </div>
+                            <div class="col-md-4" style="margin-top: 5px">
+                              <%= f.submit 'update', class: 'icon_link btn btn-primary btn-sm' %>
+                            </div>
+                          <% end %>
+                        </td>
+                        <td class="text-center">
+                          <%= link_to_with_icon('eye-open', Spree.t(:view_vendor), [:admin, item.vendor], method: :get, class: 'icon_link btn btn-info btn-sm', data: { action: admin_vendor_path(item.vendor) } ) %>
+                        </td>
+                        <td class="actions actions-1 text-center">
+                          <%= link_to_with_icon('delete', Spree.t(:remove), [:admin, item], method: :delete, class: 'icon_link btn btn-danger btn-sm', data: { action: :remove, confirm: Spree.t(:are_you_sure) }, no_text: true) if can? :destroy, item %>
+                        </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            <% else %>
+              No known vendors for this variant
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -20,6 +20,9 @@ module Spree
     has_many :stock_locations, through: :stock_items
     has_many :stock_movements, through: :stock_items
 
+    has_many :product_vendors, dependent: :destroy, inverse_of: :variant
+    has_many :vendors, through: :product_vendors
+
     has_and_belongs_to_many :option_values, join_table: :spree_option_values_variants
     has_many :images, -> { order(:position) }, as: :viewable, dependent: :destroy, class_name: "Spree::Image"
 
@@ -44,6 +47,8 @@ module Spree
 
     scope :in_stock, -> { joins(:stock_items).where('count_on_hand > ? OR track_inventory = ?', 0, false) }
 
+    accepts_nested_attributes_for :product_vendors, allow_destroy: true, reject_if: lambda { |pv| pv[:vendor_id].blank? }
+
     LOCALIZED_NUMBERS = %w(cost_price weight depth width height)
 
     LOCALIZED_NUMBERS.each do |m|
@@ -52,7 +57,7 @@ module Spree
       end
     end
 
-    self.whitelisted_ransackable_associations = %w[option_values product prices default_price]
+    self.whitelisted_ransackable_associations = %w[option_values product prices default_price product_vendors]
     self.whitelisted_ransackable_attributes = %w[weight sku]
 
     def self.active(currency = nil)

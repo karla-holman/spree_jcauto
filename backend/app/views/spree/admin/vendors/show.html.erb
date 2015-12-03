@@ -1,0 +1,44 @@
+<% @body_id = 'product-details' %>
+
+
+<div class="col-md-8" data-hook="product_right_part">
+  <div data-hook="product_right_part_wrap">
+    <div id="product-description" data-hook="product_description">
+      <div class="row">
+        <h2 class="product-title" itemprop="name"><%= @vendor.name %></h2>
+
+        <div class="col-md-6">
+          <h3>Address</h3>
+          <%= @vendor.address1 %><br>
+          <% if @vendor.address2 %>
+            <%= @vendor.address2 %><br>
+          <% end %>
+          <%= "#{@vendor.city}, #{@vendor.state} #{@vendor.zipcode}" %>
+        </div>
+        <div class="col-md-6">
+          <h3>Contact</h3>
+          <span class="icon icon-phone-alt" style="margin: 1px 10px 0 0"></span> <%= @vendor.phone %><br>
+          <span class="icon icon-envelope" style="margin: 4px 10px 0 0"></span> <%= link_to @vendor.email, "mailto:" + @vendor.email %><br>
+          <span class="icon icon-globe" style="margin: 4px 10px 0 0"></span> <%= link_to @vendor.website, @vendor.website, :target => "_blank" %><br>
+        </div>
+      </div>
+
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="well" itemprop="description" data-hook="description">
+            <h3>Notes</h3>
+            <p><%= @vendor.notes %></p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <%= link_to "mailto:" + @vendor.email, :class => "btn btn-primary btn-sm" do %><span class="icon icon-envelope"></span> Send Email<% end %>
+          <%= link_to_edit(@vendor, :class => "button btn-info") %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

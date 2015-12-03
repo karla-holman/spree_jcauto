@@ -288,6 +288,9 @@ module Spree
             my_application = Spree::Application.where("model_id=?", my_model.id).first
           end
 
+          # if my notes is empty, applies to all
+          my_notes = my_notes=="" ? "all" : my_notes
+          
           # add exceptions to the end of notes
           my_notes += (my_notes!="" && my_exceptions != "") ? " " + my_exceptions : my_exceptions
 

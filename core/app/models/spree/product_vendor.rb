@@ -1,9 +1,12 @@
 module Spree
   class ProductVendor < Spree::Base
-    belongs_to :product, touch: true, class_name: 'Spree::Product', inverse_of: :product_vendors
+    belongs_to :variant, touch: true, class_name: 'Spree::Variant', inverse_of: :product_vendors
     belongs_to :vendor, class_name: 'Spree::Vendor', inverse_of: :product_vendors
 
-    validates :vendor_part_number, presence: true
+    validates :vendor_id, presence: true
+    validates :variant_id, presence: true
+    validates :vendor_id, uniqueness: { scope: [:variant_id] }
+    validates :vendor_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   	# before_save :update_name
   	# after_create :update_name_first
@@ -29,31 +32,5 @@ module Spree
         self.vendor = ven
       end
     end
-
-=begin
-    # Set Up name and range
-    def update_name
-       if self.name
-	       if application_name && range
-				self.update_column(:name, application_name + " " + range)
-	    	else
-				self.update_column(:name, "No application and/or range specified")
-	    	end
-	    end
-    end
-
-    def update_name_first
-    	self.name = "new name"
-    	self.save
-    end
-
-    def range
-    	if start_year && end_year
-    		range = start_year.to_s + "-" + end_year.to_s
-    	else
-    		range = "N/A - N/A"
-    	end
-    end
-=end
   end
 end

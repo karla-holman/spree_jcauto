@@ -3,7 +3,7 @@ module Spree
 	    # has_and_belongs_to_many :prototypes, join_table: 'spree_applications_prototypes'
 
 	    has_many :product_vendors, dependent: :delete_all, inverse_of: :vendor
-	    has_many :products, through: :product_vendors
+	    has_many :variants, through: :product_vendors
 
 	    belongs_to :state, class_name: 'Spree::State'
     	belongs_to :country, class_name: 'Spree::Country'

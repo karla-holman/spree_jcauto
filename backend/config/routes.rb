@@ -30,12 +30,6 @@ Spree::Core::Engine.add_routes do
         end
       end
 
-      resources :product_vendors do
-        collection do
-          post :update_positions
-        end
-      end
-
       resources :images do
         collection do
           post :update_positions
@@ -44,6 +38,7 @@ Spree::Core::Engine.add_routes do
       member do
         get :clone
         get :stock
+        get :vendor
       end
       resources :variants do
         collection do
@@ -88,7 +83,11 @@ Spree::Core::Engine.add_routes do
       end
     end
 
-    delete '/product_vendors/:id', to: "product_vendors#destroy", as: :product_vendor
+    resources :product_vendors do
+      collection do
+        post :update_positions
+      end
+    end
 
     resources :makes do
       collection do
