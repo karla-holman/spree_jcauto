@@ -9,7 +9,7 @@
 	  		<h3>Add Products</h3>
 	  	</div>
 	  	<div style="float:right; margin: 26px 0">
-	  		<strong> <%= link_to "/downloads/product.xlsx" do %><span class="icon icon-download-alt"></span> Download Template</strong><% end %>
+	  		<strong> <%= link_to "/downloads/product.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
 	  	</div>
 	  	<div style="clear:both"></div>
 	  </div>
@@ -31,7 +31,7 @@
 	  		<h3>Add Inventory</h3>
 	  	</div>
 	  	<div style="float:right; margin: 26px 0">
-	  		<strong> <%= link_to "/downloads/inventory.xlsx" do %><span class="icon icon-download-alt"></span> Download Template</strong><% end %>
+	  		<strong> <%= link_to "/downloads/inventory.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
 	  	</div>
 	  	<div style="clear:both"></div>
 	  </div>
@@ -53,7 +53,7 @@
 	  		<h3>Update Products</h3>
 	  	</div>
 	  	<div style="float:right; margin: 26px 0">
-	  		<strong> <%= link_to "/downloads/product.xlsx" do %><span class="icon icon-download-alt"></span> Download Template</strong><% end %>
+	  		<strong> <%= link_to "/downloads/product.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
 	  	</div>
 	  	<div style="clear:both"></div>
 	  </div>
@@ -69,29 +69,31 @@
 </div>
 
 <% if @errors && @errors.length > 0 %>
-<h3>Errors</h3>
-<table id="product-properties" class="table table-striped" data-hook>
-	<tbody>
-		<% css_class = cycle('even', 'odd', :name => "errors_table") %>
-			<tr class="<%= css_class %>">
-				<th>Product Number</th>
-				<th>Condition</th>
-				<th>Message</th>
-			</tr>
-			<% @errors.each do |error| %>
-			    <tr class="<%= css_class %>">
-			      <td>
-			        <%= error[:part_number] %>
-			      </td>
-			      <td>
-			        <%= error[:condition] %>
-			      </td>
-			      <td>
-			        <%= error[:message] %>
-			      </td>
-			    </tr>
-			<% end %>
-	  	<% end %>
-	  	<% reset_cycle('errors_table') %>
-	</tbody>
-</table>
+	<div class="col-md-12">
+		<h3>Errors</h3>
+		<table id="product-properties" class="table table-striped" data-hook>
+			<tbody>
+				<% css_class = cycle('even', 'odd', :name => "errors_table") %>
+				<tr class="<%= css_class %>">
+					<th>Product Number</th>
+					<th>Condition</th>
+					<th>Message</th>
+				</tr>
+				<% @errors.each do |error| %>
+				    <tr class="<%= css_class %>">
+				      <td>
+				        <%= error[:part_number] %>
+				      </td>
+				      <td>
+				        <%= error[:condition] %>
+				      </td>
+				      <td>
+				        <%= error[:message] %>
+				      </td>
+				    </tr>
+				<% end %>
+			  	<% reset_cycle('errors_table') %>
+			</tbody>
+		</table>
+	</div>
+<% end %>
