@@ -76,6 +76,23 @@ module Spree
         render :action => :upload
       end
 
+      def upload_vendor_excel
+        begin
+          my_excel = Spree::Excel.new(params[:file])
+        rescue Exception => e
+          flash[:error] = e.message
+        end
+
+        if (my_excel)
+          my_excel.import_vendor_file()
+          @errors = my_excel.get_errors
+        end
+        if @errors && @errors.length > 0
+          flash[:error] = "Errors in upload, see table below"
+        end
+        render :action => :upload
+      end
+
       private
       def store_params
         params.require(:store).permit(permitted_store_attributes)

@@ -58,6 +58,15 @@ module Spree
       }
     end
 
+    # Import spreadsheet that fits product structure
+    def import_vendor_file()
+      @worksheet_products.each { |row|
+        if(@vendor_row = build_vendor_hash(row))
+          import_vendor()
+        end
+      }
+    end
+
     ################################################################
     # IMPORT PRODUCT
     ################################################################
@@ -244,7 +253,7 @@ module Spree
           my_model = nil
 
           # If exception, it includes remaining words
-          if (exceptions = make_model_set.match(/(.*|\A)(exc{0,1}[\.\s]{0,1})(.*)/)) | (exceptions = make_model_set.match(/(.*|\A)(except\s{0,1})(.*)/))
+          if (exceptions = make_model_set.match(/(.*|\A)(exc{0,1}[\.\s]{0,1})(.*)/)) || (exceptions = make_model_set.match(/(.*|\A)(except\s{0,1})(.*)/))
             next_values = ""
             while true
               begin
@@ -290,7 +299,7 @@ module Spree
 
           # if my notes is empty, applies to all
           my_notes = my_notes=="" ? "all" : my_notes
-          
+
           # add exceptions to the end of notes
           my_notes += (my_notes!="" && my_exceptions != "") ? " " + my_exceptions : my_exceptions
 
@@ -553,6 +562,84 @@ module Spree
           @errors << { :part_number => @inventory_row[:name], :condition => @inventory_row[:condition], :message => "Cannot find variant with condition of " + @inventory_row[:condition] }
         end
       end
+    end
+
+    ################################################################
+    # IMPORT VENDORS
+    ################################################################
+    # return hash of fields and values from spreadsheet
+    def build_vendor_hash(row)
+      if(!row.cells[0].value) # skip empty rows
+        return nil # Skip row if no name or header
+      elsif(row.cells[0].datatype == "s" && row.cells[0].value.match(/name/i))
+        @errors << { :part_number => "N/A", :condition => "N/A", :message => "Found and skipped excel header" }
+        return nil # Skip row if  header
+      end
+
+      @vendor_row = {
+        :name => row.cells[0] ? row.cells[0].value : nil,
+        :address1 => row.cells[6] ? row.cells[6].value : nil,
+        :address2 => row.cells[7] ? row.cells[7].value : nil,
+        :phone => row.cells[2] ? row.cells[2].value : nil,
+        :email => row.cells[4] ? row.cells[4].value : nil,
+        :website => row.cells[5] ? row.cells[5].value : nil,
+        :contact_name => row.cells[1] ? row.cells[1].value : nil,
+        :city => row.cells[8] ? row.cells[8].value : nil,
+        :state => row.cells[9] ? row.cells[9].value : nil,
+        :country => row.cells[10] ? row.cells[10].value : nil,
+        :zipcode => row.cells[11] ? row.cells[11].value : nil,
+        :notes => row.cells[13] ? row.cells[13].value : nil,
+        :currency => row.cells[12] ? row.cells[12].value : nil
+      }
+
+    end
+
+    def import_vendor()
+      # get state_id and country_id
+      if(@vendor_row[:country])
+        countries = Spree::Country.where("iso3 ILIKE ? OR name ILIKE ?", "%#{@vendor_row[:country]}%", "%#{@vendor_row[:country]}%")
+      else
+        countries = []
+      end
+
+      if countries.empty?
+         @errors << { :part_number => @vendor_row[:name], :condition => "N/A", :message => "Cannot identify country with name #{@vendor_row[:country]}"  }
+      else
+        country_id = countries.first.id
+        if(@vendor_row[:state])
+          states = Spree::State.where("(abbr ILIKE ? OR name ILIKE ?) AND country_id = ?", "%#{@vendor_row[:state]}%", "%#{@vendor_row[:state]}%", countries.first.id)
+        else
+          states = []
+        end
+        
+        if states.empty?
+          @errors << { :part_number => @vendor_row[:name], :condition => "N/A", :message => "Cannot identify state with name #{@vendor_row[:state]}"  }
+        else
+          state_id = states.first.id
+        end 
+      end
+
+      # make sure website is http://
+      if @vendor_row[:website]
+        website = @vendor_row[:website].match(/http:\/\//) ? @vendor_row[:website] : "http://" + @vendor_row[:website]
+      end
+
+      # add inventory to existing part
+      @vendor = Spree::Vendor.create :name => @vendor_row[:name],
+                                     :address1 => @vendor_row[:address1],
+                                     :address2 => @vendor_row[:address2],
+                                     :phone => @vendor_row[:phone],
+                                     :email => @vendor_row[:email],
+                                     :website => website,
+                                     :contact_name => @vendor_row[:contact_name],
+                                     :city => @vendor_row[:city],
+                                     :state_name => @vendor_row[:state],
+                                     :zipcode => @vendor_row[:zipcode],
+                                     :notes => @vendor_row[:notes],
+                                     :country_id => country_id,
+                                     :state_id => state_id,
+                                     :currency => @vendor_row[:currency]
+
     end
 
     ################################################################

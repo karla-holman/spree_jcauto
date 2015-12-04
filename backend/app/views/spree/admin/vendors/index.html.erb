@@ -66,6 +66,7 @@
           <td class="actions actions-2 text-right">
             <%= link_to_edit(vendor, :no_text => true) %>
             <%= link_to_delete(vendor, :no_text => true) %>
+            <%= link_to_with_icon("eye-open", "View", admin_vendor_path(vendor)) %>
           </td>
         </tr>
       <% end %>

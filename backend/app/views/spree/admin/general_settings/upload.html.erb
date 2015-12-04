@@ -50,15 +50,15 @@
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	  	<div style="float:left">
-	  		<h3>Update Products</h3>
+	  		<h3>Add Vendors</h3>
 	  	</div>
 	  	<div style="float:right; margin: 26px 0">
-	  		<strong> <%= link_to "/downloads/product.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
+	  		<strong> <%= link_to "/downloads/vendor.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
 	  	</div>
 	  	<div style="clear:both"></div>
 	  </div>
 	  <div class="panel-body">
-	    <%= form_tag 'upload_product_excel', :multipart => true do %>
+	    <%= form_tag 'upload_vendor_excel', :multipart => true do %>
 	    <div class="form-group">
 		   <label for="file">Upload excel File</label> <%= file_field_tag "file", class: "btn btn-default" %>
 		</div>

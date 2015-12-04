@@ -160,6 +160,7 @@ Spree::Core::Engine.add_routes do
         get :upload
         post :upload_product_excel
         post :upload_inventory_excel
+        post :upload_vendor_excel
       end
     end
 

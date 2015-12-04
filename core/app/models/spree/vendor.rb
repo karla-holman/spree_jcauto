@@ -9,6 +9,7 @@ module Spree
     	belongs_to :country, class_name: 'Spree::Country'
 
 	    validates :name, presence: true
+	    validates :name, uniqueness: true
 	    # validates :make_id, :model_id, presence: true
 
 	    scope :sorted, -> { order(:model) }
