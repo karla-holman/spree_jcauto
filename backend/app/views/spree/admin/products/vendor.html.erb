@@ -36,7 +36,7 @@
                   <th><%= Spree.t(:vendor_name) %></th>
                   <th><%= Spree.t(:vendor_part_number) %></th>
                   <th><%= Spree.t(:vendor_price) %></th>
-                  <th class="text-center"><%= Spree.t(:view_vendor) %></th>
+                  <th><%= Spree.t(:notes) %></th>
                   <th class="actions text-center"></th>
                 </thead>
                 <tbody>
@@ -44,7 +44,7 @@
                     <% next unless (@vendors.include?(item.vendor)) %>
                     <tr id="stock-item-<%= item.id %>">
                         <td>
-                          <%= item.vendor.name %>
+                          <%= link_to admin_vendor_path(item.vendor) do %><%= item.vendor.name %><% end %>
                         </td>
                         <td>
                           <%= item.vendor_part_number %>
@@ -63,8 +63,8 @@
                             </div>
                           <% end %>
                         </td>
-                        <td class="text-center">
-                          <%= link_to_with_icon('eye-open', Spree.t(:view_vendor), [:admin, item.vendor], method: :get, class: 'icon_link btn btn-info btn-sm', data: { action: admin_vendor_path(item.vendor) } ) %>
+                        <td>
+                          <%= item.notes %>
                         </td>
                         <td class="actions actions-1 text-center">
                           <%= link_to_with_icon('delete', Spree.t(:remove), [:admin, item], method: :delete, class: 'icon_link btn btn-danger btn-sm', data: { action: :remove, confirm: Spree.t(:are_you_sure) }, no_text: true) if can? :destroy, item %>

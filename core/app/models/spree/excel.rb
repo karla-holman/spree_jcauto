@@ -116,7 +116,8 @@ module Spree
         :core => row.cells[18].value,
         :available => row.cells[19].value,
         :online => row.cells[20].value,
-        :active => row.cells[21].value
+        :active => row.cells[21].value,
+        :vendor_part_number => row.cells[22].value
       }
 
     end
@@ -148,6 +149,11 @@ module Spree
       end
 
       update_conditions_value
+
+      # add vendor
+      if @product_row[:vendor]
+        add_vendor()
+      end
       
     end
 
@@ -354,7 +360,26 @@ module Spree
       @app_data << { :start_year => date_range[0][0], :end_year => date_range[0][1], :text => date_range[0][2].strip}
       # end
     end
-      
+    
+    # called if vendor specified in spreadsheet
+    def add_vendor
+      vendor = @product_row[:vendor].match(/[\D\s]*/)
+      vendors = Spree::Vendor.where("name ILIKE ?", "%#{vendor[0].strip}%")
+      if !(vendors.empty?)
+        if(@product_row[:vendor].match(/goers/i))
+          notes = notes = "" ? @product_row[:vendor] : notes + ", " + @product_row[:vendor]
+        end
+
+        @new_product_vendor = Spree::ProductVendor.create :variant_id => @new_product_condition.id,
+              :vendor_id => vendors.first.id,
+              :vendor_part_number => @product_row[:vendor_part_number],
+              :vendor_price => @product_row[:vendor_price],
+              :notes => notes
+      else
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not match vendor " + @product_row[:vendor] }   
+      end
+    end
+
     # Add condition option type for this product
     def update_condition_type()
       new_product_option_type = Spree::ProductOptionType.create :product_id => @new_product.id,

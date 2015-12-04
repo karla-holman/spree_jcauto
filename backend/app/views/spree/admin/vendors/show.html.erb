@@ -1,56 +1,91 @@
 <% @body_id = 'product-details' %>
 
+<h2 class="product-title" itemprop="name"><%= @vendor.name %></h2>
 
-<div class="col-md-8" data-hook="product_right_part">
-  <div data-hook="product_right_part_wrap">
-    <div id="product-description" data-hook="product_description">
-      <div class="row">
-        <h2 class="product-title" itemprop="name"><%= @vendor.name %></h2>
-
-        <div class="col-md-6">
-          <h3>Address</h3>
-          <% if !(@vendor.address1 || @vendor.address2 || @vendor.city || @vendor.state|| @vendor.country) %>
-                -
-          <% else %>
-            <%= @vendor.address1 ? @vendor.address1 : "" %> <%= @vendor.address2 ? @vendor.address2 : "" %>
-            <% if @vendor.city || @vendor.state|| @vendor.country %>
-              <% if (@vendor.address1 || @vendor.address2) %><br><% end %>
-              <%= (@vendor.city ? @vendor.city : "") + 
-                  ((@vendor.city && (@vendor.state || @vendor.country)) ? ", " : "") + 
-                  (@vendor.state ? @vendor.state.abbr : "") +
-                  ((@vendor.state && @vendor.country) ? ", " : "") +  
-                  (@vendor.country ? @vendor.country.iso3 : "") %>
-            <% end %>
-          <% end %>
-        </div>
-        <div class="col-md-6">
-          <h3>Contact</h3>
-          <span class="icon icon-phone-alt" style="margin: 1px 10px 0 0"></span> <%= @vendor.phone %><br>
-          <span class="icon icon-print" style="margin: 4px 10px 0 0"></span> <%= @vendor.fax ? (link_to @vendor.fax, @vendor.fax, :target => "_blank") : "N/A" %><br>
-          <span class="icon icon-envelope" style="margin: 4px 10px 0 0"></span> <%= @vendor.email ? (link_to @vendor.email, "mailto:" + @vendor.email) : "N/A" %><br>
-          <span class="icon icon-globe" style="margin: 4px 10px 0 0"></span> <%= @vendor.website ? (link_to @vendor.website, @vendor.website, :target => "_blank") : "N/A" %>
-        </div>
-      </div>
-
-      <hr>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="well" itemprop="description" data-hook="description">
-            <h3>Notes</h3>
-            <% if @vendor.contact_name %><p>Contact Name: <%= @vendor.contact_name %></p><% end %>
-            <p><%= @vendor.notes %></p>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <% if @vendor.email %>
-            <%= link_to "mailto:" + @vendor.email, :class => "btn btn-primary btn-sm" do %><span class="icon icon-envelope"></span> Send Email<% end %>
-          <% end %>
-          <%= link_to_edit(@vendor, :class => "button btn-info") %>
-        </div>
-      </div>
+<div class="col-md-6" data-hook="product_right_part">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="product-title" itemprop="name">Contact</h3>
     </div>
-  </div>
-</div>
+    <div class="panel-body">
+      <div data-hook="product_right_part_wrap">
+        <div id="product-description" data-hook="product_description">
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Address</h3>
+              <% if !(@vendor.address1 || @vendor.address2 || @vendor.city || @vendor.state|| @vendor.country) %>
+                    -
+              <% else %>
+                <%= @vendor.address1 ? @vendor.address1 : "" %> <%= @vendor.address2 ? @vendor.address2 : "" %>
+                <% if @vendor.city || @vendor.state|| @vendor.country %>
+                  <% if (@vendor.address1 || @vendor.address2) %><br><% end %>
+                  <%= (@vendor.city ? @vendor.city : "") + 
+                      ((@vendor.city && (@vendor.state || @vendor.country)) ? ", " : "") + 
+                      (@vendor.state ? @vendor.state.abbr : "") +
+                      ((@vendor.state && @vendor.country) ? ", " : "") +  
+                      (@vendor.country ? @vendor.country.iso3 : "") %>
+                <% end %>
+              <% end %>
+            </div>
+            <div class="col-md-6">
+              <h3>Contact</h3>
+              <span class="icon icon-phone-alt" style="margin: 1px 10px 0 0"></span> <%= @vendor.phone ? @vendor.phone : "N/A" %><br>
+              <span class="icon icon-print" style="margin: 4px 10px 0 0"></span> <%= @vendor.fax ? @vendor.fax : "N/A" %><br>
+              <span class="icon icon-envelope" style="margin: 4px 10px 0 0"></span> <%= @vendor.email ? (link_to @vendor.email, "mailto:" + @vendor.email) : "N/A" %><br>
+              <span class="icon icon-globe" style="margin: 4px 10px 0 0"></span> <%= @vendor.website ? (link_to @vendor.website, @vendor.website, :target => "_blank") : "N/A" %>
+            </div>
+          </div>
+
+          <hr>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="well" itemprop="description" data-hook="description">
+                <h3>Notes</h3>
+                <% if @vendor.contact_name %><p>Contact Name: <%= @vendor.contact_name %></p><% end %>
+                <p><%= @vendor.notes %></p>
+              </div>
+            </div>
+          </div><!-- row -->
+        </div>
+      </div>
+    </div><!-- Panel body -->
+    <div class="panel-footer">
+      <% if @vendor.email %>
+        <%= link_to "mailto:" + @vendor.email, :class => "btn btn-primary btn-sm" do %><span class="icon icon-envelope"></span> Send Email<% end %>
+      <% end %>
+      <%= link_to_edit(@vendor, :class => "button btn-info") %>
+    </div>
+  </div><!-- Panel -->
+</div><!-- col -->
+<div class="col-md-6">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3>Products from this vendor</h3>
+    </div>
+    <div class="panel-body">
+      <table id="product-properties" class="table table-striped" data-hook>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Vendor Part Number</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% @vendor.product_vendors.each do |pv| %>
+              <% css_class = cycle('even', 'odd', :name => "variants") %>
+              <tr class="<%= css_class %>">
+                <td><%= link_to vendor_admin_product_path(pv.variant.product) do %><% pv.variant.name %><% end %></td>
+                <td><%= pv.price %></td>
+                <td><%= pv.vendor_part_number %></td>
+                <td><%= pv.notes %></td>
+              </tr>
+            <% end %>
+          <% reset_cycle('variants') %>
+        </tbody>
+      </table>
+    </div><!-- panel body -->
+  </div><!-- panel -->
+</div><!-- col -->
 

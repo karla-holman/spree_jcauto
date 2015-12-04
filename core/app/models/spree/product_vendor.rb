@@ -16,6 +16,9 @@ module Spree
   	self.whitelisted_ransackable_attributes = ['vendor_id']
     self.whitelisted_ransackable_attributes = ['product_id']
 
+    def price
+      return Spree::Money.new(self.vendor_price, currency: (self.vendor ? self.vendor.currency : "USD")).to_s
+    end
   	# virtual attributes for use with AJAX completion stuff
 
     # Get vendor name

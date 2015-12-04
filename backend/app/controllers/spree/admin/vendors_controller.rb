@@ -20,7 +20,7 @@ module Spree
 
         @collection = super
         @search = @collection.ransack(params[:q])
-        @collection = @search.result.
+        @collection = @search.result.order('name asc').
               page(params[:page]).
               per(Spree::Config[:properties_per_page])
 
