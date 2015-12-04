@@ -15,6 +15,7 @@ module Spree
 	    scope :sorted, -> { order(:model) }
 
 	    after_touch :touch_all_products
+	    before_save :set_country_create, only: :create
 	    # before_save :update_name
 	    # after_create :update_name_first
 
@@ -31,20 +32,11 @@ module Spree
 	      products.update_all(updated_at: Time.current)
 	    end
 
-=begin
-	    def update_name
-	       if self.name
-		       make_name = self.make ? make.name : "No Make"
-		       model_name = self.model ? model.name : ""
-		       self.update_column(:name, make_name + " " + model_name)
-		    end
-	    end
-
-	    def update_name_first
-	    	self.name = "new name"
-	    	self.save
-	    end
-=end
+		def set_country_create
+			self.country ||= Spree::Country.default
+			rescue ActiveRecord::RecordNotFound
+			flash[:error] = Spree.t(:vendor_need_a_default_country)
+		end
 	end
 end
 

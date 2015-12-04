@@ -1,14 +1,14 @@
-<div data-hook="admin_vendor_form" class="row">
-  <div class="row">
-    <div class="col-md-4" data-hook="stock_location_names">
-      <div data-hook="stock_location_name">
-        <%= f.field_container :name, class: ['form-group']  do %>
-        <%= f.label :name, Spree.t(:name) %> <span class="required">*</span><br />
-        <%= f.text_field :name, class: 'form-control', required: true %>
-        <% end %>
-      </div>
+<div data-hook="admin_stock_locations_form_fields">
+  <div class="form-group" data-hook="stock_location_names">
+    <div data-hook="stock_location_name">
+      <%= f.field_container :name, class: ['form-group']  do %>
+      <%= f.label :name, Spree.t(:name) %> <span class="required">*</span><br />
+      <%= f.text_field :name, class: 'form-control', required: true %>
+      <% end %>
     </div>
-    <div class="col-md-4" data-hook="stock_location_names">
+  </div>
+  <div class="row">
+    <div class="col-md-6" data-hook="stock_location_names">
       <div data-hook="stock_location_name">
         <%= f.field_container :email, class: ['form-group']  do %>
         <%= f.label :email, Spree.t(:email) %><br />
@@ -16,12 +16,26 @@
         <% end %>
       </div>
     </div>
-    <div class="col-md-4" data-hook="stock_location_names">
+    <div class="col-md-6" data-hook="stock_location_names">
       <div data-hook="stock_location_name">
         <%= f.field_container :website, class: ['form-group']  do %>
         <%= f.label :website, Spree.t(:website) %><br />
         <%= f.text_field :website, class: 'form-control', required: false %>
         <% end %>
+      </div>
+    </div>
+  </div><!-- row -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group" data-hook="stock_location_phone">
+        <%= f.label :phone, Spree.t(:phone) %>
+        <%= f.phone_field :phone, class: 'form-control' %>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group" data-hook="stock_location_fax">
+        <%= f.label :fax, Spree.t(:fax) %>
+        <%= f.phone_field :fax, class: 'form-control' %>
       </div>
     </div>
   </div>
@@ -44,11 +58,6 @@
   <div class="form-group" data-hook="stock_location_zipcode">
     <%= f.label :zipcode, Spree.t(:zip) %>
     <%= f.text_field :zipcode, class: 'form-control' %>
-  </div>
-
-  <div class="form-group" data-hook="stock_location_phone">
-    <%= f.label :phone, Spree.t(:phone) %>
-    <%= f.phone_field :phone, class: 'form-control' %>
   </div>
 
   <div class="form-group" data-hook="stock_location_country">

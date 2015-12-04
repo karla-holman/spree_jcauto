@@ -43,30 +43,51 @@
       <tr data-hook="listing_properties_header">
         <th><%= Spree.t(:name) %></th>
         <th><%= Spree.t(:address) %></th>
-        <th><%= Spree.t(:city) %></th>
-        <th><%= Spree.t(:state_or_province) %></th>
-        <th><%= Spree.t(:country) %></th>
-        <th><%= Spree.t(:phone) %></th>
-        <th><%= Spree.t(:email) %></th>
-        <th><%= Spree.t(:website) %></th>
+        <th><%= Spree.t(:phone_and_fax) %></th>
+        <th><%= Spree.t(:email_and_website) %></th>
         <th class="actions"></th>
       </tr>
     </thead>
     <tbody>
       <% my_vendors.each do |vendor| %>
         <tr id="<%= spree_dom_id vendor %>" data-hook="listing_vendors_row">
-          <td><%= vendor.name %></td>
-          <td><%= vendor.address1 ? vendor.address1 : "-" %> <%= vendor.address2 ? vendor.address2 : "" %></td>
-          <td><%= vendor.city ? vendor.city : "-" %></td>
-          <td><%= vendor.state ? vendor.state : "-" %></td>
-          <td><%= vendor.country ? vendor.country : "-" %></td>
-          <td><%= vendor.phone ? vendor.phone : "-" %></td>
-          <td><%= vendor.email ? (link_to vendor.email, "mailto:" + vendor.email) : "-" %></td>
-          <td><%= vendor.website ? (link_to vendor.website, vendor.website, :target => "_blank") : "-" %></td>
+          <td><%= link_to admin_vendor_path(vendor) do %><%= vendor.name %><% end %></td>
+          <td>
+            <% if !(vendor.address1 || vendor.address2 || vendor.city || vendor.state|| vendor.country) %>
+                -
+            <% else %>
+              <%= vendor.address1 ? vendor.address1 : "" %> <%= vendor.address2 ? vendor.address2 : "" %>
+              <% if vendor.city || vendor.state|| vendor.country %>
+                <% if (vendor.address1 || vendor.address2) %><br><% end %>
+                <%= (vendor.city ? vendor.city : "") + 
+                    ((vendor.city && (vendor.state || vendor.country)) ? ", " : "") + 
+                    (vendor.state ? vendor.state.abbr : "") +
+                    ((vendor.state && vendor.country) ? ", " : "") +  
+                    (vendor.country ? vendor.country.iso3 : "") %>
+              <% end %>
+            <% end %>
+          </td>
+          <td>
+            <% if vendor.phone %>
+              <strong>P: </strong><%= vendor.phone ? vendor.phone : "-" %>
+            <% end %>
+            <% if vendor.fax %>
+              <% if vendor.phone %><br><% end %>
+              <strong>F:</strong><%= vendor.fax ? vendor.fax : "-" %>
+            <% end %>
+          </td>
+          <td>
+            <% if (vendor.email || vendor.website) %>
+              <%= vendor.email ? (link_to vendor.email, "mailto:" + vendor.email) : "" %>
+              <% if vendor.email && vendor.website %><br><% end %>
+              <%= vendor.website ? (link_to vendor.website, vendor.website, :target => "_blank") : "" %>
+            <% else %>
+              -
+            <% end %>
+          </td>
           <td class="actions actions-2 text-right">
             <%= link_to_edit(vendor, :no_text => true) %>
             <%= link_to_delete(vendor, :no_text => true) %>
-            <%= link_to_with_icon("eye-open", "View", admin_vendor_path(vendor)) %>
           </td>
         </tr>
       <% end %>

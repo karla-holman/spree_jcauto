@@ -9,17 +9,26 @@
 
         <div class="col-md-6">
           <h3>Address</h3>
-          <%= @vendor.address1 %><br>
-          <% if @vendor.address2 %>
-            <%= @vendor.address2 %><br>
+          <% if !(@vendor.address1 || @vendor.address2 || @vendor.city || @vendor.state|| @vendor.country) %>
+                -
+          <% else %>
+            <%= @vendor.address1 ? @vendor.address1 : "" %> <%= @vendor.address2 ? @vendor.address2 : "" %>
+            <% if @vendor.city || @vendor.state|| @vendor.country %>
+              <% if (@vendor.address1 || @vendor.address2) %><br><% end %>
+              <%= (@vendor.city ? @vendor.city : "") + 
+                  ((@vendor.city && (@vendor.state || @vendor.country)) ? ", " : "") + 
+                  (@vendor.state ? @vendor.state.abbr : "") +
+                  ((@vendor.state && @vendor.country) ? ", " : "") +  
+                  (@vendor.country ? @vendor.country.iso3 : "") %>
+            <% end %>
           <% end %>
-          <%= "#{@vendor.city}, #{@vendor.state} #{@vendor.zipcode}" %>
         </div>
         <div class="col-md-6">
           <h3>Contact</h3>
           <span class="icon icon-phone-alt" style="margin: 1px 10px 0 0"></span> <%= @vendor.phone %><br>
+          <span class="icon icon-print" style="margin: 4px 10px 0 0"></span> <%= @vendor.fax ? (link_to @vendor.fax, @vendor.fax, :target => "_blank") : "N/A" %><br>
           <span class="icon icon-envelope" style="margin: 4px 10px 0 0"></span> <%= @vendor.email ? (link_to @vendor.email, "mailto:" + @vendor.email) : "N/A" %><br>
-          <span class="icon icon-globe" style="margin: 4px 10px 0 0"></span> <%= @vendor.website ? (link_to @vendor.website, @vendor.website, :target => "_blank") : "N/A" %><br>
+          <span class="icon icon-globe" style="margin: 4px 10px 0 0"></span> <%= @vendor.website ? (link_to @vendor.website, @vendor.website, :target => "_blank") : "N/A" %>
         </div>
       </div>
 
@@ -28,6 +37,7 @@
         <div class="col-md-12">
           <div class="well" itemprop="description" data-hook="description">
             <h3>Notes</h3>
+            <% if @vendor.contact_name %><p>Contact Name: <%= @vendor.contact_name %></p><% end %>
             <p><%= @vendor.notes %></p>
           </div>
         </div>

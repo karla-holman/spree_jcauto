@@ -582,6 +582,7 @@ module Spree
         :address2 => row.cells[7] ? row.cells[7].value : nil,
         :phone => row.cells[2] ? row.cells[2].value : nil,
         :email => row.cells[4] ? row.cells[4].value : nil,
+        :fax => row.cells[3] ? row.cells[3].value : nil,
         :website => row.cells[5] ? row.cells[5].value : nil,
         :contact_name => row.cells[1] ? row.cells[1].value : nil,
         :city => row.cells[8] ? row.cells[8].value : nil,
@@ -603,7 +604,11 @@ module Spree
       end
 
       if countries.empty?
-         @errors << { :part_number => @vendor_row[:name], :condition => "N/A", :message => "Cannot identify country with name #{@vendor_row[:country]}"  }
+        if(@vendor_row[:country])
+          @errors << { :part_number => @vendor_row[:name], :condition => "N/A", :message => "Cannot identify country with name #{@vendor_row[:country]}" }
+        else
+          @errors << { :part_number => @vendor_row[:name], :condition => "N/A", :message => "No country listed, setting to default (#{Spree::Country.default})" }
+        end
       else
         country_id = countries.first.id
         if(@vendor_row[:state])
@@ -629,6 +634,7 @@ module Spree
                                      :address1 => @vendor_row[:address1],
                                      :address2 => @vendor_row[:address2],
                                      :phone => @vendor_row[:phone],
+                                     :fax => @vendor_row[:fax],
                                      :email => @vendor_row[:email],
                                      :website => website,
                                      :contact_name => @vendor_row[:contact_name],

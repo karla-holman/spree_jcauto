@@ -5,7 +5,7 @@ module Spree
         respond_with(@collection)
       end
 
-      before_action :set_country, only: :new
+      before_action :set_country, only: [:new, :edit]
 
       def show
         @vendor = Vendor.find(params[:id])
@@ -28,7 +28,7 @@ module Spree
       end
 
       def set_country
-        @vendor.country = Spree::Country.default
+        @vendor.country = @vendor.country ?  @vendor.country : Spree::Country.default
         rescue ActiveRecord::RecordNotFound
         flash[:error] = Spree.t(:vendor_need_a_default_country)
         redirect_to admin_vendors_path
