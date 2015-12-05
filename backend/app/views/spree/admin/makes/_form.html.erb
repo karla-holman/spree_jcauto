@@ -3,6 +3,10 @@
     <%= f.label :name, Spree.t(:name) %> <span class="required">*</span>
     <%= f.text_field :name, class: 'form-control' %>
   </div>
+  <div class="form-group">
+    <%= f.label :abbreviation, Spree.t(:abbreviation) %>
+    <%= f.text_field :abbreviation, class: 'form-control' %>
+  </div>
 
   <div data-hook="additional_role_fields"></div>
 </div>

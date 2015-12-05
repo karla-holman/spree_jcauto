@@ -34,7 +34,8 @@
   <table class="table" id='listing_properties' data-hook>
     <thead>
       <tr data-hook="listing_properties_header">
-        <th><%= Spree.t(:make_id) %></th>
+        <th><%= Spree.t(:make) %></th>
+        <th><%= Spree.t(:abbreviation) %></th>
         <th class="actions"></th>
       </tr>
     </thead>
@@ -42,6 +43,7 @@
       <% @makes.each do |make|%>
         <tr id="<%= spree_dom_id make %>" data-hook="listing_applications_row">
           <td><%= make.name %></td>
+          <td><%= make.abbreviation %></td>
           <td class="actions text-right">
             <%= link_to_edit(make, no_text: true) if can? :edit, make %>
             <%= link_to_delete(make, no_text: true) if can? :destroy, make %>

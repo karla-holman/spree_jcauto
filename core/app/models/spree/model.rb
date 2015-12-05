@@ -2,6 +2,10 @@ module Spree
 	class Model < Spree::Base
 		validates :name, presence: true
 		belongs_to :make
+		has_many :applications, dependent: :destroy
+
+		validates :name, presence: true, uniqueness: true
+		validates :abbreviation, uniqueness: true, :allow_blank => true
 
 		validates :start_year, numericality: true
 	  	validates :start_year, :inclusion => {:in => 1900..Time.now.year }

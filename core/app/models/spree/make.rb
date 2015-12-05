@@ -1,6 +1,10 @@
 module Spree
 	class Make < Spree::Base
-		has_many :models
+		has_many :models, dependent: :destroy
+		has_many :applications, dependent: :destroy
+
+		validates :name, presence: true, uniqueness: true
+		validates :abbreviation, uniqueness: true, :allow_blank => true
 
 		after_create :create_application_if_not_exist
 

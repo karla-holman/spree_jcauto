@@ -54,7 +54,7 @@
                             <div class="col-md-8">
                               <div class="form-group">
                                   <%= f.field_container :vendor_price do %>
-                                    <%= f.number_field :vendor_price, class: 'form-control', value: item.vendor_price %>
+                                    <%= f.number_field :vendor_price, class: 'form-control', step: "any", value: item.vendor_price %>
                                   <% end %>
                               </div>
                             </div>

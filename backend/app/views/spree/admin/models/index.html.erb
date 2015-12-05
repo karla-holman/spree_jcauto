@@ -35,6 +35,7 @@
     <thead>
       <tr data-hook="listing_properties_header">
         <th><%= Spree.t(:model_id) %></th>
+        <th><%= Spree.t(:abbreviation) %></th>
         <th><%= Spree.t(:make_id) %></th>
         <th><%= Spree.t(:start_year) %></th>
         <th><%= Spree.t(:end_year) %></th>
@@ -45,6 +46,7 @@
       <% @models.each do |model|%>
         <tr id="<%= spree_dom_id model %>" data-hook="listing_applications_row">
           <td><%= model.name %></td>
+          <td><%= model.abbreviation %></td>
           <td><%= model.make.name %></td>
           <td><%= model.start_year %></td>
           <td><%= model.end_year %></td>
