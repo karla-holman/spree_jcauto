@@ -1,9 +1,15 @@
 <h2 class="taxon-title"><%= @taxon.name %></h2>
 
 <% content_for :sidebar do %>
-  <div data-hook="taxon_sidebar_navigation">
-    <%= render partial: 'spree/shared/taxonomies' %>
-    <%= render partial: 'spree/shared/filters' if @taxon.leaf? %>
+  <div class="well">
+    <p style="display: inline-block">Can't find the part you need?</p>
+    <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
+  </div>
+  <div class="well">
+    <div data-hook="taxon_sidebar_navigation">
+      <%= render partial: 'spree/shared/taxonomies' %>
+      <%= render partial: 'spree/shared/filters' if @taxon.leaf? %>
+    </div>
   </div>
 <% end %>
 

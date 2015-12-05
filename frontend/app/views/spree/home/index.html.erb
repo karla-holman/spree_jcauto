@@ -1,7 +1,13 @@
 <% content_for :sidebar do %>
-  <div data-hook="homepage_sidebar_navigation">
-    <%= render :partial => 'spree/shared/taxonomies' %>
-  </div>
+	<div class="well">
+	  <p style="display: inline-block">Can't find the part you need?</p>
+	  <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
+	</div>
+	<div data-hook="homepage_sidebar_navigation">
+		<div class="well">
+			<%= render :partial => 'spree/shared/taxonomies' %>
+		</div>
+	</div>
 <% end %>
 
 <div data-hook="homepage_products">
