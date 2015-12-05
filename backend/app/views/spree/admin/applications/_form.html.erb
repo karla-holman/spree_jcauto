@@ -10,7 +10,6 @@
   <div class="col-md-6">
     <%= f.field_container :model, class: ['form-group'] do %>
       <%= f.label :model, Spree.t(:model) %>
-      <%= f.collection_select :model_id, Spree::Model.order(:name), :id, :name, {:prompt => "Select a Model"}, {:class=>'form-control'} %>
       <% Spree::Make.all.each do |make| %>
         <%= f.collection_select(:model_id, Spree::Model.where("make_id=?", make.id).order(:name), :id, :name, {:prompt => "Select a Model"}, {:class=>'form-control', :id => "application_model_id_"+ (make.id).to_s, :style => "display: none;" }) %>
       <% end %>

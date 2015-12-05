@@ -1,10 +1,8 @@
-<%= render partial: 'spree/admin/shared/error_messages', locals: { target: @property } %>
-
 <% content_for :page_title do %>
-  <%= Spree.t(:new_property) %>
+  <%= Spree.t(:new_application) %>
 <% end %>
 
-<%= form_for [:admin, @property] do |f| %>
+<%= form_for [:admin, @application] do |f| %>
   <fieldset data-hook="new_property">
     <%= render partial: 'form', locals: { f: f } %>
     <div class="form-actions">

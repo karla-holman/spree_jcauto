@@ -15,6 +15,9 @@ module Spree
 	    before_save :update_name
 	    after_create :update_name_first
 
+	    validates :model_id, presence: true, uniqueness: { scope: :make_id }, :allow_blank => true
+
+
 	    self.whitelisted_ransackable_attributes = ['make_id']
 	    self.whitelisted_ransackable_attributes = ['model_id']
 
