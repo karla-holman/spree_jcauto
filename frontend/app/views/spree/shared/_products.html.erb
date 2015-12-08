@@ -21,10 +21,7 @@
   <table class="table table-hover">
     <tr>
       <th>Image</th>
-      <th>Part Number</th>
-      <th>Description</th>
-      <th>Applications</th>
-      <th>Price</th>
+      <th>Info</th>
     </tr>
     <% products.each do |product| %>
       <!-- Spree Setup -->
@@ -33,29 +30,52 @@
       <!-- End Spree Setup -->
       
       <tr>
-        <td style="vertical-align: middle"><!-- Image -->
+        <!-- Image and part number -->
+        <td style="vertical-align: middle; text-align: center"><!-- Image -->
           <%= link_to small_image(product, itemprop: "image"), url, itemprop: 'url' %>
+          <h5><%= link_to truncate(product.property("Part Number"), length: 50), url, class: 'info', itemprop: "name", title: product.property("Part Number") %></h5>
         </td>
-        <td style="vertical-align: middle"><!-- Part Number -->
-          <% if !product.product_properties.where("property_id=?", 1).empty? %>
-            <%= link_to truncate(product.property("Part Number"), length: 50), url, class: 'info', itemprop: "name", title: product.property("Part Number") %>
+        <!-- Information -->
+        <td style="vertical-align: middle">
+          <!-- Price -->
+          <% product.variants_and_option_values(current_currency).each_with_index do |variant, index| %>
+              <!-- %= label_tag "variant_id_#{ variant.id }" do %-->
+                <!-- span class="variant-description"-->
+                <span style="font-weight: 700; margin-bottom: 0px; color: #bf210a">
+                  <% if variant_price variant %>
+                    <!--span class="price diff"-->
+                    <%= variant_price variant %>
+                  <% end %>
+                </span>
+                <% price_in_currency = variant.price_in(current_currency) %>
+                (<%= variant_options variant %><%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>)
+                <% unless variant.can_supply? %>
+                  <!--span class="out-of-stock"-->
+                  <%= Spree.t(:out_of_stock) %>
+                <% end %>
+              <!--% end %--><br>
+          <% end%>
+          <strong>Cross References:</strong> 
+          <% if !product.product_properties.where("property_id=?", 3).empty? %>
+            <%= product.property("Cross Reference") %>
           <% else %>
             N/A
-          <% end %>
-        </td>
-        <td style="vertical-align: middle"><!-- Description -->
-          <%= product.description %>
-        </td>
-        <td style="vertical-align: middle"><!-- Description -->
-          <% unless product.product_applications.empty? %> 
-              <% product.product_applications.each do |product_application| %>
-                  <%= product_application.name %></br>
-                
+          <% end %><br>
+          <strong>Description:</strong> 
+          <% if product.description %>
+            <%= product.description %>
+          <% else %>
+            N/A
+          <% end %><br>
+          <strong>Applications:</strong> 
+          <% if product.product_applications.empty? %> 
+            N/A
+          <% else %>
+              <% len = product.product_applications.length %>
+              <% product.product_applications.order('start_year asc').each_with_index do |product_application, index| %>
+                  <%= product_application.name.strip %><%= index+1 == len ? "" : ", " %>
               <% end %>
           <% end %>
-        </td>
-        <td style="vertical-align: middle"><!-- Price -->
-          <span class="price selling lead" itemprop="price"><%= display_price(product) %></span>
         </td>
       </tr>
       <% end %>

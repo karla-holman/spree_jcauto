@@ -261,9 +261,14 @@ module Spree
           # If exception, it includes remaining words
           if (exceptions = make_model_set.match(/(.*|\A)(exc{0,1}[\.\s]{0,1})(.*)/)) || (exceptions = make_model_set.match(/(.*|\A)(except\s{0,1})(.*)/))
             next_values = ""
-            while true
+            found_current=false
+            while true # loop to find exception, then add all words after it to exception notes
               begin
-                next_values += next_values!="" ? " " + make_model_sets_enum.next : make_model_sets_enum.next
+                if(found_current) # add words following exception to notes
+                  next_values += next_values!="" ? ", " + make_model_sets_enum.next : make_model_sets_enum.next
+                elsif(make_model_sets_enum.next == make_model_set) # If you've reached exception
+                  found_current=true
+                end
               rescue StopIteration
                 break
               end
@@ -304,7 +309,7 @@ module Spree
           end
 
           # if my notes is empty, applies to all
-          my_notes = my_notes=="" ? "all" : my_notes
+          my_notes = (my_notes=="" && !my_model) ? "all" : my_notes
 
           # add exceptions to the end of notes
           my_notes += (my_notes!="" && my_exceptions != "") ? " " + my_exceptions : my_exceptions
@@ -319,6 +324,10 @@ module Spree
 
           if(!my_application)
             @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not find make or model for " + make_model_set }
+          end
+
+          if(my_exceptions != "")
+            break # break out of make_model_set loop if remaining words are exception
           end
         end # end make_model_sets ex. "Plymouth Valiant "
       end # end @app_data loop ex. { :start_year => "60", :end_year => "9", :text => "Plymouth Valiant "}
