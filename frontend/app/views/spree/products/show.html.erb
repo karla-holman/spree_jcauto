@@ -1,15 +1,73 @@
 <% @body_id = 'product-details' %>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="myModalLabel">Image for <%= @product.name %></h3>
+      </div>
+      <div class="modal-body">
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+          <!-- Indicators -->
+          <ol class="carousel-indicators">
+            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+          </ol>
+
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner" role="listbox">
+            <% if @product.variant_images && !@product.variant_images.empty? %>
+              <% (@product.variant_images).each do |image| %>
+              <div class="item active">
+                <%= image_tag(image.attachment.url(:large)) %>
+                <div class="carousel-caption">
+                </div>
+              </div>
+              <% end %>
+            <% else %>
+              <div class="item active">
+                <%= product_image(@product, :itemprop => "image") %>
+                <div class="carousel-caption">
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <% if @product.variant_images && @product.variant_images.length > 0 %>
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          <% end %>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <% cache [I18n.locale, current_currency, @product, @product.possible_promotions] do %>
   <div data-hook="product_show" itemscope itemtype="https://schema.org/Product">
     <div class="col-md-4" data-hook="product_left_part">
       <div data-hook="product_left_part_wrap">
         <div id="product-images" data-hook="product_images">
-          <div id="main-image" class="panel panel-default" data-hook>
-            <div class="panel-body text-center">
-              <%= render :partial => 'image' %>
+          <a href="" data-toggle="modal" data-target="#myModal">
+            <div id="main-image" class="panel panel-default" data-hook>
+              <div class="panel-body text-center" >
+                <%= render :partial => 'image' %>
+              </div>
             </div>
-          </div>
+          </a>
           <div id="thumbnails" data-hook>
             <%= render :partial => 'thumbnails' %>
           </div>
