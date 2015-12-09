@@ -37,6 +37,11 @@
         </td>
         <!-- Information -->
         <td style="vertical-align: middle">
+          <% if product.description %>
+            <h3 style="margin: 0 0 5px 0"><%= product.description %></h3>
+          <% else %>
+            N/A
+          <% end %>
           <!-- Price -->
           <% product.variants_and_option_values(current_currency).each_with_index do |variant, index| %>
               <!-- %= label_tag "variant_id_#{ variant.id }" do %-->
@@ -58,12 +63,6 @@
           <strong>Cross References:</strong> 
           <% if !product.product_properties.where("property_id=?", 3).empty? %>
             <%= product.property("Cross Reference") %>
-          <% else %>
-            N/A
-          <% end %><br>
-          <strong>Description:</strong> 
-          <% if product.description %>
-            <%= product.description %>
           <% else %>
             N/A
           <% end %><br>
