@@ -43,6 +43,8 @@ module Spree
     after_create :create_stock_items
     after_create :set_master_out_of_stock, unless: :is_master?
 
+    after_save :touch_product, unless: :is_master?
+
     after_touch :clear_in_stock_cache
 
     scope :in_stock, -> { joins(:stock_items).where('count_on_hand > ? OR track_inventory = ?', 0, false) }
@@ -173,6 +175,7 @@ module Spree
         # if no stock_location with no sub location
         if(!stock_location || stock_location.length == 0)
           # create a new stock_location
+          byebug
           stock_location = Spree::StockItem.create :stock_location => location,
                                                    :variant => self,
                                                    :backorderable => false,
@@ -181,6 +184,7 @@ module Spree
         else # otherwise update stock location's nil sub location with sub location
           stock_location.first.update_attribute("sub_location", sub_loc_name)
         end
+        self.stock_items << stock_location
         true
       else # return false if already listed
         false
@@ -302,6 +306,18 @@ module Spree
 
       def clear_in_stock_cache
         Rails.cache.delete(in_stock_cache_key)
+      end
+
+      # Iterate through this products taxons and taxonomies and touch their timestamps in a batch
+      def touch_product
+        byebug
+        return if self.is_master
+
+        if !self.product.is_active
+          self.product.update_column("available_on", DateTime.new(2100,1,1))
+        else # otherwise if one is found make sure it is active
+          self.product.update_column("available_on", DateTime.new(2015,1,1))
+        end
       end
   end
 end

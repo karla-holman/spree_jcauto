@@ -113,6 +113,11 @@ module Spree
       variants.any?
     end
 
+    # return active variant
+    def is_active
+      self.variants.detect { |v| v.active }
+    end
+
     def tax_category
       if self[:tax_category_id].nil?
         TaxCategory.where(is_default: true).first

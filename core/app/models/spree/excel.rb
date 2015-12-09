@@ -25,6 +25,7 @@ module Spree
 
     # Stock Locations
     @@loc_suite2 = Spree::StockLocation.where("admin_name=?", "Suite 2").first
+    @@loc_suite2_nfs = Spree::StockLocation.where("admin_name=?", "Suite 2 (nfs)").first
     @@loc_suite3 = Spree::StockLocation.where("admin_name=?", "Suite 3").first
     @@loc_home = Spree::StockLocation.where("admin_name=?", "Home").first
     @@loc_home_nfs = Spree::StockLocation.where("admin_name=?", "Home (nfs)").first
@@ -97,7 +98,7 @@ module Spree
       @product_row = {
         :name => product_name,
         :category => my_category,
-        :description => row.cells[2].value.tr('***', ''),
+        :description => row.cells[2].value.tr('***', '').chomp('-'),
         :tax_code => row.cells[3].value,
         :price => row.cells[4].value,
         :cost => row.cells[5].value,
@@ -117,7 +118,8 @@ module Spree
         :available => row.cells[19].value,
         :online => row.cells[20].value,
         :active => row.cells[21].value,
-        :vendor_part_number => row.cells[22].value
+        :vendor_part_number => row.cells[22].value,
+        :quantity => row.cells[23].value
       }
 
     end
@@ -148,13 +150,27 @@ module Spree
         update_condition_type
       end
 
-      update_conditions_value
+      # only continue if this condition and part number does not already exist
+      if update_conditions_value
+
+        if @product_row[:quantity] > 0
+          add_quantity(@product_row[:quantity], @new_product_condition, @product_row[:location], @product_row)
+        end
+
+        # if all variants not active, don't show to customers
+=begin
+        if !@new_product.is_active
+          @new_product.update_attribute("available_on", DateTime.new(2100,1,1))
+        else # otherwise if one is found make sure it is active
+          @new_product.update_attribute("available_on", DateTime.new(2015,1,1))
+        end
+=end
+      end
 
       # add vendor
       if @product_row[:vendor]
         add_vendor()
       end
-      
     end
 
     # Return a new product from each row of worksheet
@@ -397,6 +413,7 @@ module Spree
 
     # called if no condition value exists
     def create_condition_variant(option_value)
+      active = (!(@product_row[:active]) || (@product_row[:available] && @product_row[:available].downcase == "n")) ? false : true
       # Create condition variants
       @new_product_condition = Spree::Variant.create :sku => @product_row[:name],
               :is_master => false,
@@ -404,6 +421,7 @@ module Spree
               :track_inventory => true,
               :tax_category_id => @@auto_tax_category_id,
               :stock_items_count => 0,
+              :active => active,
               :notes => ""
 
       # Set price and core price
@@ -507,10 +525,10 @@ module Spree
           @@loc_home_nfs
         # NFS if listed as inactive
         when /w\d{1,2}/ 
-          @product_row[:name] == "N" ? @@loc_home_nfs : @@loc_home
+          @new_product_condition.active ? @@loc_home : @@loc_home_nfs
         # F209 OR D105.3 OR file cabinet OR h2
         when /[[:alpha:]]\d{2,3}|D\d{3}\.\d|h\d|file\scabinet|suite\s2/
-          @@loc_suite2
+          @new_product_condition.active ? @@loc_suite2 : @@loc_suite2_nfs
         # NWC08
         when /nw[[:alpha:]]\d{1,2}|ste3/
           @@loc_suite3
@@ -533,6 +551,21 @@ module Spree
       end # end location loop
 
       added_new_stock_item # return true if at least one new stock item added
+
+    end
+
+    # Add quantity to variant at sub_location
+    def add_quantity(quantity, variant, sub_location, row_hash)
+      # if only one sub location listed
+      if sub_location.split(",").length > 1
+        @errors << { :part_number => row_hash[:name], :condition => row_hash[:condition], :message => "Cannot add initial quantity for part with multiple sub locations (#{sub_location})" }
+      # otherwise if there is a sub_location stock item
+      elsif stock_item = variant.sub_location(sub_location)
+      #if !(stock_item = @new_product_condition.where("sub_location=?", sub_location)).empty
+        stock_item.adjust_count_on_hand(quantity)
+      else
+        @errors << { :part_number => row_hash[:name], :condition => row_hash[:condition], :message => "Cannot find stock item for " + sub_location }
+      end
 
     end
 
