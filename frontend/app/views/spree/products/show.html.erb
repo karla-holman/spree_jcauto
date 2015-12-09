@@ -7,21 +7,21 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title" id="myModalLabel">Image for <%= @product.name %></h3>
-      </div>
+      </div><!-- header -->
       <div class="modal-body">
         <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
           <!-- Indicators -->
           <ol class="carousel-indicators">
-            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+            <% @product.variant_images.length.times do |i| %>
+              <li data-target="#carousel-example-generic" data-slide-to="0" class="<%= index == 1 ? "active" : "" %>"></li>
+            <% end %>
           </ol>
 
           <!-- Wrapper for slides -->
           <div class="carousel-inner" role="listbox">
             <% if @product.variant_images && !@product.variant_images.empty? %>
-              <% (@product.variant_images).each do |image| %>
-              <div class="item active">
+              <% (@product.variant_images).each_with_index do |image, index| %>
+              <div class="item <%= index == 1 ? "active" : "" %>" >
                 <%= image_tag(image.attachment.url(:large)) %>
                 <div class="carousel-caption">
                 </div>
@@ -36,6 +36,7 @@
             <% end %>
           </div>
 
+          <!-- Controls -->
           <% if @product.variant_images && @product.variant_images.length > 0 %>
             <!-- Controls -->
             <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
@@ -48,13 +49,13 @@
             </a>
           <% end %>
         </div>
-      </div>
+      </div><!-- Modal body -->
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+      </div><!-- Modal footer -->
+    </div><!-- Modal content -->
+  </div><!-- Modal dialog -->
+</div><!-- Modal fade -->
 
 <% cache [I18n.locale, current_currency, @product, @product.possible_promotions] do %>
   <div data-hook="product_show" itemscope itemtype="https://schema.org/Product">
