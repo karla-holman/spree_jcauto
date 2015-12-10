@@ -99,27 +99,26 @@ module Spree
         :name => product_name,
         :category => my_category,
         :description => row.cells[2].value.tr('***', '').chomp('-'),
-        :tax_code => row.cells[3].value,
-        :price => row.cells[4].value,
-        :cost => row.cells[5].value,
-        :vendor => row.cells[6].value,
-        :vendor_price => row.cells[7].value,
-        :length => row.cells[8].value,
-        :width => row.cells[9].value,
-        :height => row.cells[10].value,
-        :weight => row.cells[11].value,
-        :notes => row.cells[12].value,
-        :application => row.cells[13].value,
-        :location => row.cells[14].value,
-        :condition => row.cells[15].value,
-        :cross_ref => row.cells[16].value,
-        :cast_num => row.cells[17].value,
-        :core => row.cells[18].value,
-        :available => row.cells[19].value,
-        :online => row.cells[20].value,
-        :active => row.cells[21].value,
-        :vendor_part_number => row.cells[22].value,
-        :quantity => row.cells[23].value
+        :price => row.cells[8].value,
+        :core => row.cells[9].value,
+        :cost => row.cells[14].value,
+        :vendor => row.cells[15].value,
+        :vendor_price => row.cells[16].value,
+        :vendor_part_number => row.cells[17].value,
+        :length => row.cells[18].value,
+        :width => row.cells[19].value,
+        :height => row.cells[20].value,
+        :weight => row.cells[21].value,
+        :notes => row.cells[11].value,
+        :application => row.cells[3].value,
+        :location => row.cells[4].value,
+        :condition => row.cells[5].value,
+        :cross_ref => row.cells[6].value,
+        :cast_num => row.cells[7].value,
+        :available => row.cells[12].value, # for sale? (count in inventory)
+        :active => row.cells[13].value, # active (visible to users)
+        :quantity => row.cells[10].value,
+        :package => row.cells[22].value
       }
 
     end
@@ -157,14 +156,6 @@ module Spree
           add_quantity(@product_row[:quantity], @new_product_condition, @product_row[:location], @product_row)
         end
 
-        # if all variants not active, don't show to customers
-=begin
-        if !@new_product.is_active
-          @new_product.update_attribute("available_on", DateTime.new(2100,1,1))
-        else # otherwise if one is found make sure it is active
-          @new_product.update_attribute("available_on", DateTime.new(2015,1,1))
-        end
-=end
       end
 
       # add vendor
@@ -421,7 +412,7 @@ module Spree
 
     # called if no condition value exists
     def create_condition_variant(option_value)
-      active = (!(@product_row[:active]) || (@product_row[:available] && @product_row[:available].downcase == "n")) ? false : true
+      active = (@product_row[:active] == 1) ? true : false
       # Create condition variants
       @new_product_condition = Spree::Variant.create :sku => @product_row[:name],
               :is_master => false,
@@ -531,12 +522,12 @@ module Spree
         # NFS no matter what - JC10 OR buffalo display case OR back shop
         when /jc\d{1,2}|buffalo|back\sshop|attic/ 
           @@loc_home_nfs
-        # NFS if listed as inactive
+        # NFS if listed as not for sale (don't count in quantity)
         when /w\d{1,2}/ 
-          @new_product_condition.active ? @@loc_home : @@loc_home_nfs
+          (@product_row[:available] && @product_row[:available].downcase == "n") ? @@loc_home : @@loc_home_nfs
         # F209 OR D105.3 OR file cabinet OR h2
         when /[[:alpha:]]\d{2,3}|D\d{3}\.\d|h\d|file\scabinet|suite\s2/
-          @new_product_condition.active ? @@loc_suite2 : @@loc_suite2_nfs
+          (@product_row[:available] && @product_row[:available].downcase == "n") ? @@loc_suite2 : @@loc_suite2_nfs
         # NWC08
         when /nw[[:alpha:]]\d{1,2}|ste3/
           @@loc_suite3

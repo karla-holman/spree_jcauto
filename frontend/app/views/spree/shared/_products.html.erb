@@ -36,7 +36,7 @@
           <h5><%= link_to truncate(product.property("Part Number"), length: 50), url, class: 'info', itemprop: "name", title: product.property("Part Number") %></h5>
         </td>
         <!-- Information -->
-        <td style="vertical-align: middle">
+        <td class="mobile-left" style="vertical-align: middle">
           <% if product.description %>
             <p style="font-weight: 700; margin-bottom: 0px;"><%= link_to url, class: 'info' do %><%= product.description %><% end %></p>
           <% else %>

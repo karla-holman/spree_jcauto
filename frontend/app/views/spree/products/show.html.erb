@@ -13,7 +13,7 @@
           <!-- Indicators -->
           <ol class="carousel-indicators">
             <% @product.variant_images.length.times do |i| %>
-              <li data-target="#carousel-example-generic" data-slide-to="0" class="<%= index == 1 ? "active" : "" %>"></li>
+              <li data-target="#carousel-example-generic" data-slide-to="0" class="<%= i == 1 ? "active" : "" %>"></li>
             <% end %>
           </ol>
 

@@ -15,19 +15,19 @@
         <div class="col-md-4">
           <div class="form-group">
             <%= f.label :product_properties_value_cont, Spree.t(:part_or_cross_or_cast_number) %>
-            <%= f.text_field :product_properties_value_cont, :size => 15, class: "form-control" %>
+            <%= f.text_field :product_properties_value_cont, :size => 15, class: "form-control js-quick-search-target" %>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
             <%= f.label :name_cont, Spree.t(:name) %>
-            <%= f.text_field :name_cont, :size => 15, class: "form-control js-quick-search-target" %>
+            <%= f.text_field :name_cont, :size => 15, class: "form-control" %>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
             <%= f.label :description_cont, Spree.t(:description) %>
-            <%= f.text_field :description_cont, :size => 15, class: "form-control js-quick-search-target" %>
+            <%= f.text_field :description_cont, :size => 15, class: "form-control" %>
           </div>
         </div>
         <div class="col-md-12">
@@ -53,7 +53,6 @@
   <table class="table" id="listing_products">
     <thead>
       <tr data-hook="admin_products_index_headers">
-        <th>Image</th>
         <th><%= sort_link @search,:name, Spree.t(:name), { default_order: "desc" }, {title: 'admin_products_listing_name_title'} %></th>
         <th>Information</th>
         <th data-hook="admin_products_index_header_actions" class="actions"></th>
@@ -62,9 +61,8 @@
     <tbody>
       <% @collection.each do |product| %>
           <tr <%== "style='color: red;'" if product.deleted? %> id="<%= spree_dom_id product %>" data-hook="admin_products_index_rows" class="<%= cycle('odd', 'even') %>">
-            <td class="image"><%= mini_image product %></td>
-            <td><%= link_to product.try(:name), edit_admin_product_path(product) %></td>
-            <td>
+            <td class="image"><%= mini_image product %><br><%= link_to product.try(:name), edit_admin_product_path(product) %></td>
+            <td class="mobile-left">
               <% if product.description %>
                 <%= link_to edit_admin_product_path(product) do %><span style="font-weight: 700; margin-bottom: 0px; color: #200099"><%= product.description %></span><% end %><br>
               <% else %>
@@ -103,6 +101,11 @@
                       <%= product_application.name.strip %><%= index+1 == len ? "" : ", " %>
                   <% end %>
               <% end %>
+            </td>
+            <td class="actions actions-3 text-right" data-hook="admin_products_index_row_actions">
+              <%= link_to_edit product, no_text: true, class: 'edit' if can?(:edit, product) && !product.deleted? %>
+              <%= link_to_clone product, no_text: true, class: 'clone' if can?(:clone, product) %>
+              <%= link_to_delete product, no_text: true if can?(:delete, product) && !product.deleted? %>
             </td>
           </tr>
       <% end %>
