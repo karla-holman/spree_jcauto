@@ -24,6 +24,8 @@
               <div class="item <%= index == 1 ? "active" : "" %>" >
                 <%= image_tag(image.attachment.url(:large)) %>
                 <div class="carousel-caption">
+                  <% variant = Spree::Variant.find(image.viewable_id) %>
+                  <%= variant_options variant %>
                 </div>
               </div>
               <% end %>
