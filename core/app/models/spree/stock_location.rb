@@ -53,7 +53,6 @@ module Spree
     end
 
     def count_on_hand(variant)
-      byebug
       stock_item(variant).try(:count_on_hand)
     end
 

@@ -82,7 +82,11 @@ module Spree
 
     def range
     	if start_year && end_year
-    		range = start_year.to_s + "-" + end_year.to_s
+        if start_year == end_year
+          range = start_year.to_s
+        else
+    		  range = start_year.to_s + "-" + end_year.to_s
+        end
     	else
     		range = "N/A - N/A"
     	end

@@ -5,7 +5,6 @@
   <%= button_link_to(Spree.t(:add_product_properties), "javascript:;", { icon: 'add', :'data-target' => "tbody#product_properties", class: 'btn-success spree_add_fields' }) %>
   <span class="js-new-ptype-link"><%= button_link_to Spree.t(:select_from_prototype), available_admin_prototypes_url, { icon: 'properties', remote: true, 'data-update' => 'prototypes', class: 'btn-default' } %></span>
 <% end if can? :create, Spree::ProductProperty %>
-<% byebug %>
 <%= form_for @product, url: spree.admin_product_url(@product), method: :put do |f| %>
   <fieldset>
     <div id="prototypes" data-hook></div>

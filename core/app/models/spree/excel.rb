@@ -153,7 +153,7 @@ module Spree
       # only continue if this condition and part number does not already exist
       if update_conditions_value
 
-        if @product_row[:quantity] > 0
+        if @product_row[:quantity] && @product_row[:quantity] > 0
           add_quantity(@product_row[:quantity], @new_product_condition, @product_row[:location], @product_row)
         end
 
@@ -265,6 +265,10 @@ module Spree
 
         # get make, model, and notes
         make_model_sets = app_data[:text].split(/[,;]/)
+        if make_model_sets.empty? # if empty text set could be all
+          make_model_sets = [" "]
+          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "No application text sets for this product" }   
+        end
         make_model_sets_enum = make_model_sets.to_enum
 
         # Create product application for each date/app set
@@ -325,7 +329,7 @@ module Spree
           end
 
           # if my notes is empty, applies to all
-          my_notes = (my_notes=="" && !my_model) ? "all" : my_notes
+          my_notes = ((!my_notes || my_notes=="") && !my_model) ? "all" : my_notes
 
           # add exceptions to the end of notes
           my_notes += (my_notes!="" && my_exceptions != "") ? " " + my_exceptions : my_exceptions
@@ -357,7 +361,11 @@ module Spree
       end
 
       # remove leading ;
-      app.sub!(/^\;/, "")
+      if app.is_a? Integer # for applications that are just one year
+        app = app.to_s
+      else
+        app.sub!(/^\;/, "")
+      end
 
       # check for string starting with dates
       date_range = app.scan(/\A\W*(\d{2})-{0,1}(\d{0,2})\s(.*)/)

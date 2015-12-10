@@ -19,7 +19,6 @@ module Spree
     end
 
     def property_name=(name)
-      byebug
       unless name.blank?
         unless property = Property.find_by(name: name)
           property = Property.create(name: name, presentation: name)

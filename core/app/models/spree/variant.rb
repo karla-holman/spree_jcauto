@@ -175,7 +175,6 @@ module Spree
         # if no stock_location with no sub location
         if(!stock_location || stock_location.length == 0)
           # create a new stock_location
-          byebug
           stock_location = Spree::StockItem.create :stock_location => location,
                                                    :variant => self,
                                                    :backorderable => false,
@@ -310,7 +309,6 @@ module Spree
 
       # Iterate through this products taxons and taxonomies and touch their timestamps in a batch
       def touch_product
-        byebug
         return if self.is_master
 
         if !self.product.is_active

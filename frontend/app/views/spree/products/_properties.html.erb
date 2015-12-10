@@ -6,7 +6,23 @@
         <% css_class = cycle('even', 'odd', :name => "properties") %>
         <tr class="<%= css_class %>">
           <td><strong><%= product_property.property.presentation %></strong></td>
-          <td><%= product_property.value %></td>
+          <td>
+            <% if product_property.property.presentation == "Cross Reference" %>
+              <!-- Only show chrysler numbers -->
+              <% cross_found = false %>
+              <% product_property.value.split(",").each_with_index do |cross, index| %>
+                <% if matches = cross.strip.match(/(\d{7})/) %>
+                    <%= ((index != 0 && cross_found) ? ", " : "") + matches[1] %> 
+                    <% cross_found = true %>
+                <% end %>
+              <% end %>
+              <% if !cross_found %>
+                N/A
+              <% end %>
+            <% else %>
+              <%= product_property.value %>
+            <% end %>
+          </td>
         </tr>
       <% end %>
       <% reset_cycle('properties') %>
@@ -28,7 +44,7 @@
         <% @product.product_applications.order('start_year asc').each do |product_application| %>
           <% css_class = cycle('even', 'odd', :name => "properties") %>
           <tr class="<%= css_class %>">
-            <td><%= product_application.start_year.to_s + "-" + product_application.end_year.to_s %></td>
+            <td><%= product_application.range %></td>
             <td><%= product_application.application && product_application.application.make ? product_application.application.make.name : "-" %></td>
             <% notes = product_application.notes === "" ? "" : product_application.notes %>
             <td>
