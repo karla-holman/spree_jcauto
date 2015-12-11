@@ -1,17 +1,18 @@
 <% if "spree/products" == params[:controller] && @taxon || !@taxonomies.empty? %>
   <% content_for :sidebar do %>
     <div class="well">
-      <p style="display: inline-block">Can't find the part you need?</p>
-      <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
+      <div data-hook="homepage_sidebar_navigation">
+        <% # if "spree/products" == params[:controller] && @taxon %>
+          <%= # render :partial => 'spree/shared/filters' %>
+        <% # else %>
+          <%= render :partial => 'spree/shared/filters_general' %>
+          <%= render :partial => 'spree/shared/taxonomies' %>
+        <% # end %>
+      </div>
     </div>
     <div class="well">
-      <div data-hook="homepage_sidebar_navigation">
-        <% if "spree/products" == params[:controller] && @taxon %>
-          <%= render :partial => 'spree/shared/filters' %>
-        <% else %>
-          <%= render :partial => 'spree/shared/taxonomies' %>
-        <% end %>
-      </div>
+      <p style="display: inline-block">Can't find the part you need?</p>
+      <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
     </div>
   <% end %>
 <% end %>

@@ -93,7 +93,7 @@ module Spree
 =end
       string = '<select class="form-control" onChange="window.location.href=this.value">'
       string += '<option value="">Select category</option>'
-      root_taxon.children.map do |taxon|
+      current_taxon.children.map do |taxon|
         string += '<option value=' + seo_url(taxon) + '>' + taxon.name + '</option>'
       end
       string += '</select>'

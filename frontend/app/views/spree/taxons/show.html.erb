@@ -1,15 +1,22 @@
-<h2 class="taxon-title"><%= @taxon.name %></h2>
+<div class="col-md-6">
+  <h2 class="taxon-title"><%= @taxon.name %></h2>
+</div>
+<div class="col-md-6" style="margin-top: 26px">
+  <% if !@taxon.children.empty? %>
+    <%= taxons_tree(@taxon.root, @taxon) %>
+  <% end %>
+</div>
 
 <% content_for :sidebar do %>
   <div class="well">
-    <p style="display: inline-block">Can't find the part you need?</p>
-    <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
+    <div data-hook="taxon_sidebar_navigation">
+      <%= render :partial => 'spree/shared/filters_general' %>
+      <%= render :partial => 'spree/shared/taxonomies' %>
+    </div>
   </div>
   <div class="well">
-    <div data-hook="taxon_sidebar_navigation">
-      <%= render partial: 'spree/shared/taxonomies' %>
-      <%= render partial: 'spree/shared/filters' if @taxon.leaf? %>
-    </div>
+    <p style="display: inline-block">Can't find the part you need?</p>
+    <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
   </div>
 <% end %>
 

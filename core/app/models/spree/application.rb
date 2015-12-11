@@ -18,8 +18,8 @@ module Spree
 	    validates :model_id, presence: true, uniqueness: { scope: :make_id }, :allow_blank => true
 
 
-	    self.whitelisted_ransackable_attributes = ['make_id']
-	    self.whitelisted_ransackable_attributes = ['model_id']
+	    self.whitelisted_ransackable_attributes = ['make_id model_id']
+	    self.whitelisted_ransackable_associations = %w[make model]
 
 	    private
 

@@ -23,7 +23,7 @@
               <% (@product.variant_images).each_with_index do |image, index| %>
               <div class="item <%= index == 1 ? "active" : "" %>" >
                 <%= image_tag(image.attachment.url(:large)) %>
-                <div class="carousel-caption">
+                <div class="carousel-caption" style="color: $gray-dark">
                   <% variant = Spree::Variant.find(image.viewable_id) %>
                   <%= variant_options variant %>
                 </div>

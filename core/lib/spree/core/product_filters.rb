@@ -67,11 +67,11 @@ module Spree
 
       def ProductFilters.price_filter
         v = Spree::Price.arel_table
-        conds = [ [ Spree.t(:under_price, price: format_price(10))     , v[:amount].lteq(10)],
-                  [ "#{format_price(10)} - #{format_price(15)}"        , v[:amount].in(10..15)],
-                  [ "#{format_price(15)} - #{format_price(18)}"        , v[:amount].in(15..18)],
-                  [ "#{format_price(18)} - #{format_price(20)}"        , v[:amount].in(18..20)],
-                  [ Spree.t(:or_over_price, price: format_price(20)) , v[:amount].gteq(20)]]
+        conds = [ [ Spree.t(:under_price, price: format_price(25))     , v[:amount].lteq(25)],
+                  [ "#{format_price(25)} - #{format_price(50)}"        , v[:amount].in(25..50)],
+                  [ "#{format_price(50)} - #{format_price(100)}"        , v[:amount].in(50..100)],
+                  [ "#{format_price(100)} - #{format_price(200)}"        , v[:amount].in(100..200)],
+                  [ Spree.t(:or_over_price, price: format_price(200)) , v[:amount].gteq(200)]]
         {
           name:   Spree.t(:price_range),
           scope:  :price_range_any,
@@ -167,8 +167,18 @@ module Spree
       def ProductFilters.taxons_below(taxon)
         return Spree::Core::ProductFilters.all_taxons if taxon.nil?
         {
-          name:   'Taxons under ' + taxon.name,
+          name:   'Taxons below ' + taxon.name,
           scope:  :taxons_id_in_tree_any,
+          labels: taxon.children.sort_by(&:position).map { |t| [t.name, t.id] },
+          conds:  nil
+        }
+      end
+
+      def ProductFilters.taxons_under(taxon)
+        return Spree::Core::ProductFilters.all_taxons if taxon.nil?
+        {
+          name:   'Parts by ' + taxon.name,
+          scope:  :taxons_id_eq,
           labels: taxon.children.sort_by(&:position).map { |t| [t.name, t.id] },
           conds:  nil
         }
@@ -189,6 +199,44 @@ module Spree
           conds:  nil # not needed
         }
       end
+
+      def ProductFilters.by_make
+        {
+          name:   'Parts by Make',
+          scope:  :product_applications_application_make_id_eq,
+          labels: Spree::Make.order("name asc").map { |m| [m.name, m.id] },
+          conds:  nil
+        }
+      end
+
+      def ProductFilters.by_model(make_id)
+        {
+          name:   'Parts by Model for ' + Spree::Make.find(make_id).name,
+          scope:  :product_applications_application_model_id_eq,
+          labels: Spree::Model.where("make_id=?", make_id).order("name asc").map { |m| [m.name, m.id] },
+          conds:  nil
+        }
+      end
+
+      Spree::Product.add_search_scope :year_range_any do |*opts|
+        conds = opts.map {|o| o.to_i}.reject { |y| y.nil? }
+        scope = conds.shift
+        conds.each do |new_scope|
+          scope = scope.or(new_scope)
+        end
+        Spree::Product.joins(:applications)
+        .where("#{ProductApplication.table_name}.start_year <= ? AND #{ProductApplication.table_name}.end_year >= ?", scope, scope)
+      end
+
+      def ProductFilters.by_year
+        {
+          name:   'Parts by Year',
+          scope:  :year_range_any,
+          labels: (1900..Date.today.year).to_a.map { |m| [m, m] },
+          conds:  nil
+        }
+      end
+
     end
   end
 end

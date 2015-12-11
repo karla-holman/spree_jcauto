@@ -20,6 +20,9 @@ module Spree
   	self.whitelisted_ransackable_attributes = ['start_year']
   	self.whitelisted_ransackable_attributes = ['end_year']
 
+    self.whitelisted_ransackable_attributes = %w[name start_year end_year]
+    self.whitelisted_ransackable_associations = %w[application]
+
   	def start_year_cannot_be_greater_than_end_year
   		if start_year > end_year
   			errors.add(:start_year, "can't be greater than end year")

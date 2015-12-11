@@ -59,6 +59,8 @@ module Spree
 
             # Handle regular search
             base_scope = get_products_conditions_for(base_scope, keywords)
+
+            # search based on filters (ex. price)
             base_scope = add_search_scopes(base_scope)
 
             base_scope = add_eagerload_scopes(base_scope)
@@ -129,6 +131,7 @@ module Spree
           end 
 
           # add filters to search results
+=begin
           def add_search_scopes(base_scope)
             filter.each do |name, scope_attribute|
               scope_name = name.to_sym # "with_part_number"
@@ -140,6 +143,18 @@ module Spree
                 base_scope = base_scope.merge(Spree::Product.ransack({scope_name => scope_attribute}).result)
               end
             end if filter
+            base_scope
+          end
+=end
+          def add_search_scopes(base_scope)
+            search.each do |name, scope_attribute|
+              scope_name = name.to_sym
+              if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
+                base_scope = base_scope.send(scope_name, *scope_attribute)
+              else
+                base_scope = base_scope.merge(Spree::Product.ransack({scope_name => scope_attribute}).result)
+              end
+            end if search
             base_scope
           end
 
