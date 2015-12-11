@@ -61,7 +61,7 @@
               <% collection << component %>
             <% end %>
             <div class="form-group">
-              <%= select_tag "search[#{filter[:scope].to_s}]", options_for_select(collection, selected), {prompt: "Select #{filter[:name]}", class: "form-control"} %>
+              <%= select_tag "search[#{filter[:scope].to_s}]", options_for_select(collection, selected), {prompt: "All", class: "form-control"} %>
             </div>
           <% end %>
         <% else %>
@@ -84,6 +84,7 @@
       </div>
     <% end %>
     <%= submit_tag Spree.t(:filter), :name => nil, :class => 'btn btn-primary' %>
+    <%= link_to Spree.t(:reset), products_path, :class => 'btn btn-info', :id => 'reset' %>
   <% end %>
   <hr style="border-color: #777">
 <% end %>
@@ -101,9 +102,8 @@
   function check_models() {
     $("select[name='search[product_applications_application_model_id_eq]']").each( function(){
       var make_name = $("#search_product_applications_application_make_id_eq option:selected").text().split(" ");
-      var model_name = $(this).children("option").first().text().split(" ");
-
-      if( model_name[5] == make_name[0] ) {
+      var model_name = $(this).parent().siblings("h5").html().split(" ");
+      if( model_name[4] == make_name[0] ) {
         $(this).prop( "disabled", false );
         $(this).parents(".navigation").show();
       } else {
