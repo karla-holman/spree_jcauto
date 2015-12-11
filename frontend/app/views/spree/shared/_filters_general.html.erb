@@ -16,12 +16,11 @@
   part_group_taxon = Spree::Taxon.where("name=?", "Part Groups").first
   filters << (Spree::Core::ProductFilters.taxons_under(part_group_taxon) if Spree::Core::ProductFilters.respond_to?(:taxons_under) && part_group_taxon)
 
-  # filter by price
-  filters << Spree::Core::ProductFilters.price_filter if Spree::Core::ProductFilters.respond_to?(:price_filter)
-
   # filter by keywords
   filters << Spree::Core::ProductFilters.keyword_filter if Spree::Core::ProductFilters.respond_to?(:keyword_filter)
 
+  # filter by price
+  filters << Spree::Core::ProductFilters.price_filter if Spree::Core::ProductFilters.respond_to?(:price_filter)
 %>
 
 <% unless filters.empty? %>
