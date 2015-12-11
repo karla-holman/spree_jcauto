@@ -218,6 +218,15 @@ module Spree
         }
       end
 
+      def ProductFilters.keyword_filter
+        {
+          name:   'Parts by Keyword',
+          scope:  :name_or_description_or_product_properties_value_cont,
+          labels: Spree::Product.all.map { |m| [m.name, m.id] },
+          conds:  nil
+        }
+      end
+
       Spree::Product.add_search_scope :year_range_any do |*opts|
         conds = opts.map {|o| o.to_i}.reject { |y| y.nil? }
         scope = conds.shift

@@ -19,6 +19,9 @@
   # filter by price
   filters << Spree::Core::ProductFilters.price_filter if Spree::Core::ProductFilters.respond_to?(:price_filter)
 
+  # filter by keywords
+  filters << Spree::Core::ProductFilters.keyword_filter if Spree::Core::ProductFilters.respond_to?(:keyword_filter)
+
 %>
 
 <% unless filters.empty? %>
@@ -35,22 +38,33 @@
 
         <!-- Handle drop down for long lists -->
         <% if filter[:name] != "Price Range" %>
-          <% collection = [] %>
-          <% selected = [] %>
-          <% labels.each do |nm,val| %>
-            <% label = val.to_i %>
-            <% component = [nm, label] %>
+          <% if filter[:name] == 'Parts by Keyword' %>
             <% 
-              if params[:search] && params[:search][filter[:scope]] && params[:search][filter[:scope]].include?(val.to_s)
-                selected = component
+              if params[:search] && params[:search][filter[:scope]]
+                  selected = params[:search][filter[:scope]]
               end
-             %>
-            <% collection << component %>
+            %>
+            <% value = params[:keywords] ? params[:keywords] : (selected ? selected : "") %>
+            <div class="form-group">
+              <%= text_field_tag "search[#{filter[:scope].to_s}]", value, {class: "form-control"} %>
+            </div>
+          <% else %>
+            <% collection = [] %>
+            <% selected = [] %>
+            <% labels.each do |nm,val| %>
+              <% label = val.to_i %>
+              <% component = [nm, label] %>
+              <% 
+                if params[:search] && params[:search][filter[:scope]] && params[:search][filter[:scope]].include?(val.to_s)
+                  selected = component
+                end
+               %>
+              <% collection << component %>
+            <% end %>
+            <div class="form-group">
+              <%= select_tag "search[#{filter[:scope].to_s}]", options_for_select(collection, selected), {prompt: "Select #{filter[:name]}", class: "form-control"} %>
+            </div>
           <% end %>
-          <div class="form-group">
-            <%= select_tag "search[#{filter[:scope].to_s}]", options_for_select(collection, selected), {prompt: "Select #{filter[:name]}", class: "form-control"} %>
-          </div>
-
         <% else %>
         <!-- Handle drop down for short lists -->
           <ul class="list-group"><!-- Otherwise use checkbox -->
@@ -72,7 +86,7 @@
     <% end %>
     <%= submit_tag Spree.t(:filter), :name => nil, :class => 'btn btn-primary' %>
   <% end %>
-  <hr>
+  <hr style="border-color: #777">
 <% end %>
 
 <script type="text/javascript">
