@@ -524,10 +524,9 @@ module Spree
           @@loc_home_nfs
         # NFS if listed as not for sale (don't count in quantity)
         when /w\d{1,2}/ 
-          (@product_row[:available] && @product_row[:available].downcase == "n") ? @@loc_home : @@loc_home_nfs
-        # F209 OR D105.3 OR file cabinet OR h2
+          (@product_row[:available] && @product_row[:available].downcase == "n") ? @@loc_home_nfs : @@loc_home
         when /[[:alpha:]]\d{2,3}|D\d{3}\.\d|h\d|file\scabinet|suite\s2/
-          (@product_row[:available] && @product_row[:available].downcase == "n") ? @@loc_suite2 : @@loc_suite2_nfs
+          (@product_row[:available] && @product_row[:available].downcase == "n") ? @@loc_suite2_nfs : @@loc_suite2
         # NWC08
         when /nw[[:alpha:]]\d{1,2}|ste3/
           @@loc_suite3

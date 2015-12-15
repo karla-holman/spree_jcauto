@@ -25,6 +25,7 @@ module Spree
 
     # Updates the order and advances to the next state (when possible.)
     def update
+      byebug
       if @order.update_from_params(params, permitted_checkout_attributes, request.headers.env)
         @order.temporary_address = !params[:save_user_address]
         unless @order.next

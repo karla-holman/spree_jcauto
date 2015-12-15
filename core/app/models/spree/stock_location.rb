@@ -37,7 +37,12 @@ module Spree
     #
     # @return [StockItem] Corresponding StockItem for the StockLocation's variant.
     def stock_item(variant_id, sub_location=nil)
+      byebug
       stock_items.where(variant_id: variant_id, sub_location: sub_location).order(:id).first
+    end
+    def find_stock_items(variant_id)
+      byebug
+      stock_items.where(variant_id: variant_id).order(:id)
     end
 
     # Attempts to look up StockItem for the variant, and creates one if not found.
@@ -82,17 +87,25 @@ module Spree
     end
 
     def fill_status(variant, quantity)
-      if item = stock_item(variant)
-
-        if item.count_on_hand >= quantity
-          on_hand = quantity
-          backordered = 0
-        else
-          on_hand = item.count_on_hand
-          on_hand = 0 if on_hand < 0
+      # get stock_items for variant and location, loop through for each sub_location
+      # if item = stock_item(variant)
+      if items = find_stock_items(variant)
+        on_hand = 0
+        backordered = 0
+        items.each do |item|
+          # if order can be fulfilled with this stock item
+          if (item.count_on_hand + on_hand) >= quantity
+            on_hand = quantity
+            backordered = 0
+            break
+          else #otherwise order cannot be fulfilled, try next item
+            on_hand += item.count_on_hand
+            on_hand = 0 if on_hand < 0
+          end
+        end
+        if on_hand < quantity # if still less than quantity
           backordered = item.backorderable? ? (quantity - on_hand) : 0
         end
-
         [on_hand, backordered]
       else
         [0, 0]

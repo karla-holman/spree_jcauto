@@ -18,10 +18,13 @@ module Spree
       end
 
       def default_package
+        byebug
         package = Package.new(stock_location)
         inventory_units.group_by(&:variant).each do |variant, variant_inventory_units|
+          byebug
           units = variant_inventory_units.clone
           if variant.should_track_inventory?
+            # only create package if variant exists at that location
             next unless stock_location.stock_item(variant)
 
             on_hand, backordered = stock_location.fill_status(variant, units.count)

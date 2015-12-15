@@ -6,10 +6,10 @@
     <div id="methods">
       <%= form.fields_for :shipments do |ship_form| %>
         <div class="shipment">
-          <h4 class="stock-location" data-hook="stock-location">
+          <h5 class="stock-location" data-hook="stock-location">
             <%= Spree.t(:package_from) %>
             <strong class="stock-location-name" data-hook="stock-location-name"><%= ship_form.object.stock_location.name %></strong>
-          </h4>
+          </h5>
 
           <table class="table stock-contents" data-hook="stock-contents">
             <colgroup>
@@ -38,7 +38,7 @@
             </tbody>
           </table>
 
-          <h4 class="stock-shipping-method-title"><%= Spree.t(:shipping_method) %></h4>
+          <h5 class="stock-shipping-method-title"><%= Spree.t(:shipping_method) %></h5>
           <ul class="list-group shipping-methods">
             <% ship_form.object.shipping_rates.each do |rate| %>
               <li class="list-group-item shipping-method">
