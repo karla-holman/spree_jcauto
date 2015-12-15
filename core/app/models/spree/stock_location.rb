@@ -37,12 +37,12 @@ module Spree
     #
     # @return [StockItem] Corresponding StockItem for the StockLocation's variant.
     def stock_item(variant_id, sub_location=nil)
-      byebug
+      # byebug
       stock_items.where(variant_id: variant_id, sub_location: sub_location).order(:id).first
     end
     def find_stock_items(variant_id)
-      byebug
-      stock_items.where(variant_id: variant_id).order(:id)
+      # byebug
+      stock_items.select { |l| (l.variant_id == variant_id) && l.stock_location.active }
     end
 
     # Attempts to look up StockItem for the variant, and creates one if not found.
@@ -81,15 +81,40 @@ module Spree
       move(variant, -quantity, originator)
     end
 
+    # create stock movements to supply order
     def move(variant, quantity, originator = nil)
-      stock_item_or_create(variant).stock_movements.create!(quantity: quantity,
+      # byebug
+      my_quantity = quantity
+      # if unstocking
+      if my_quantity < 0
+        # loop through each stock sub location and collect stock
+        # byebug
+        find_stock_items(variant.id).each do |stock_item|
+          # byebug
+          # if remaining quantity can be fulfilled here
+          if stock_item.count_on_hand + my_quantity >= 0
+            stock_item.stock_movements.create!(quantity: my_quantity,
                                                             originator: originator)
+          else
+            count = stock_item.count_on_hand
+            if count > 0
+              stock_item.stock_movements.create!(quantity: -(count),
+                                                            originator: originator)
+              my_quantity = my_quantity + count
+            end
+          end
+        end
+      else # handle restock
+        stock_item_or_create(variant).stock_movements.create!(quantity: my_quantity,
+                                                            originator: originator)
+      end
     end
 
     def fill_status(variant, quantity)
       # get stock_items for variant and location, loop through for each sub_location
       # if item = stock_item(variant)
-      if items = find_stock_items(variant)
+      if items = find_stock_items(variant.id)
+        # byebug
         on_hand = 0
         backordered = 0
         items.each do |item|

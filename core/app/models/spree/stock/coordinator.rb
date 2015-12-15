@@ -4,20 +4,17 @@ module Spree
       attr_reader :order, :inventory_units
 
       def initialize(order, inventory_units = nil)
-        byebug
         @order = order
         @inventory_units = inventory_units || InventoryUnitBuilder.new(order).units
       end
 
       def shipments
-        byebug
         packages.map do |package|
           package.to_shipment.tap { |s| s.address = order.ship_address }
         end
       end
 
       def packages
-        byebug
         packages = build_packages
         packages = prioritize_packages(packages)
         packages = estimate_packages(packages)
@@ -33,7 +30,7 @@ module Spree
       # 
       # Returns an array of Package instances
       def build_packages(packages = Array.new)
-        byebug
+        # byebug
         StockLocation.active.each do |stock_location|
           next unless stock_location.stock_items.where(:variant_id => inventory_units.map(&:variant_id).uniq).exists?
 
@@ -45,13 +42,13 @@ module Spree
 
       private
       def prioritize_packages(packages)
-        byebug
+        # byebug
         prioritizer = Prioritizer.new(inventory_units, packages)
         prioritizer.prioritized_packages
       end
 
       def estimate_packages(packages)
-        byebug
+        # byebug
         estimator = Estimator.new(order)
         packages.each do |package|
           package.shipping_rates = estimator.shipping_rates(package)
@@ -60,12 +57,12 @@ module Spree
       end
 
       def build_packer(stock_location, inventory_units)
-        byebug
+        # byebug
         Packer.new(stock_location, inventory_units, splitters(stock_location))
       end
 
       def splitters(stock_location)
-        byebug
+        # byebug
         # extension point to return custom splitters for a location
         Rails.application.config.spree.stock_splitters
       end

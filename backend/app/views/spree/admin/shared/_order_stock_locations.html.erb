@@ -1,0 +1,35 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title"><%= Spree.t(:order_stock_locations) %></h2>
+  </div>
+
+  <div class="panel-body">
+    <% @order.shipments.each do |shipment| %>
+      <% my_stock_movements = Spree::StockMovement.where("originator_type=? AND originator_id=?", "Spree::Shipment", shipment.id) %>
+      <h5>Shipment: <%= shipment.number %></h5>
+      <table class="table" data-hook>
+        <tbody class="additional-info">
+          <tr>
+            <th>Stock Location</th>
+            <th>Sub Location</th>
+            <th>Quantity to Remove</th>
+          </tr>
+          <% my_stock_movements.each do |movement| %>
+            <% next if movement.quantity == 0 %>
+            <tr>
+              <td>
+                <%= movement.stock_item.stock_location.name %>
+              </td>
+              <td>
+                <%= movement.stock_item.variant.name %>
+              </td>
+              <td>
+                <%= -(movement.quantity) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div><!-- Panel body -->
+</div><!-- Panel -->

@@ -449,7 +449,7 @@ module Spree
     end
 
     def create_proposed_shipments
-      byebug
+      # byebug
       all_adjustments.shipping.delete_all
       shipments.destroy_all
       self.shipments = Spree::Stock::Coordinator.new(self).shipments
@@ -484,7 +484,7 @@ module Spree
     end
 
     def refresh_shipment_rates(shipping_method_filter = ShippingMethod::DISPLAY_ON_FRONT_END)
-      byebug
+      # byebug
       shipments.map { |s| s.refresh_rates(shipping_method_filter) }
     end
 
@@ -597,7 +597,7 @@ module Spree
     end
 
     def ensure_available_shipping_rates
-      byebug
+      # byebug
       if shipments.empty? || shipments.any? { |shipment| shipment.shipping_rates.blank? }
         # After this point, order redirects back to 'address' state and asks user to pick a proper address
         # Therefore, shipments are not necessary at this point.

@@ -18,10 +18,10 @@ module Spree
       end
 
       def default_package
-        byebug
+        # byebug
         package = Package.new(stock_location)
         inventory_units.group_by(&:variant).each do |variant, variant_inventory_units|
-          byebug
+          # byebug
           units = variant_inventory_units.clone
           if variant.should_track_inventory?
             # only create package if variant exists at that location

@@ -18,7 +18,7 @@
         <%= f.label "Find Product Updates"%>
         <%= f.select :object_cont, options_for_select(Spree::Variant.all.collect {|v| [ 
           if v.is_master 
-            v.product.property("Part Number") + " (Product)"
+            (v.product.property("Part Number") ? v.product.property("Part Number") : v.product.name) + " (Product)"
           else
             v.sku + " " + v.options_text
           end, "variant_id: " + v.id.to_s ] }), {:include_blank => Spree.t('match_choices.none')}, {:class=> "select2"} %> 

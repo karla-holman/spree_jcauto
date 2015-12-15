@@ -7,7 +7,6 @@ module Spree
 
 =begin
       def units
-        byebug
         @order.line_items.flat_map do |line_item|
           line_item.quantity.times.map do |i|
             @order.inventory_units.includes(
