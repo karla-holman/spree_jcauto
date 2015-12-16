@@ -30,10 +30,26 @@ module Spree
       # 
       # Returns an array of Package instances
       def build_packages(packages = Array.new)
+        test_units = inventory_units
         StockLocation.active.each do |stock_location|
-          next unless stock_location.stock_items.where(:variant_id => inventory_units.map(&:variant_id).uniq).exists?
-          packer = build_packer(stock_location, inventory_units)
+          variant_ids_check = test_units.map(&:variant_id).uniq
+          # move on unless one or more stock item contains a variant we are looking for
+          found_variant = false
+          stock_location.stock_items.each do |stock_item|
+            if variant_ids_check.include?(stock_item.variant.id)
+              found_variant = true
+            end
+          end
+          next unless found_variant # stock_location.stock_items.where(:variant_id => variant_ids_check).exists?
+          packer = build_packer(stock_location, test_units)
           packages += packer.packages
+
+          # don't add same inventory units to multiple locations
+          length = 0
+          packages.each do |package|
+            length += package.contents.length
+          end
+          test_units.slice!(0, length) # removed used inventory units for next stock location
         end
         packages
       end
@@ -55,7 +71,6 @@ module Spree
       end
 
       def build_packer(stock_location, inventory_units)
-        # byebug
         Packer.new(stock_location, inventory_units, splitters(stock_location))
       end
 

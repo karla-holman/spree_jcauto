@@ -457,6 +457,7 @@ module Spree
     end
 
     def apply_free_shipping_promotions
+      # byebug
       Spree::PromotionHandler::FreeShipping.new(self).activate
       shipments.each { |shipment| Adjustable::AdjustmentsUpdater.update(shipment) }
       updater.update_shipment_total
@@ -598,7 +599,6 @@ module Spree
     end
 
     def ensure_available_shipping_rates
-      # byebug
       if shipments.empty? || shipments.any? { |shipment| shipment.shipping_rates.blank? }
         # After this point, order redirects back to 'address' state and asks user to pick a proper address
         # Therefore, shipments are not necessary at this point.

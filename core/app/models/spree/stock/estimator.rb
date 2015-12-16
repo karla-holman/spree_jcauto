@@ -47,7 +47,6 @@ module Spree
       end
 
       def shipping_methods(package, display_filter)
-        # byebug
         package.shipping_methods.select do |ship_method|
           calculator = ship_method.calculator
           begin

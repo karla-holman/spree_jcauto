@@ -13,6 +13,7 @@ module Spree
 
       def adjust(package)
         if fulfilled?
+          # remove item containing inventory unit
           package.remove(inventory_unit)
         else
           self.fulfilled = true

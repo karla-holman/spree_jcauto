@@ -215,7 +215,6 @@ module Spree
     end
 
     def refresh_rates(shipping_method_filter = ShippingMethod::DISPLAY_ON_FRONT_END)
-      # byebug
       return shipping_rates if shipped?
       return [] unless can_get_rates?
 
