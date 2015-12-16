@@ -10,6 +10,7 @@
       <table class="table" data-hook>
         <tbody class="additional-info">
           <tr>
+            <th>Item</th>
             <th>Stock Location</th>
             <th>Sub Location</th>
             <th>Quantity to Remove</th>
@@ -18,10 +19,14 @@
             <% next if movement.quantity == 0 %>
             <tr>
               <td>
+                <% variant = movement.stock_item.variant %>
+                <%= "#{variant.name}, #{ variant_options variant } #{(variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" }" %>
+              </td>
+              <td>
                 <%= movement.stock_item.stock_location.name %>
               </td>
               <td>
-                <%= movement.stock_item.variant.name %>
+                <%= movement.stock_item.sub_location %>
               </td>
               <td>
                 <%= -(movement.quantity) %>

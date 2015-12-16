@@ -42,12 +42,12 @@ module Spree
             rate = shipping_method.shipping_rates.new(cost: cost)
             rate.tax_rate = tax_rate if tax_rate
           end
-
           rate
         end.compact
       end
 
       def shipping_methods(package, display_filter)
+        # byebug
         package.shipping_methods.select do |ship_method|
           calculator = ship_method.calculator
           begin

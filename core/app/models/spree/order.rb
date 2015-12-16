@@ -453,6 +453,7 @@ module Spree
       all_adjustments.shipping.delete_all
       shipments.destroy_all
       self.shipments = Spree::Stock::Coordinator.new(self).shipments
+      self.shipments
     end
 
     def apply_free_shipping_promotions
