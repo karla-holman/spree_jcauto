@@ -117,7 +117,12 @@ module Spree
         # byebug
         on_hand = 0
         backordered = 0
+        backorderable = false
         items.each do |item|
+          if(item.backorderable?)
+            backorderable = true
+          end
+
           # if order can be fulfilled with this stock item
           if (item.count_on_hand + on_hand) >= quantity
             on_hand = quantity
@@ -129,7 +134,7 @@ module Spree
           end
         end
         if on_hand < quantity # if still less than quantity
-          backordered = item.backorderable? ? (quantity - on_hand) : 0
+          backordered = backorderable ? (quantity - on_hand) : 0
         end
         [on_hand, backordered]
       else
