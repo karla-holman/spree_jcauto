@@ -46,10 +46,12 @@ module Spree
 
           # don't add same inventory units to multiple locations
           length = 0
-          packages.each do |package|
-            length += package.contents.length
+          packer.packages.each do |package|
+            package.contents.each do |content|
+              test_units.delete(content.inventory_unit)
+            end
           end
-          test_units.slice!(0, length) # removed used inventory units for next stock location
+          # test_units.slice!(0, length) # removed used inventory units for next stock location
         end
         packages
       end

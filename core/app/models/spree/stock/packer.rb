@@ -19,6 +19,7 @@ module Spree
 
       def default_package
         package = Package.new(stock_location)
+        # try to fulfill each variant
         inventory_units.group_by(&:variant).each do |variant, variant_inventory_units|
           units = variant_inventory_units.clone
           if variant.should_track_inventory?
