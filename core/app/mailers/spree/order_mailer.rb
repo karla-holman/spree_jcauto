@@ -1,6 +1,7 @@
 module Spree
   class OrderMailer < BaseMailer
     def confirm_email(order, resend = false)
+      attachments.inline['logo.jpg'] = File.read('Logo-new.png')
       @order = order.respond_to?(:id) ? order : Spree::Order.find(order)
       subject = (resend ? "[#{Spree.t(:resend).upcase}] " : '')
       subject += "#{Spree::Store.current.name} #{Spree.t('order_mailer.confirm_email.subject')} ##{@order.number}"

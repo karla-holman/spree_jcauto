@@ -1,3 +1,4 @@
+<%= image_tag attachments['Logo-new.png'].url, alt: 'My Photo', class: 'photos' %>
 <table>
   <tr>
     <td>
@@ -13,10 +14,9 @@
       <table>
         <% @order.line_items.each do |item| %>
           <tr>
-            <td><%= item.variant.sku %></td>
             <td>
               <%= raw(item.variant.product.name) %>
-              <%= raw(item.variant.options_text) -%>
+              <%= "#{raw(item.variant.options_text)} " %>
             </td>
             <td>(<%=item.quantity%>) <%= Spree.t('at_symbol') %> <%= item.single_money %> = <%= item.display_amount %></td>
           </tr>
@@ -77,6 +77,10 @@
       </table>
       <p>
         <%= Spree.t('order_mailer.confirm_email.thanks') %>
+      </p>
+      <p>
+        Jeff Carter<br>
+        <a href="http://www.jcauto.com" target="_blank">JC Auto Restoration, Inc.</a>
       </p>
     </td>
     <td class="expander"></td>
