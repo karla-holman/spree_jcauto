@@ -1,6 +1,7 @@
 module Spree
   class ReimbursementMailer < BaseMailer
       def reimbursement_email(reimbursement, resend = false)
+      	attachments.inline['Logo-new.png'] = File.read(Rails.root.join("public", "Logo-new.png"))
         @reimbursement = reimbursement.respond_to?(:id) ? reimbursement : Spree::Reimbursement.find(reimbursement)
         subject = (resend ? "[#{Spree.t(:resend).upcase}] " : '')
         subject += "#{Spree::Store.current.name} #{Spree.t('reimbursement_mailer.reimbursement_email.subject')} ##{@reimbursement.order.number}"
