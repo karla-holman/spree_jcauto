@@ -1,7 +1,7 @@
 module Spree
   class ShipmentMailer < BaseMailer
     def shipped_email(shipment, resend = false)
-      attachments.inline['Logo-new.png'] = File.read(Rails.root.join("public", "Logo-new.png"))
+      attachments.inline['Logo.png'] = File.read(Rails.root.join("public", "Logo-new.png"))
       @shipment = shipment.respond_to?(:id) ? shipment : Spree::Shipment.find(shipment)
       subject = (resend ? "[#{Spree.t(:resend).upcase}] " : '')
       subject += "#{Spree::Store.current.name} #{Spree.t('shipment_mailer.shipped_email.subject')} ##{@shipment.order.number}"

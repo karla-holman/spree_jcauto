@@ -1,21 +1,27 @@
-<%= image_tag attachments['Logo-new.png'].url, alt: 'JC Auto Restoration', style: "width: 30%; float: center; margin: 10px auto" %>
+<div style="width: 35%; margin: 20px 0">
+<%= image_tag attachments['Logo.png'].url, alt: '', style: "float: left" %>
+</div>
+<div class="clear"></div>
 <table>
   <tr>
     <td>
       <p class="lede">
-        <%= Spree.t('shipment_mailer.shipped_email.dear_customer') %>
+        <% if @shipment.address.firstname && @shipment.address.firstname != "" %>
+          <%= Spree.t('dear') + " " + @shipment.address.firstname %>,
+        <% else %>
+          <%= Spree.t('shipment_mailer.shipped_email.dear_customer') %>
+        <% end %>
       </p>
       <p>
         <%= Spree.t('shipment_mailer.shipped_email.instructions') %>
       </p>
       <p>
-        <%= Spree.t('shipment_mailer.shipped_email.shipment_summary') %>
+        <strong><%= Spree.t('shipment_mailer.shipped_email.shipment_summary') %></strong>
       </p>
       <table>
         <% @shipment.manifest.each do |item| %>
           <tr>
-            <td><%= item.variant.product.name %></td>
-            <td><%= item.variant.options_text %></td>
+            <td><%= item.variant.product.name %> <%= item.variant.options_text %></td>
           </tr>
         <% end %>
       </table>
