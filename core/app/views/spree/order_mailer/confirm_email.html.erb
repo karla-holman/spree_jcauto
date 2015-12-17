@@ -1,8 +1,5 @@
 <table>
   <tr>
-    <%= image_tag attachments['Logo.png'].url, alt: '', style: "width: 35%" %>
-  </tr>
-  <tr>
     <td>
       <p class="lede">
         <% if @order.bill_address.firstname && @order.bill_address.firstname != "" %>
@@ -86,7 +83,8 @@
       </p>
       <p>
         Jeff Carter<br>
-        <a href="http://www.jcauto.com" target="_blank">JC Auto Restoration, Inc.</a>
+        <a href="http://www.jcauto.com" target="_blank">JC Auto Restoration, Inc.</a><br>
+        <%= image_tag attachments['Logo.png'].url, alt: '', style: "width: 35%" %>
       </p>
     </td>
     <td class="expander"></td>

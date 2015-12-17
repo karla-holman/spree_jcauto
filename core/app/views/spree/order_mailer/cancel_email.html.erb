@@ -1,8 +1,5 @@
 <table>
   <tr>
-    <%= image_tag attachments['Logo.png'].url, alt: '', style: "width: 35%" %>
-  </tr>
-  <tr>
     <td>
       <p class="lede">
         <% if @order.bill_address.firstname && @order.bill_address.firstname != "" %>
@@ -44,6 +41,13 @@
           <td></td>
           <td><%= Spree.t('order_mailer.cancel_email.total') %></td>
           <td><%= @order.display_total %></td>
+        </tr>
+        <tr>
+          <p>
+            Jeff Carter<br>
+            <a href="http://www.jcauto.com" target="_blank">JC Auto Restoration, Inc.</a><br>
+            <%= image_tag attachments['Logo.png'].url, alt: '', style: "width: 35%" %>
+          </p>
         </tr>
       </table>
     </td>
