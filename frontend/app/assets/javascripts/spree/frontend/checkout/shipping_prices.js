@@ -1,6 +1,9 @@
 // Handle shipping prices on final price
 $("#checkout_form_delivery").change( function() {
 
+	var tax_price = 0;
+	var promo_price = 0;
+
 	// Get total cost of shipping
 	var $selected = $("#checkout_form_delivery input[type='radio']:checked");
 
@@ -15,12 +18,16 @@ $("#checkout_form_delivery").change( function() {
 	});
 
 	// Get tax cost
-	var $tax_total = $("tbody[data-hook='order_details_tax_adjustments']").find("td")[1];
-	var tax_price = parseFloat($tax_total.textContent.replace('$', ''));
+	if ( $("tbody[data-hook='order_details_tax_adjustments']").length ) {
+		var $tax_total = $("tbody[data-hook='order_details_tax_adjustments']").find("td")[1];
+		tax_price = parseFloat($tax_total.textContent.replace('$', ''));
+	}
 
 	// Get promotion
-	var $promo_total = $("tbody#summary-order-charges .total").find("td")[1];
-	var promo_price = parseFloat($promo_total.textContent.replace('-$', ''));
+	if ( $("tbody#summary-order-charges .total").length ) {
+		var $promo_total = $("tbody#summary-order-charges .total").find("td")[1];
+		promo_price = parseFloat($promo_total.textContent.replace('-$', ''));
+	}
 
 	// Get total item price
 	var $item_total = $("tr[data-hook='item_total']").children()[1];
