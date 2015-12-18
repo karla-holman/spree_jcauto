@@ -56,7 +56,7 @@
                 (<%= variant_options variant %><%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>)
                 <% unless variant.can_supply? %>
                   <!--span class="out-of-stock"-->
-                  <%= Spree.t(:out_of_stock) %>
+                  <span style="color: #bf210a"><%= Spree.t(:out_of_stock) %></span>
                 <% end %>
               <!--% end %--><br>
           <% end%>

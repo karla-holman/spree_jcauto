@@ -24,7 +24,7 @@
     <td class="lead cart-item-price" data-hook="cart_item_price">
       <%= line_item.single_money.to_html %>
     </td>
-    <td class="cart-item-quantity" data-hook="cart_item_quantity" valign="center">
+    <td class="cart-item-quantity" data-hook="cart_item_quantity" valign="center" style="widt6h: auto !important; width: 120px; min-width: 120px">
       <%= item_form.number_field :quantity, min: 0, class: "form-control line_item_quantity", size: 5 %>
     </td>
     <td class="lead cart-item-total" data-hook="cart_item_total">
