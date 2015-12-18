@@ -1,3 +1,7 @@
+$( document ).ready(function(){
+	$("#coupon_apply").show();
+});
+
 // Handle shipping prices on final price
 $("#checkout_form_delivery").change( function() {
 
@@ -18,7 +22,7 @@ $("#checkout_form_delivery").change( function() {
 	});
 
 	// Get tax cost
-	if ( $("tbody[data-hook='order_details_tax_adjustments']").length ) {
+	if ( $("tbody[data-hook='order_details_tax_adjustments']").find("td").length ) {
 		var $tax_total = $("tbody[data-hook='order_details_tax_adjustments']").find("td")[1];
 		tax_price = parseFloat($tax_total.textContent.replace('$', ''));
 	}
@@ -39,7 +43,9 @@ $("#checkout_form_delivery").change( function() {
 	$order_total.text("$" + (total_price).toFixed(2).toString());
 });
 
-$("#coupon_apply").click(function() {
+$("#coupon_apply").click(function(event) {
+	event.preventDefault();
+
 	var coupon_code, coupon_code_field, coupon_status, url;
 	coupon_code_field = $('#order_coupon_code');
 	coupon_code = $.trim(coupon_code_field.val());

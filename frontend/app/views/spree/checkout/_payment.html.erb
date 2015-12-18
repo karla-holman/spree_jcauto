@@ -57,10 +57,12 @@
       <% end %>
     </ul>
 
+    <hr>
+    
     <p class='field' data-hook='coupon_code'>
       <%= form.label :coupon_code %><br />
       <%= form.text_field :coupon_code, :class => 'form-control' %>
-      <a id="coupon_apply">Submit Coupon</a>
+      <%= link_to checkout_path, id: "coupon_apply", style: "display: none" do %>Submit Coupon<% end %>
     </p>
   </div>
 </div>
