@@ -1,0 +1,34 @@
+<table>
+  <tr>
+    <td>
+      <p class="lede">
+        <% if(@user[:part_numbers]) %>
+          You have received a sale offer from a customer:
+        <% else %>
+          You have recieved the following customer message:
+        <% end %>
+
+      </p>
+
+      <p>
+        <strong>From: </strong><%= @user[:name] %><br>
+        <strong>Phone: </strong><%= @user[:phone] %><br>
+        <strong>Email: </strong><%= @user[:address] %>
+        <% if @user[:part_numbers] %>
+        <br><strong>Part Numbers: </strong><%= @user[:part_numbers] %>
+        <% end %>
+      <p>
+        <%= @message %>
+      </p>
+
+    </td>
+    <td class="expander"></td>
+  </tr>
+  <tr>
+    <p>
+      Jeff Carter<br>
+      <a href="http://www.jcauto.com" target="_blank">JC Auto Restoration, Inc.</a><br>
+      <%= image_tag attachments['Logo.png'].url, alt: '', style: "width: 35%; margin-top: 20px" %>
+    </p>
+  </tr>
+</table>
