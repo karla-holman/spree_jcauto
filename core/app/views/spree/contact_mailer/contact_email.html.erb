@@ -4,6 +4,8 @@
       <p class="lede">
         <% if(@user[:part_numbers]) %>
           You have received a sale offer from a customer:
+        <% elsif(@user[:quote_car]) %>
+          You have received a service request from a customer:
         <% else %>
           You have recieved the following customer message:
         <% end %>
@@ -17,16 +19,27 @@
         <% if @user[:part_numbers] %>
         <br><strong>Part Numbers: </strong><%= @user[:part_numbers] %>
         <% end %>
+        <% if @user[:quote_car] %>
+        <br><strong>Make and Model: </strong><%= @user[:quote_car] %>
+        <% end %>
+      </p>
+      <p><strong>Customer Message:</p>
       <p>
         <%= @message %>
       </p>
-
+      <% if attachments.length > 1 %>
+        <hr>
+        <p><strong>Customer Uploaded Images:</strong></p>
+        <% attachments.each_with_index do |attachment, index| %>
+          <% next if index + 1 == attachments.length %>
+          <%= image_tag attachments["User-#{index+1}.png"].url, alt: '', style: "width: 35%; margin-top: 20px; float: left" %>
+        <% end %>
+      <% end %>
     </td>
     <td class="expander"></td>
   </tr>
   <tr>
     <p>
-      Jeff Carter<br>
       <a href="http://www.jcauto.com" target="_blank">JC Auto Restoration, Inc.</a><br>
       <%= image_tag attachments['Logo.png'].url, alt: '', style: "width: 35%; margin-top: 20px" %>
     </p>
