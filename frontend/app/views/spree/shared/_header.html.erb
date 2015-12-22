@@ -19,10 +19,9 @@
                 <% if spree_current_user %>
                       <li><%= link_to Spree.t(:my_account), spree.account_path %></li>
                        <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
-                      <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
+                      <li><%= link_to "Wishlists", spree.wishlists_path %></li>
                 <% else %>
                   <li id="link-to-login"><%= link_to Spree.t(:login), spree.login_path %></li>
-                  <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
                 <% end %>
               </ul>
             </li>
@@ -64,10 +63,9 @@
           <% if spree_current_user %>
             <li data-hook><%= link_to Spree.t(:my_account), spree.account_path %></li>
             <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
-            <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
+            <li><%= link_to "Wishlists", spree.wishlists_path %></li>
           <% else %>
             <li id="link-to-login"><%= link_to Spree.t(:login), spree.login_path %></li>
-            <li><%= link_to "Wishlist", spree.new_wishlist_path %></li>
           <% end %>
           <li id="link-to-cart" data-hook>
               <!-- <noscript> -->

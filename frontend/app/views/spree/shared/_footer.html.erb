@@ -33,6 +33,9 @@
         <hr style="margin-top: -3px">
         <ul class="footer-info no-icon">
           <li>
+            <%= link_to "Store", spree.root_path %> 
+          </li>
+          <li>
             <%= link_to "Privacy Policy", "/" %> 
           </li>
           <li>
@@ -41,9 +44,11 @@
           <li>
             <%= link_to "Gift Cards", "/" %> 
           </li>
-          <li>
-            <%= link_to "Wish List", "/" %> 
-          </li>
+          <% if spree_current_user %>
+            <li>
+                <%= link_to "Wishlists", spree.wishlists_path %> 
+            </li>
+          <% end %>
           <li>
             <%= link_to "Site Map", "/" %> 
           </li>
