@@ -14,6 +14,7 @@ module Paperclip
 
     def initialize file, options = {}, attachment = nil
       super
+      puts "watermark options: #{options}"
       geometry          = options[:geometry]
       @file             = file
       if geometry.present?
@@ -46,7 +47,7 @@ module Paperclip
     # Performs the conversion of the +file+ into a watermark. Returns the Tempfile
     # that contains the new image.
     def make
-      puts "In watermark"
+      puts "In watermark with geometry #{target_geometry}, path #{watermark_path ? watermark_path : "DNE"}"
       dst = Tempfile.new([@basename, @format].compact.join("."))
       dst.binmode
 
