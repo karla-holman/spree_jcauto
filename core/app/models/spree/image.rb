@@ -8,9 +8,8 @@ module Spree
                       processors: [:watermark],
                       styles: { mini: '48x48>', small: '100x100>', product: '240x240>', 
                         large: {
-                          processors: [:watermark],
                           geometry: '600x600>',
-                          watermark_path: Rails.root.join('app/assets/images/Logo-new.png'),
+                          watermark_path: "#{Rails.root}/public/Logo-new.png",
                           position: 'Center'
                         }
                       },
