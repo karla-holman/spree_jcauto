@@ -1,3 +1,5 @@
+require 'paperclip_processors/watermark'
+
 module Spree
   class Image < Asset
     validate :no_attachment_errors
