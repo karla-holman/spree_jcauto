@@ -63,10 +63,20 @@ module Paperclip
         command = "composite"
         params = %W[-gravity #{@position} #{watermark_path} #{tofile(dst)}]
         params << tofile(dst)
+
+=begin
         begin
           success = Paperclip.run(command, params.flatten.compact.collect{|e| "'#{e}'"}.join(" "))
         rescue Paperclip::Errors::CommandNotFoundError
           raise Paperclip::Errors::CommandNotFoundError, "There was an error processing the watermark for #{@basename}" if @whiny
+        end
+=end
+        begin
+          Paperclip.run(command, params.join(' '))
+        rescue Cocaine::ExitStatusError => e
+          raise Paperclip::Error, "There was an error processing the watermark for #{@basename}" if @whiny
+        rescue Cocaine::CommandNotFoundError => e
+          raise Paperclip::Errors::CommandNotFoundError.new("Could not run the `convert` command. Please install ImageMagick.")
         end
       end
 
