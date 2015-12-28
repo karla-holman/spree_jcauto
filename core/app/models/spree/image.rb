@@ -3,7 +3,15 @@ module Spree
     validate :no_attachment_errors
 
     has_attached_file :attachment,
-                      styles: { mini: '48x48>', small: '100x100>', product: '240x240>', large: '600x600>' },
+                      processors: [:watermark],
+                      styles: { mini: '48x48>', small: '100x100>', product: '240x240>', 
+                        large: {
+                          processors: [:watermark],
+                          geometry: '600x600>',
+                          watermark_path: Rails.root.join('app/assets/images/Logo-new.png'),
+                          position: 'Center'
+                        }
+                      },
                       default_style: :product,
                       url: '/spree/products/:id/:style/:basename.:extension',
                       path: ':rails_root/public/spree/products/:id/:style/:basename.:extension',

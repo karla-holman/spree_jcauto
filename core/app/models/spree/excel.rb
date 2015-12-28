@@ -192,6 +192,12 @@ module Spree
       end
       @new_product.taxons << my_taxon
       @new_product.taxons << my_taxonomy
+
+      # add package taxon
+      if(@product_row[:package] && @product_row[:package].to_s.downcase === "y")
+        package_taxon = Spree::Taxon.where("name=?", "Packages and Assemblies")
+        @new_product.taxons << package_taxon
+      end
     end
 
     # Update and return master variant for new product
