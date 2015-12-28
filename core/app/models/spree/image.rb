@@ -10,7 +10,7 @@ module Spree
                         product: {
                           geometry: '240x240>', 
                           watermark_path: "#{Rails.root}/public/Logo-new.png"
-                        }
+                        },
                         large: {
                           geometry: '600x600>',
                           watermark_path: "#{Rails.root}/public/Logo-new.png"
