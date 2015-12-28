@@ -59,6 +59,14 @@
 </div><!-- Modal fade -->
 
 <% cache [I18n.locale, current_currency, @product, @product.possible_promotions] do %>
+  <ol class="breadcrumb">
+    <li><%= link_to products_path do %>All Products<% end %></li>
+    <% @product.taxons.order("description asc").each do |taxon| %>
+      <li><%= link_to taxon.name, seo_url(taxon) %></li>
+    <% end %>
+    <li class="active"><%= @product.name %></li>
+  </ol>
+
   <div data-hook="product_show" itemscope itemtype="https://schema.org/Product">
     <div class="col-md-4" data-hook="product_left_part">
       <div data-hook="product_left_part_wrap">
