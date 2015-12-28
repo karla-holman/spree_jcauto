@@ -1,4 +1,4 @@
-require 'paperclip-watermark/watermark'
+require 'paperclip_processors/watermark'
 
 module Spree
   class Image < Asset
