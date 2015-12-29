@@ -6,14 +6,13 @@ module Spree
 
     has_attached_file :attachment,
                       processors: [:watermark],
+                      watermark_path: "#{Rails.root}/public/Logo-new.png",
                       styles: { mini: '48x48>', small: '100x100>', 
                         product: {
-                          geometry: '240x240>', 
-                          watermark_path: "#{Rails.root}/public/Logo-new.png"
+                          geometry: '240x240>'
                         },
                         large: {
-                          geometry: '600x600>',
-                          watermark_path: "#{Rails.root}/public/Logo-new.png"
+                          geometry: '600x600>'
                         }
                       },
                       default_style: :product,
