@@ -10,7 +10,7 @@
 module Paperclip
   class Watermark < Processor
     # Handles watermarking of images that are uploaded.
-    attr_accessor :current_geometry, :target_geometry, :format, :whiny, :convert_options, :watermark_path, :overlay, :position
+    attr_accessor :current_geometry, :target_geometry, :format, :whiny, :convert_options, :watermark_path, :overlay, :position, :style
 
     def initialize file, options = {}, attachment = nil
       super
@@ -48,7 +48,7 @@ module Paperclip
     # Performs the conversion of the +file+ into a watermark. Returns the Tempfile
     # that contains the new image.
     def make
-      puts "In watermark with geometry #{target_geometry}, style #{style}, path #{watermark_path ? watermark_path : "DNE"}"
+      puts "In watermark with geometry #{target_geometry}, style #{@style}, path #{watermark_path ? watermark_path : "DNE"}"
       dst = Tempfile.new([@basename, @format].compact.join("."))
       dst.binmode
 
@@ -72,7 +72,7 @@ module Paperclip
         raise Paperclip::Errors::CommandNotFoundError.new("Could not run the `convert` command. Please install ImageMagick.")
       end
 
-      if watermark_path && style == :large
+      if watermark_path && @style == :large
         puts "In watermark with path " + watermark_path
         command = "composite"
         params = %W[-gravity #{@position} #{watermark_path} #{tofile(dst)}]
