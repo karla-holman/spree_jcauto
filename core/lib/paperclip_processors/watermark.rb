@@ -25,11 +25,12 @@ module Paperclip
       @convert_options  = options[:convert_options]
       @whiny            = options[:whiny].nil? ? true : options[:whiny]
       @format           = options[:format]
-      @watermark_path   = "#{Rails.root}/public/Logo-new.png" # options[:watermark_path] ? "#{Rails.root}/public/Logo-new.png" : options[:watermark_path]
-      @position         = options[:position].nil? ? "SouthEast" : options[:position]
+      @watermark_path   = "#{Rails.root}/public/watermark.png" # options[:watermark_path] ? "#{Rails.root}/public/Logo-new.png" : options[:watermark_path]
+      @position         = options[:position].nil? ? "Center" : options[:position]
       @overlay          = options[:overlay].nil? ? true : false
       @current_format   = File.extname(@file.path)
       @basename         = File.basename(@file.path, @current_format)
+      @style            = options[:style] ? options[:style] : "none"
     end
 
     # TODO: extend watermark
@@ -47,7 +48,7 @@ module Paperclip
     # Performs the conversion of the +file+ into a watermark. Returns the Tempfile
     # that contains the new image.
     def make
-      puts "In watermark with geometry #{target_geometry}, path #{watermark_path ? watermark_path : "DNE"}"
+      puts "In watermark with geometry #{target_geometry}, style #{style}, path #{watermark_path ? watermark_path : "DNE"}"
       dst = Tempfile.new([@basename, @format].compact.join("."))
       dst.binmode
 
@@ -71,7 +72,7 @@ module Paperclip
         raise Paperclip::Errors::CommandNotFoundError.new("Could not run the `convert` command. Please install ImageMagick.")
       end
 
-      if watermark_path
+      if watermark_path && style == :large
         puts "In watermark with path " + watermark_path
         command = "composite"
         params = %W[-gravity #{@position} #{watermark_path} #{tofile(dst)}]
