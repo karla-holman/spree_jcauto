@@ -31,7 +31,13 @@
               </noscript>
               &nbsp;
             </li>
-            <script>Spree.fetch_cart()</script>
+            <script>
+              try {
+                Spree.fetch_cart()
+              } catch (ReferenceError) {
+                $("#link-to-cart").html('<%= link_to Spree.t(:cart), spree.cart_path %>');
+              }
+            </script>
           </ul>
         </div>
       </div><!-- End Row -->
