@@ -38,7 +38,7 @@
         <!-- Information -->
         <td class="mobile-left" style="vertical-align: middle">
           <% if product.description %>
-            <p style="font-weight: 700; margin-bottom: 0px;"><%= link_to url, class: 'info' do %><%= product.description %><% end %></p>
+            <p style="font-weight: 700; margin-bottom: 0px;"><%= link_to url do %><%= product.description %><% end %></p>
           <% else %>
             N/A
           <% end %>
