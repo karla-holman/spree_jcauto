@@ -172,8 +172,18 @@ module Spree
         @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Found duplicate slug (url) for " + slug }
       end
 
+      # Get description
+      # Get with from w/
+      if @product_row[:description].downcase.include? "w/o"
+        description = @product_row[:description].gsub(/w\/o/i,"without ")
+        description.strip!
+      elsif @product_row[:description].downcase.include? "w/"
+        description = @product_row[:description].gsub(/w\//i,"with ")
+        description.strip!
+      end
+
       new_product = Spree::Product.create :name => @product_row[:name], 
-                 :description => @product_row[:description],
+                 :description => description,
                  :available_on => DateTime.new(2015,1,1),
                  :slug => slug,
                  :tax_category_id => @@auto_tax_category_id, 
@@ -301,20 +311,44 @@ module Spree
           words = make_model_set.split
           words.each do |word| # loop through each to match to make, model, or notes
             next if (word.match(/\d{1,2}-{1}\d{1,2}/) && exceptions) # don't keep if range for exception
-            make_match = false
-            model_match = false
 
-            word.gsub!(/[\W&&[^-]]/,"")
+            # Get with from w/
+            if word.downcase.include? "w/o"
+              word.gsub!(/w\/o/i,"without ").strip!
+            elsif word.downcase.include? "w/"
+              word.gsub!(/w\//i,"with ").strip!
+            end
+
+            word.gsub!(/[\W&&[^- ]]/,"") # Replace all non-word characters except - or space with ""
             # try to match abbreviation
 
-            if (check = (Spree::Make.where("abbreviation=? OR name=?", word, word).first))
-              my_make = check
-            elsif (check = (Spree::Model.where("abbreviation=? OR name=?", word, word).first))
-              my_model = check
+            # If no make spefied
+            if !my_make
+              # try to find a make
+              if (check = (Spree::Make.where("abbreviation=? OR name=?", word, word).first))
+                my_make = check
+              # otherwise try to find a model
+              elsif (check = (Spree::Model.where("abbreviation=? OR name=?", word, word).first))
+                my_model = check
+              # Otherwise no matching make or model, add to notes
+              else
+                my_notes += my_notes!="" ? " " + word : word
+              end
+            # If make already exists, find model with that make
             else
-              my_notes += my_notes!="" ? " " + word : word
-            end
-          end
+              if (check = (Spree::Model.where("(abbreviation=? OR name=?) AND make_id=?", word, word, my_make.id).first))
+                my_model = check
+              else # No matching make for that model
+                # check for any matching model
+                if (check = (Spree::Model.where("abbreviation=? OR name=?", word, word).first))
+                  my_model = check
+                # otherwise add to notes
+                else
+                  my_notes += my_notes!="" ? " " + word : word
+                end
+              end
+            end # end if statement
+          end # end word loop
           
 
           if(my_make && my_model)
@@ -325,7 +359,7 @@ module Spree
             my_application = Spree::Application.where("model_id=?", my_model.id).first
           end
 
-          # if my notes is empty, applies to all
+          # if my notes and my model is empty, applies to all
           my_notes = ((!my_notes || my_notes=="") && !my_model) ? "all" : my_notes
 
           # add exceptions to the end of notes

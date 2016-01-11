@@ -4,7 +4,8 @@ module Spree
 		belongs_to :make
 		has_many :applications, dependent: :destroy
 
-		validates :name, presence: true, uniqueness: true
+		validates :name, presence: true
+		validates :name, uniqueness: { scope: [:make_id] }
 		validates :abbreviation, uniqueness: true, :allow_blank => true
 
 		validates :start_year, numericality: true
