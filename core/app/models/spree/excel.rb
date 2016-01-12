@@ -173,6 +173,7 @@ module Spree
       end
 
       # Get description
+      description = @product_row[:description]
       # Get with from w/
       if @product_row[:description].downcase.include? "w/o"
         description = @product_row[:description].gsub(/w\/o/i,"without ")
