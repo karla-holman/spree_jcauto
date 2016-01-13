@@ -80,7 +80,7 @@ module Spree
       %w{thank_you}.exclude? params[:action]
     end
 
-    def taxons_tree(root_taxon, current_taxon, max_level = 1)
+    def taxons_tree(root_taxon, current_taxon, max_level = 1, search = {})
       return '' if max_level < 1 || root_taxon.leaf?
 
 =begin
@@ -93,8 +93,12 @@ module Spree
 =end
       string = '<select class="form-control" onChange="window.location.href=this.value">'
       string += '<option value="">Select category</option>'
+      params_string = ""
+      if search.length != 0
+        params_string = "?search[product_applications_application_make_id_eq]=#{search[:product_applications_application_make_id_eq]}&search[product_applications_application_model_id_eq]=#{search[:product_applications_application_model_id_eq]}&search[year_range_any]=#{search[:year_range_any]}&search[taxons_id_eq]=&search[name_or_description_or_product_properties_value_cont]=#{search[:name_or_description_or_product_properties_value_cont]}"
+      end
       current_taxon.children.map do |taxon|
-        string += '<option value=' + seo_url(taxon) + '>' + taxon.name + '</option>'
+        string += '<option value=' + seo_url(taxon) + params_string + '>' + taxon.name + '</option>'
       end
       string += '</select>'
       string.html_safe

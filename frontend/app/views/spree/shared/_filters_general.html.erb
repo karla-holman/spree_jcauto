@@ -13,8 +13,8 @@
   filters << Spree::Core::ProductFilters.by_year if Spree::Core::ProductFilters.respond_to?(:by_year) 
 
   # filter by part group
-  part_group_taxon = Spree::Taxon.where("name=?", "Part Groups").first
-  filters << (Spree::Core::ProductFilters.taxons_under(part_group_taxon) if Spree::Core::ProductFilters.respond_to?(:taxons_under) && part_group_taxon)
+  # part_group_taxon = Spree::Taxon.where("name=?", "Part Groups").first
+  # filters << (Spree::Core::ProductFilters.taxons_under(part_group_taxon) if Spree::Core::ProductFilters.respond_to?(:taxons_under) && part_group_taxon)
 
   # filter by keywords
   filters << Spree::Core::ProductFilters.keyword_filter if Spree::Core::ProductFilters.respond_to?(:keyword_filter)
