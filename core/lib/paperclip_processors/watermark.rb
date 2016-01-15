@@ -25,8 +25,8 @@ module Paperclip
       @convert_options  = options[:convert_options]
       @whiny            = options[:whiny].nil? ? true : options[:whiny]
       @format           = options[:format]
-      @watermark_path   = "#{Rails.root}/public/watermark.png" # options[:watermark_path] ? "#{Rails.root}/public/Logo-new.png" : options[:watermark_path]
-      @position         = options[:position].nil? ? "Center" : options[:position]
+      @watermark_path   = "#{Rails.root}/public/watermark-images.png" # options[:watermark_path] ? "#{Rails.root}/public/Logo-new.png" : options[:watermark_path]
+      @position         = options[:position].nil? ? "SouthEast" : options[:position]
       @overlay          = options[:overlay].nil? ? true : false
       @current_format   = File.extname(@file.path)
       @basename         = File.basename(@file.path, @current_format)
