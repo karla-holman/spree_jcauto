@@ -1,5 +1,6 @@
 <%
   paginated_products = @searcher.retrieve_products([], [], {}) if params.key?(:keywords)
+  products = products.uniq!
   paginated_products ||= products
 %>
 
