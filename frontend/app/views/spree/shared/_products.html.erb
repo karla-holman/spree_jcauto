@@ -1,6 +1,6 @@
 <%
   paginated_products = @searcher.retrieve_products([], [], {}) if params.key?(:keywords)
-  products = products.uniq!
+  # products.uniq!
   paginated_products ||= products
 %>
 
@@ -26,7 +26,8 @@
     </tr>
     <% products.each do |product| %>
       <!-- Spree Setup -->
-      <% url = spree.product_url(product, taxon_id: @taxon.try(:id)) %>
+      <% url = spree.product_url(product) %>
+      <% # url = spree.product_url(product, taxon_id: @taxon.try(:id)) %>
       <% cache(@taxon.present? ? [I18n.locale, current_currency, @taxon, product] : [I18n.locale, current_currency, product]) do %>
       <!-- End Spree Setup -->
       

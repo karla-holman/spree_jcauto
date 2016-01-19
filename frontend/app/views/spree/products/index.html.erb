@@ -1,5 +1,9 @@
 <% if "spree/products" == params[:controller] && @taxon || !@taxonomies.empty? %>
   <% content_for :sidebar do %>
+    <div class="well">
+      <p style="display: inline-block">Can't find the part you need?</p>
+      <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
+    </div>
     <div class="mobile-collapse">
       <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseFilter" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 20px; width: 100%">
         Filter Results
@@ -20,10 +24,6 @@
             <%= render :partial => 'spree/shared/taxonomies' %>
         </div>
       </div>
-    </div>
-    <div class="well">
-      <p style="display: inline-block">Can't find the part you need?</p>
-      <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
     </div>
     <% end %>
 <% end %>

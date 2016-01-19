@@ -241,7 +241,7 @@ module Spree
         {
           name:   'Parts by Year',
           scope:  :year_range_any,
-          labels: (1900..Date.today.year).to_a.map { |m| [m, m] },
+          labels: (1924..Date.today.year).to_a.map { |m| [m, m] },
           conds:  nil
         }
       end

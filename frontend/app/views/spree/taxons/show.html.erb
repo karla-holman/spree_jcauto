@@ -9,16 +9,31 @@
 
 <% content_for :sidebar do %>
   <div class="well">
+    <p style="display: inline-block">Can't find the part you need?</p>
+    <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
+  </div>
+    <div class="mobile-collapse">
+      <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseFilter" aria-expanded="false" aria-controls="collapseExample" style="margin-bottom: 20px; width: 100%">
+        Filter Results
+      </a>
+<div class="collapse" id="collapseFilter">
+  <div class="well">
     <div data-hook="taxon_sidebar_navigation">
       <%= render :partial => 'spree/shared/filters_general' %>
       <%= render :partial => 'spree/shared/taxonomies' %>
     </div>
   </div>
-  <div class="well">
-    <p style="display: inline-block">Can't find the part you need?</p>
-    <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
-  </div>
-<% end %>
+      </div>
+    </div>
+    <div class="desktop-collapse">
+      <div class="well">
+        <div data-hook="homepage_sidebar_navigation">
+            <%= render :partial => 'spree/shared/filters_general' %>
+            <%= render :partial => 'spree/shared/taxonomies' %>
+        </div>
+      </div>
+    </div>
+    <% end %>
 
 <div data-hook="taxon_products">
   <%= render partial: 'spree/shared/products', locals: { products: @products["base"], taxon: @taxon } %>
