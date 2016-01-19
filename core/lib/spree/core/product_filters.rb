@@ -221,7 +221,7 @@ module Spree
       def ProductFilters.keyword_filter
         {
           name:   'Parts by Keyword',
-          scope:  :name_or_description_or_product_properties_value_cont,
+          scope:  :name_or_meta_keywords_or_description_or_product_properties_value_cont_any,
           labels: Spree::Product.all.map { |m| [m.name, m.id] },
           conds:  nil
         }

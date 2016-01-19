@@ -35,7 +35,10 @@ module Spree
       product = variant.product
       #unless product.variants.active(current_currency).all? { |v| v.price == product.price && v.core_price ? v.core_price == 0 : true }
         new_price = "Price: " + Spree::Money.new(variant.price, { currency: current_currency }).to_html
-        new_price += " Core: " + Spree::Money.new(variant.core_price ? variant.core_price : 0, { currency: current_currency }).to_html
+        if variant.core_price && variant.core_price > 0
+          new_price += " Core: " + Spree::Money.new(variant.core_price ? variant.core_price : 0, { currency: current_currency }).to_html
+        end
+        new_price
       #end
     end
 

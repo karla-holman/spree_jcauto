@@ -3,7 +3,7 @@
 </div>
 <div class="col-md-6" style="margin-top: 26px">
   <% if !@taxon.children.empty? %>
-    <%= taxons_tree(@taxon.root, @taxon, 1, ((params && params[:search]) ? params[:search] : {})) %>
+    <%= taxons_tree(@taxon.root, @taxon, 1, (params ? params : {})) %>
   <% end %>
 </div>
 
@@ -38,11 +38,3 @@
 <div data-hook="taxon_products">
   <%= render partial: 'spree/shared/products', locals: { products: @products["base"], taxon: @taxon } %>
 </div>
-
-<% unless params[:keywords].present? %>
-  <div data-hook="taxon_children">
-    <% cache [I18n.locale, @taxon] do %>
-      <%= render partial: 'taxon', collection: @taxon.children %>
-    <% end %>
-  </div>
-<% end %>

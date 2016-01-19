@@ -18,13 +18,21 @@
   <% end %>
 </div>
 <% if products.any? %>
+  <% 
+    begin
+      my_products = products.uniq
+      my_products.first
+    rescue
+      my_products = products
+    end
+   %>
   <!-- Test display -->
   <table class="table table-hover">
     <tr>
       <th>Image</th>
       <th>Info</th>
     </tr>
-    <% products.each do |product| %>
+    <% my_products.each do |product| %>
       <!-- Spree Setup -->
       <% url = spree.product_url(product) %>
       <% # url = spree.product_url(product, taxon_id: @taxon.try(:id)) %>
@@ -33,9 +41,9 @@
       
       <tr>
         <!-- Image and part number -->
-        <td style="vertical-align: middle; text-align: center"><!-- Image -->
+        <td style="vertical-align: middle; text-align: center;"><!-- Image -->
           <%= link_to small_image(product, itemprop: "image"), url, itemprop: 'url' %>
-          <h5><%= link_to product.name, url, itemprop: "name", title: product.property("Part Number") %></h5>
+          <h5 style="max-width: 130px"><%= link_to product.name, url, itemprop: "name", title: product.property("Part Number") %></h5>
         </td>
         <!-- Information -->
         <td class="mobile-left" style="vertical-align: middle">

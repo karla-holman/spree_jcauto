@@ -170,9 +170,20 @@ module Spree
           def prepare(params)
             @properties[:taxon] = params[:taxon].blank? ? nil : Spree::Taxon.find(params[:taxon])
             @properties[:keywords] = params[:keywords]
-            @properties[:search] = params[:search] ? params[:search].reject{|_, v| v == ""} : params[:search] # don't take empty search filters
             @properties[:filter] = params[:filter]
             @properties[:include_images] = params[:include_images]
+
+            # Handle filters
+            if(params[:search] && params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any])
+              if params[:match_exact]
+                keyword_string = params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any]
+                params[:search].delete(:name_or_meta_keywords_or_description_or_product_properties_value_cont_any)
+                params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont] = keyword_string
+              else
+              params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any] = params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].split
+              end
+            end
+            @properties[:search] = params[:search] ? params[:search].reject{|_, v| v == ""} : params[:search] # don't take empty search filters
 
             per_page = params[:per_page].to_i
             @properties[:per_page] = per_page > 0 ? per_page : Spree::Config[:products_per_page]

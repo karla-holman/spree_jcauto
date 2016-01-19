@@ -44,7 +44,9 @@
               end
             %>
             <% value = params[:keywords] ? params[:keywords] : (selected ? selected : "") %>
-            <div class="form-group">
+            <% match = params[:match_exact] ? true : false %>
+            <div class="form-group inline">
+              <%= check_box_tag :match_exact, "1", match %><%= label_tag "match_exact", "Match exact search?", style: "margin-left: 10px; margin-top: -5px" %>
               <%= text_field_tag "search[#{filter[:scope].to_s}]", value, {class: "form-control"} %>
             </div>
           <% else %>

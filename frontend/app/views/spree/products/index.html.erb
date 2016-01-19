@@ -34,6 +34,8 @@
     <% if !@products["base"].empty? %>
       <h3>Search results</h3>
       <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :taxon => @taxon } %>
+    <% else %>
+      <p>No general search results.</p>
     <% end %>
     <% if !@products["part_num"].nil? %>
       <h3>Parts with Matching Part Number, Cast Number, or Cross Reference</h3>
