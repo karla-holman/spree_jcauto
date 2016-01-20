@@ -26,8 +26,36 @@
         </div>
         <div class="col-md-4">
           <div class="form-group">
-            <%= f.label :description_cont, Spree.t(:description) %>
-            <%= f.text_field :description_cont, :size => 15, class: "form-control" %>
+            <%= f.label :description_or_meta_keywords_cont, Spree.t(:description) %>
+            <%= f.text_field :description_or_meta_keywords_cont, :size => 15, class: "form-control" %>
+          </div>
+        </div>
+        <div class="col-md-4 navigation">
+          <label class="filter-title">Parts by Make</label>
+          <div class="form-group">
+            
+            <%= f.collection_select :product_applications_application_make_id_eq, Spree::Make.all, :id, :name, {prompt: "All"}, {class: "form-control"} %>
+          </div>
+        </div>
+        <% Spree::Make.all.each do |make| %>
+          <div class="col-md-4 navigation">
+            <label class="filter-title">Parts by Model for <%= make.name %></label>
+            <div class="form-group">
+              
+              <%= f.collection_select :product_applications_application_model_id_eq, Spree::Model.all, :id, :name, {prompt: "All"}, {class: "form-control"} %>
+            </div>
+          </div>
+        <% end %>
+        <div class="col-md-4">
+          <div class="form-group">
+            <%= f.label :product_applications_start_year_lteq, Spree.t(:start_year_range) %>
+            <%= f.collection_select :product_applications_start_year_lteq, (1924..Date.today.year).to_a.map { |m| [m, m] }, :first, :last, {prompt: "All"}, { class: "form-control", id: "start-year" } %>
+          </div>
+        </div>
+        <div class="col-md-2" style="display: none">
+          <div class="form-group">
+            <%= f.label :product_applications_end_year_gteq, Spree.t(:end_year_range) %>
+            <%= f.collection_select :product_applications_end_year_gteq, (1924..Date.today.year).to_a.map { |m| [m, m] }, :first, :last, {prompt: "All"}, {class: "form-control", id: "end-year"} %>
           </div>
         </div>
         <div class="col-md-12">
@@ -41,6 +69,7 @@
       </div>
       <div data-hook="admin_products_index_search_buttons" class="form-actions">
         <%= button Spree.t(:search), 'search' %>
+        <%= link_to Spree.t(:clear_filters), admin_products_path, class: "button-link", style: "margin-left: 10px" %>
       </div>
     <% end %>
 
@@ -119,3 +148,33 @@
 <% end %>
 
 <%= render partial: 'spree/admin/shared/index_table_options', locals: { collection: @collection } %>
+
+<script type="text/javascript">
+  $( document ).ready(function(){
+    check_models();
+  });
+
+  $("#q_product_applications_application_make_id_eq").change( function(){
+    check_models();
+  });
+
+  // change models available based on make selected
+  function check_models() {
+    $("select[name='q[product_applications_application_model_id_eq]']").each( function(){
+      var make_name = $("#q_product_applications_application_make_id_eq option:selected").text().split(" ");
+      var model_name = $(this).parent().siblings("label").html().split(" ");
+      if( model_name[4] == make_name[0] ) {
+        $(this).prop( "disabled", false );
+        $(this).parents(".navigation").show();
+      } else {
+        $(this).parents(".navigation").hide();
+        $(this).prop( "disabled", true );
+      }
+    });
+  }
+
+  $('#start-year').change( function() {
+    var year = $("#start-year option:selected").text();
+    $("#end-year").val(year);
+  });
+</script>

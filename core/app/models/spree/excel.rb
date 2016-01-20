@@ -99,26 +99,27 @@ module Spree
         :name => product_name,
         :category => my_category,
         :description => row.cells[2].value.tr('***', '').chomp('-'),
-        :price => row.cells[8].value,
-        :core => row.cells[9].value,
-        :cost => row.cells[14].value,
-        :vendor => row.cells[15].value,
-        :vendor_price => row.cells[16].value,
-        :vendor_part_number => row.cells[17].value,
-        :length => row.cells[18].value,
-        :width => row.cells[19].value,
-        :height => row.cells[20].value,
-        :weight => row.cells[21].value,
-        :notes => row.cells[11].value,
-        :application => row.cells[3].value,
-        :location => row.cells[4].value,
-        :condition => row.cells[5].value,
-        :cross_ref => row.cells[6].value,
-        :cast_num => row.cells[7].value,
-        :available => row.cells[12].value, # for sale? (count in inventory)
-        :active => row.cells[13].value, # active (visible to users)
-        :quantity => row.cells[10].value,
-        :package => row.cells[22].value
+        :meta_keywords => row.cells[3].value,
+        :price => row.cells[9].value,
+        :core => row.cells[10].value,
+        :cost => row.cells[15].value,
+        :vendor => row.cells[16].value,
+        :vendor_price => row.cells[17].value,
+        :vendor_part_number => row.cells[18].value,
+        :length => row.cells[19].value,
+        :width => row.cells[20].value,
+        :height => row.cells[21].value,
+        :weight => row.cells[22].value,
+        :notes => row.cells[12].value,
+        :application => row.cells[4].value,
+        :location => row.cells[5].value,
+        :condition => row.cells[6].value,
+        :cross_ref => row.cells[7].value,
+        :cast_num => row.cells[8].value,
+        :available => row.cells[13].value, # for sale? (count in inventory)
+        :active => row.cells[14].value, # active (visible to users)
+        :quantity => row.cells[11].value,
+        :package => row.cells[23].value
       }
 
     end
@@ -182,9 +183,9 @@ module Spree
         description = @product_row[:description].gsub(/w\//i,"with ")
         description.strip!
       end
-
       new_product = Spree::Product.create :name => @product_row[:name], 
                  :description => description,
+                 :meta_keywords => @product_row[:meta_keywords],
                  :available_on => DateTime.new(2015,1,1),
                  :slug => slug,
                  :tax_category_id => @@auto_tax_category_id, 
