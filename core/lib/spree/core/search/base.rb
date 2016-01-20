@@ -180,7 +180,7 @@ module Spree
                 params[:search].delete(:name_or_meta_keywords_or_description_or_product_properties_value_cont_any)
                 params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont] = keyword_string
               else
-              params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any] = params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].gsub(/\W/, '').split
+                params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any] = params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].gsub(/[^A-Za-z0-9\s]/, '').split
               end
             end
             @properties[:search] = params[:search] ? params[:search].reject{|_, v| v == ""} : params[:search] # don't take empty search filters
