@@ -33,29 +33,27 @@
         <div class="col-md-4 navigation">
           <label class="filter-title">Parts by Make</label>
           <div class="form-group">
-            
-            <%= f.collection_select :product_applications_application_make_id_eq, Spree::Make.all, :id, :name, {prompt: "All"}, {class: "form-control"} %>
+            <%= f.collection_select :product_applications_application_make_id_eq, Spree::Make.all, :id, :name, {:include_blank => 'All'}, {class: "form-control"} %>
           </div>
         </div>
         <% Spree::Make.all.each do |make| %>
           <div class="col-md-4 navigation">
             <label class="filter-title">Parts by Model for <%= make.name %></label>
             <div class="form-group">
-              
-              <%= f.collection_select :product_applications_application_model_id_eq, Spree::Model.all, :id, :name, {prompt: "All"}, {class: "form-control"} %>
+              <%= f.collection_select :product_applications_application_model_id_eq, Spree::Model.where("make_id = ?", make.id), :id, :name, {:include_blank => 'All'}, {class: "form-control"} %>
             </div>
           </div>
         <% end %>
         <div class="col-md-4">
           <div class="form-group">
-            <%= f.label :product_applications_start_year_lteq, Spree.t(:start_year_range) %>
-            <%= f.collection_select :product_applications_start_year_lteq, (1924..Date.today.year).to_a.map { |m| [m, m] }, :first, :last, {prompt: "All"}, { class: "form-control", id: "start-year" } %>
+            <%= f.label :product_applications_start_year_lteq, Spree.t(:year) %>
+            <%= f.collection_select :product_applications_start_year_lteq, (1924..Date.today.year).to_a.map { |m| [m, m] }, :first, :last, {:include_blank => 'All'}, { class: "form-control", id: "start-year" } %>
           </div>
         </div>
         <div class="col-md-2" style="display: none">
           <div class="form-group">
             <%= f.label :product_applications_end_year_gteq, Spree.t(:end_year_range) %>
-            <%= f.collection_select :product_applications_end_year_gteq, (1924..Date.today.year).to_a.map { |m| [m, m] }, :first, :last, {prompt: "All"}, {class: "form-control", id: "end-year"} %>
+            <%= f.collection_select :product_applications_end_year_gteq, (1924..Date.today.year).to_a.map { |m| [m, m] }, :first, :last, {:include_blank => 'All'}, {class: "form-control", id: "end-year"} %>
           </div>
         </div>
         <div class="col-md-12">
