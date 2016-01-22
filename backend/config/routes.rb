@@ -158,9 +158,13 @@ Spree::Core::Engine.add_routes do
         post :dismiss_alert
         post :clear_cache
         get :upload
+        get :quickbooks_edit
         post :upload_product_excel
         post :upload_inventory_excel
         post :upload_vendor_excel
+        post :clear_jobs
+        post :create_customer_requests
+        post :create_invoice_requests
       end
     end
 

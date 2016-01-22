@@ -1,0 +1,90 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:upload_to_quickbooks) %>
+<% end %>
+
+<div class="col-md-6 col-lg-4">
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	  	<div style="float:left">
+	  		<h3>Clear All Jobs</h3>
+	  	</div>
+	  	<div style="float:right; margin: 26px 0">
+	  		<strong> <%= link_to "/downloads/product.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
+	  	</div>
+	  	<div style="clear:both"></div>
+	  </div>
+	  <div class="panel-body">
+	    <%= form_tag 'clear_jobs', :multipart => true do %>
+			<%= submit_tag "Clear Jobs", class: "btn btn-primary" %>
+		<% end %>
+	  </div>
+	</div>
+</div>
+
+<div class="col-md-6 col-lg-4">
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	  	<div style="float:left">
+	  		<h3>Add Customer Jobs</h3>
+	  	</div>
+	  	<div style="float:right; margin: 26px 0">
+	  		<strong> <%= link_to "/downloads/inventory.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
+	  	</div>
+	  	<div style="clear:both"></div>
+	  </div>
+	  <div class="panel-body">
+	    <%= form_tag 'create_customer_requests', :multipart => true do %>
+   			<%= submit_tag "Create Customer Upload Job", class: "btn btn-primary" %>
+		<% end %>
+	  </div>
+	</div>
+</div>
+
+<div class="col-md-6 col-lg-4">
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	  	<div style="float:left">
+	  		<h3>Update Invoice Jobs</h3>
+	  	</div>
+	  	<div style="float:right; margin: 26px 0">
+	  		<strong> <%= link_to "/downloads/vendor.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
+	  	</div>
+	  	<div style="clear:both"></div>
+	  </div>
+	  <div class="panel-body">
+	    <%= form_tag 'create_invoice_requests', :multipart => true do %>
+   			<%= submit_tag "Create Invoices", class: "btn btn-primary" %>
+		<% end %>
+	  </div>
+	</div>
+</div>
+
+<% if @errors && @errors.length > 0 %>
+	<div class="col-md-12">
+		<h3>Errors</h3>
+		<table id="product-properties" class="table table-striped" data-hook>
+			<tbody>
+				<% css_class = cycle('even', 'odd', :name => "errors_table") %>
+				<tr class="<%= css_class %>">
+					<th>Product Number</th>
+					<th>Condition</th>
+					<th>Message</th>
+				</tr>
+				<% @errors.each do |error| %>
+				    <tr class="<%= css_class %>">
+				      <td>
+				        <%= error[:part_number] %>
+				      </td>
+				      <td>
+				        <%= error[:condition] %>
+				      </td>
+				      <td>
+				        <%= error[:message] %>
+				      </td>
+				    </tr>
+				<% end %>
+			  	<% reset_cycle('errors_table') %>
+			</tbody>
+		</table>
+	</div>
+<% end %>

@@ -93,6 +93,57 @@ module Spree
         render :action => :upload
       end
 
+      # Handle Quickbooks upload
+      def clear_jobs
+        number_of_jobs = QBWC.clear_jobs
+
+        flash[:info] = "Removed " + number_of_jobs.to_s + " job(s)"
+
+        redirect_to quickbooks_edit_admin_general_settings_path
+      end
+
+      # Return customer requests
+      def create_customer_requests
+        # Clear any existing job
+        QBWC.delete_job(:add_customer)
+
+        customer_requests = []
+        Spree::User.all.each do |user|
+          customer_requests << 
+          { 
+            :customer_add_rq => {
+              :customer_add => {
+                :name => "#{user.bill_address ? user.bill_address.firstname : user.email} #{user.bill_address ? user.bill_address.lastname : "" }", 
+                :is_active => true
+              }
+            }
+          } 
+        end
+
+        # Check XML for requests
+        customer_requests.each do |request| 
+          if !QBWC.parser.to_qbxml(request, {:validate => true})
+            flash[:error] = "Request " + request + " failed."
+            render :action => :quickbooks_edit
+          end
+        end
+
+        # Add job if all XML passes
+        QBWC.add_job(:add_customer, true, '', CustomerWorker, customer_requests)
+
+        flash[:success] = "Customer job added."
+        redirect_to quickbooks_edit_admin_general_settings_path
+      end
+
+      def create_invoice_requests
+        redirect_to quickbooks_edit_admin_general_settings_path
+      end
+
+      def quickbooks_edit
+        @path = ""
+      end
+
+
       private
       def store_params
         params.require(:store).permit(permitted_store_attributes)
