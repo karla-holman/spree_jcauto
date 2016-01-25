@@ -194,7 +194,7 @@ module Spree
                     :full_name => "Tax"
                   },
                   :item_sales_tax_ref => {
-                    :full_name => (address.state_id == 3577 ? "Washington State Excise Tax" : "Out of State")
+                    :full_name => (address.state_id == 3577 ? "WA State Excise Tax" : "Out of State")
                   }
                 }
               }
