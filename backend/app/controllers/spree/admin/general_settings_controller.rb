@@ -264,7 +264,7 @@ module Spree
                 },
                 :desc => promotion.label,
                 :quantity => 1,
-                :amount => promotion.amount
+                :amount => promotion.amount.to_s
               }
             end
 
