@@ -150,7 +150,7 @@ module Spree
         QBWC.delete_job(:add_invoice)
 
         # for each order, check customers, invoices, and payments
-        Spree::Order.all.each do |order|
+        Spree::Order.where("in_quickbooks=?", true).each do |order|
 
           # Add customer and order only if user attached (should always be the case)
           if order.user 
@@ -194,7 +194,7 @@ module Spree
                     :full_name => "Tax"
                   },
                   :item_sales_tax_ref => {
-                    :full_name => (address.state_id != 3577 ? "Out of State" : "")
+                    :full_name => (address.state_id == 3577 ? "Washington State Excise Tax" : "Out of State")
                   }
                 }
               }
@@ -214,7 +214,7 @@ module Spree
                       :ar_account_ref => {
                         :full_name => "Accounts Receivable"
                       },
-                      :txn_date => payment.created_at.strftime("%m/%d/%Y"),
+                      :txn_date => payment.created_at.strftime("%Y-%m-%d"),
                       :ref_number => payment.number,
                       :total_amount => payment.amount.to_s,
                       :payment_method_ref => {
@@ -250,7 +250,8 @@ module Spree
                   :full_name => "Shipping"
                 },
                 :desc => shipment.shipping_method.name,
-                :amount => shipment.display_discounted_cost.to_s
+                :quantity => 1,
+                :amount => shipment.cost.to_s
               }
             end
 
@@ -262,6 +263,7 @@ module Spree
                   :full_name => "Promotion"
                 },
                 :desc => promotion.label,
+                :quantity => 1,
                 :amount => promotion.amount
               }
             end
@@ -277,7 +279,7 @@ module Spree
                   :ar_account_ref => {
                     :full_name => "Accounts Receivable"
                   },
-                  :txn_date => order.created_at,
+                  :txn_date => order.created_at.strftime("%Y-%m-%d"),
                   :ref_number => order.number,
                   :bill_address => {
                     :addr_1 => "#{order.bill_address ? order.bill_address.address1 : ""}",
