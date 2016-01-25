@@ -36,6 +36,10 @@ module Spree
         head :no_content
       end
 
+      ##############################################################################
+      # EXCEL UPLOADS
+      ##############################################################################
+
       def upload
         @path = ""
       end
@@ -93,7 +97,11 @@ module Spree
         render :action => :upload
       end
 
-      # Handle Quickbooks upload
+      ##############################################################################
+      # EXCEL UPLOADS
+      ##############################################################################
+
+      # Handle Quickbooks uploads
       def clear_jobs
         number_of_jobs = QBWC.clear_jobs
 
@@ -136,6 +144,184 @@ module Spree
       end
 
       def create_invoice_requests
+        requests = []
+
+        # Clear any existing job
+        QBWC.delete_job(:add_invoice)
+
+        # for each order, check customers, invoices, and payments
+        Spree::Order.all.each do |order|
+
+          # Add customer and order only if user attached (should always be the case)
+          if order.user 
+
+            # variables -------------------------------------------------------------
+            user = order.user
+            # get address (whether shipping or billing)
+            address = user.ship_address ? user.ship_address : (user.bill_address ? user.bill_address : nil)
+            # get name from address
+            name = "#{address ? address.lastname : user.email}#{address ? ", " + address.firstname : "" }"
+            full_name = "#{address ? address.firstname : user.email}#{address ? " " + address.lastname : "" }"
+
+            # Add customer ----------------------------------------------------------
+            requests << 
+            { 
+              :customer_add_rq => {
+                :customer_add => {
+                  :name => name, 
+                  :is_active => true,
+                  :first_name => "#{address ? address.firstname : user.email}",
+                  :last_name => "#{address ? address.lastname : ""}",
+                  :bill_address => {
+                    :addr_1 => "#{user.bill_address ? user.bill_address.address1 : ""}",
+                    :addr_2 => "#{user.bill_address ? user.bill_address.address2 : ""}",
+                    :city => "#{user.bill_address ? user.bill_address.city : ""}",
+                    :state => "#{user.bill_address ? Spree::State.find(user.bill_address.state_id).name : ""}",
+                    :postal_code => "#{user.bill_address ? user.bill_address.zipcode : ""}",
+                    :country => "#{user.bill_address ? Spree::Country.find(user.bill_address.country_id).name : ""}"
+                  },
+                  :ship_address => {
+                    :addr_1 => "#{user.ship_address ? user.ship_address.address1 : ""}",
+                    :addr_2 => "#{user.ship_address ? user.ship_address.address2 : ""}",
+                    :city => "#{user.ship_address ? user.ship_address.city : ""}",
+                    :state => "#{user.ship_address ? Spree::State.find(user.ship_address.state_id).name : ""}",
+                    :postal_code => "#{user.ship_address ? user.ship_address.zipcode : ""}",
+                    :country => "#{user.ship_address ? Spree::Country.find(user.ship_address.country_id).name : ""}"
+                  },
+                  :phone => "#{address ? address.phone : ""}",
+                  :email => "#{user.email}",
+                  :sales_tax_code_ref => {
+                    :full_name => "Tax"
+                  },
+                  :item_sales_tax_ref => {
+                    :full_name => (address.state_id != 3577 ? "Out of State" : "")
+                  }
+                }
+              }
+            }
+    
+            # Add payments -------------------------------------------------------------
+            if order.payment_state == "paid"
+              # add new payment_requests
+              order.payments.each do |payment|
+                requests <<
+                {
+                  :receive_payment_add_rq => {
+                    :receive_payment_add => {
+                      :customer_ref => {
+                      :full_name => full_name
+                      },
+                      :ar_account_ref => {
+                        :full_name => "Accounts Receivable"
+                      },
+                      :txn_date => payment.created_at.strftime("%m/%d/%Y"),
+                      :ref_number => payment.number,
+                      :total_amount => payment.amount.to_s,
+                      :payment_method_ref => {
+                        :full_name => payment.payment_method.name
+                      }
+                    }
+                  }
+                }
+              end # end payments.each
+            end # end if payments
+
+            # Add Order as Invoice ------------------------------------------------------
+            
+            # generate line items
+            invoice_lines = []
+            order.line_items.each do |item|
+              invoice_lines << 
+              {
+                :item_ref => {
+                  :full_name => "inventory"
+                },
+                :desc => item.variant.description,
+                :quantity => item.quantity,
+                :amount => item.price.to_s
+              }
+            end
+
+            # Add shipping
+            order.shipments.each do |shipment|
+              invoice_lines <<
+              {
+                :item_ref => {
+                  :full_name => "Shipping"
+                },
+                :desc => shipment.shipping_method.name,
+                :amount => shipment.display_discounted_cost.to_s
+              }
+            end
+
+            # Add discounts
+            order.adjustments.each do |promotion|
+              invoice_lines <<
+              {
+                :item_ref => {
+                  :full_name => "Promotion"
+                },
+                :desc => promotion.label,
+                :amount => promotion.amount
+              }
+            end
+
+            # Add invoice
+            requests << 
+            {
+              :invoice_add_rq => {
+                :invoice_add => {
+                  :customer_ref => {
+                    :full_name => full_name
+                  },
+                  :ar_account_ref => {
+                    :full_name => "Accounts Receivable"
+                  },
+                  :txn_date => order.created_at,
+                  :ref_number => order.number,
+                  :bill_address => {
+                    :addr_1 => "#{order.bill_address ? order.bill_address.address1 : ""}",
+                    :addr_2 => "#{order.bill_address ? order.bill_address.address2 : ""}",
+                    :city => "#{order.bill_address ? order.bill_address.city : ""}",
+                    :state => "#{order.bill_address ? Spree::State.find(order.bill_address.state_id).name : ""}",
+                    :postal_code => "#{order.bill_address ? order.bill_address.zipcode : ""}",
+                    :country => "#{order.bill_address ? Spree::Country.find(order.bill_address.country_id).name : ""}"
+                  },
+                  :ship_address => {
+                    :addr_1 => "#{order.ship_address ? order.ship_address.address1 : ""}",
+                    :addr_2 => "#{order.ship_address ? order.ship_address.address2 : ""}",
+                    :city => "#{order.ship_address ? order.ship_address.city : ""}",
+                    :state => "#{order.ship_address ? Spree::State.find(order.ship_address.state_id).name : ""}",
+                    :postal_code => "#{order.ship_address ? order.ship_address.zipcode : ""}",
+                    :country => "#{order.ship_address ? Spree::Country.find(order.ship_address.country_id).name : ""}"
+                  },
+                  :is_pending => :false,
+                  :customer_sales_tax_code_ref => {
+                    :full_name => "Tax"
+                  },
+                  :invoice_line_add => invoice_lines
+                }
+              }
+            }
+
+          end # end if customer
+
+        end # Loop through each order
+
+        byebug
+        # Check XML for requests
+        requests.each do |request| 
+          if !QBWC.parser.to_qbxml(request, {:validate => true})
+            flash[:error] = "Request " + request + " failed."
+            render :action => :quickbooks_edit
+          end
+        end
+
+        # Add job if all XML passes
+        QBWC.add_job(:add_invoice, true, '', InvoiceWorker, requests)
+
+        flash[:success] = "Invoice job added."
+
         redirect_to quickbooks_edit_admin_general_settings_path
       end
 
