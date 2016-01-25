@@ -308,7 +308,6 @@ module Spree
 
         end # Loop through each order
 
-        byebug
         # Check XML for requests
         requests.each do |request| 
           if !QBWC.parser.to_qbxml(request, {:validate => true})
