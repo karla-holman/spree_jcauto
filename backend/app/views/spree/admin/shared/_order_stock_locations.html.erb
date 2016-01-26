@@ -3,10 +3,10 @@
     <h2 class="panel-title"><%= Spree.t(:order_stock_locations) %></h2>
   </div>
 
-  <div class="panel-body">
+  <div class="panel-body table-responsive" style="padding: 0">
     <% @order.shipments.each do |shipment| %>
       <% my_stock_movements = Spree::StockMovement.where("originator_type=? AND originator_id=?", "Spree::Shipment", shipment.id) %>
-      <h5>Shipment: <%= shipment.number %></h5>
+      <h5 style="padding-left: 8px">Shipment: <%= shipment.number %></h5>
       <table class="table" data-hook>
         <tbody class="additional-info">
           <tr>

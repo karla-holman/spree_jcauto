@@ -1,32 +1,32 @@
-<%= render :partial => "spree/admin/variants/autocomplete", :formats => :js %>
-<%= render :partial => "spree/admin/variants/autocomplete_stock", :formats => :js %>
-
 <div class="panel panel-default" id="add-line-item" data-hook>
   <div class="panel-heading">
     <h2 class="panel-title">
       In Quickbooks?  
     </h2>
   </div>
-  <div class="panel-body">
-    <div class="col-md-4">
-      <p>Track whether this order has been sent to or manually entered in Quickbooks.</p>
-    </div>
-    <div class="col-md-4">
-      <%= form_for [:admin, @order] do |f| %>
+  <div class="panel-body table-responsive" style="padding: 0">
+    <table class="table table-bordered" style="margin-bottom: 0">
+      <tbody class="additional-info">
+        <tr>
+          <td colspan="2">Track whether this order has been sent to or manually entered in Quickbooks.</td>
+        </tr>
+        <tr>
+          <td>
+            <%= form_for [:admin, @order] do |f| %>
+              <%= label_tag 'in_quickbooks' do %>
+                <%= f.check_box :in_quickbooks %>
+                <%= Spree.t(:in_quickbooks) %>
+              <% end %>
 
-        <%= label_tag 'in_quickbooks' do %>
-          <%= f.check_box :in_quickbooks %>
-          <%= Spree.t(:in_quickbooks) %>
-        <% end %>
-
-        <%= f.submit %>
-      <% end %>
-
-    </div>
-    <div class="col-md-4">
-      <label>Upload orders to Quickbooks:</label>
-      <%= link_to "Quickbooks", quickbooks_edit_admin_general_settings_path, class: "btn btn-info" %>
-    </div>
-
-  </div>
-</div>
+              <%= f.submit class: "btn btn-success", style: "margin-left: 10px" %>
+            <% end %>
+          </td>
+          <td>
+            <label>Upload orders to Quickbooks:</label>
+            <%= link_to "Quickbooks", quickbooks_edit_admin_general_settings_path, class: "btn btn-info", style: "margin-left: 10px" %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div><!-- Panel Body -->
+</div><!-- Panel -->

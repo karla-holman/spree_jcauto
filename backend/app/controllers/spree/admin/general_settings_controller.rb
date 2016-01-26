@@ -157,7 +157,7 @@ module Spree
             # variables -------------------------------------------------------------
             my_user = order.user
             # get address (whether shipping or billing)
-            address = user.bill_address ? user.bill_address : (user.ship_address ? user.ship_address : nil)
+            address = my_user.bill_address ? my_user.bill_address : (my_user.ship_address ? my_user.ship_address : nil)
           else 
             my_user = order
             address = order.bill_address ? order.bill_address : (order.ship_address ? order.ship_address : nil)

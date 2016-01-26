@@ -141,6 +141,10 @@ module Spree
       self.line_item_comparison_hooks.add(hook)
     end
 
+    def fix_in_quickbooks(is_in_quickbooks)
+      self.update_attribute("in_quickbooks", is_in_quickbooks)
+    end
+
     # For compatiblity with Calculator::PriceSack
     def amount
       line_items.inject(0.0) { |sum, li| sum + li.amount }

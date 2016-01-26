@@ -71,6 +71,10 @@ module Spree
       end
 
       def update
+        if params[:order]["in_quickbooks"]
+          @order.fix_in_quickbooks(params[:order]["in_quickbooks"])
+          params[:order].delete("in_quickbooks")
+        end
         if @order.update_attributes(params[:order]) && @order.line_items.present?
           @order.update!
           unless @order.completed?
@@ -128,7 +132,7 @@ module Spree
       private
         def order_params
           params[:created_by_id] = try_spree_current_user.try(:id)
-          params.permit(:created_by_id, :user_id)
+          params.permit(:created_by_id, :user_id, :in_quickbooks)
         end
 
         def load_order
