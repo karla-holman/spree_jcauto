@@ -216,7 +216,7 @@ module Spree
                       },
                       :txn_date => payment.created_at.strftime("%Y-%m-%d"),
                       :ref_number => payment.number,
-                      :total_amount => payment.amount.to_s,
+                      :total_amount => sprintf('%.2f', payment.amount),
                       :payment_method_ref => {
                         :full_name => payment.payment_method.name
                       }
@@ -238,7 +238,7 @@ module Spree
                 },
                 :desc => item.variant.description,
                 :quantity => item.quantity,
-                :amount => item.price.to_s
+                :amount => sprintf('%.2f', item.price)
               }
             end
 
@@ -249,9 +249,8 @@ module Spree
                 :item_ref => {
                   :full_name => "Shipping"
                 },
-                :desc => shipment.shipping_method.name,
-                :quantity => 1,
-                :amount => shipment.cost.to_s
+                :desc => shipment.shipping_method.name.gsub(/\W/, ''),
+                :amount => sprintf('%.2f', shipment.cost)
               }
             end
 
@@ -263,8 +262,7 @@ module Spree
                   :full_name => "Promotion"
                 },
                 :desc => promotion.label,
-                :quantity => 1,
-                :amount => promotion.amount.to_s
+                :amount => sprintf('%.2f', promotion.amount).gsub("-", "")
               }
             end
 
