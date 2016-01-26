@@ -149,8 +149,9 @@ module Spree
         # Clear any existing job
         QBWC.delete_job(:add_invoice)
 
+        my_orders = Spree::Order.where("in_quickbooks=?", false)
         # for each order, check customers, invoices, and payments
-        Spree::Order.where("in_quickbooks=?", true).each do |order|
+        my_orders.each do |order|
 
           # Add customer and order only if user attached (should always be the case)
           if order.user 
@@ -209,7 +210,7 @@ module Spree
                   :receive_payment_add_rq => {
                     :receive_payment_add => {
                       :customer_ref => {
-                      :full_name => full_name
+                        :full_name => full_name
                       },
                       :ar_account_ref => {
                         :full_name => "Accounts Receivable"
@@ -249,7 +250,7 @@ module Spree
                 :item_ref => {
                   :full_name => "Shipping"
                 },
-                :desc => shipment.shipping_method.name.gsub(/\W/, ''),
+                :desc => shipment.shipping_method.name.gsub(/[^\w\s]/, ''),
                 :amount => sprintf('%.2f', shipment.cost)
               }
             end
@@ -295,7 +296,6 @@ module Spree
                     :postal_code => "#{order.ship_address ? order.ship_address.zipcode : ""}",
                     :country => "#{order.ship_address ? Spree::Country.find(order.ship_address.country_id).name : ""}"
                   },
-                  :is_pending => :false,
                   :customer_sales_tax_code_ref => {
                     :full_name => "Tax"
                   },
@@ -318,8 +318,11 @@ module Spree
 
         # Add job if all XML passes
         QBWC.add_job(:add_invoice, true, '', InvoiceWorker, requests)
+        my_orders.each do |order|
+          order.update_attribute("in_quickbooks", true)
+        end
 
-        flash[:success] = "Invoice job added."
+        flash[:success] = "Invoice job added. Remember to run Quickbooks Web Connector!"
 
         redirect_to quickbooks_edit_admin_general_settings_path
       end
