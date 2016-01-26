@@ -220,7 +220,11 @@ module Spree
                       :total_amount => sprintf('%.2f', payment.amount),
                       :payment_method_ref => {
                         :full_name => payment.payment_method.name
-                      }
+                      },
+                      :deposit_to_account_ref => { 
+                        :full_name => "Undeposited Funds" 
+                      },
+                      :is_auto_apply => true
                     }
                   }
                 }
