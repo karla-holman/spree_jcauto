@@ -155,10 +155,11 @@ module Spree
           # Add customer and order only if user attached (should always be the case)
           if order.user 
             # variables -------------------------------------------------------------
-            user = order.user
+            my_user = order.user
             # get address (whether shipping or billing)
             address = user.ship_address ? user.ship_address : (user.bill_address ? user.bill_address : nil)
           else 
+            my_user = order
             address = order.ship_address ? order.ship_address : (order.bill_address ? order.bill_address : nil)
           end
           # get name from address
@@ -172,26 +173,26 @@ module Spree
               :customer_add => {
                 :name => name, 
                 :is_active => true,
-                :first_name => "#{address ? address.firstname : user.email}",
+                :first_name => "#{address ? address.firstname : my_user.email}",
                 :last_name => "#{address ? address.lastname : ""}",
                 :bill_address => {
-                  :addr_1 => "#{user.bill_address ? user.bill_address.address1 : ""}",
-                  :addr_2 => "#{user.bill_address ? user.bill_address.address2 : ""}",
-                  :city => "#{user.bill_address ? user.bill_address.city : ""}",
-                  :state => "#{user.bill_address ? Spree::State.find(user.bill_address.state_id).name : ""}",
-                  :postal_code => "#{user.bill_address ? user.bill_address.zipcode : ""}",
-                  :country => "#{user.bill_address ? Spree::Country.find(user.bill_address.country_id).name : ""}"
+                  :addr_1 => "#{my_user.bill_address ? my_user.bill_address.address1 : ""}",
+                  :addr_2 => "#{my_user.bill_address ? my_user.bill_address.address2 : ""}",
+                  :city => "#{my_user.bill_address ? my_user.bill_address.city : ""}",
+                  :state => "#{my_user.bill_address ? Spree::State.find(my_user.bill_address.state_id).name : ""}",
+                  :postal_code => "#{my_user.bill_address ? my_user.bill_address.zipcode : ""}",
+                  :country => "#{my_user.bill_address ? Spree::Country.find(my_user.bill_address.country_id).name : ""}"
                 },
                 :ship_address => {
-                  :addr_1 => "#{user.ship_address ? user.ship_address.address1 : ""}",
-                  :addr_2 => "#{user.ship_address ? user.ship_address.address2 : ""}",
-                  :city => "#{user.ship_address ? user.ship_address.city : ""}",
-                  :state => "#{user.ship_address ? Spree::State.find(user.ship_address.state_id).name : ""}",
-                  :postal_code => "#{user.ship_address ? user.ship_address.zipcode : ""}",
-                  :country => "#{user.ship_address ? Spree::Country.find(user.ship_address.country_id).name : ""}"
+                  :addr_1 => "#{my_user.ship_address ? my_user.ship_address.address1 : ""}",
+                  :addr_2 => "#{my_user.ship_address ? my_user.ship_address.address2 : ""}",
+                  :city => "#{my_user.ship_address ? my_user.ship_address.city : ""}",
+                  :state => "#{my_user.ship_address ? Spree::State.find(my_user.ship_address.state_id).name : ""}",
+                  :postal_code => "#{my_user.ship_address ? my_user.ship_address.zipcode : ""}",
+                  :country => "#{my_user.ship_address ? Spree::Country.find(my_user.ship_address.country_id).name : ""}"
                 },
                 :phone => "#{address ? address.phone : ""}",
-                :email => "#{order.email}",
+                :email => "#{my_user.email}",
                 :sales_tax_code_ref => {
                   :full_name => "Tax"
                 },
