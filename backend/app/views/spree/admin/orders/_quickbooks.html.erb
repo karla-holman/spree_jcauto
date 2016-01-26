@@ -12,7 +12,7 @@
       <p>Track whether this order has been sent to or manually entered in Quickbooks.</p>
     </div>
     <div class="col-md-4">
-      <%= form_for @order do |f| %>
+      <%= form_for [:admin, @order] do |f| %>
 
         <%= label_tag 'in_quickbooks' do %>
           <%= f.check_box :in_quickbooks %>
