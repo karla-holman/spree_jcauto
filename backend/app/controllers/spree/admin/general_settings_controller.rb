@@ -200,36 +200,6 @@ module Spree
                 }
               }
             }
-    
-            # Add payments -------------------------------------------------------------
-            if order.payment_state == "paid"
-              # add new payment_requests
-              order.payments.each do |payment|
-                requests <<
-                {
-                  :receive_payment_add_rq => {
-                    :receive_payment_add => {
-                      :customer_ref => {
-                        :full_name => full_name
-                      },
-                      :ar_account_ref => {
-                        :full_name => "Accounts Receivable"
-                      },
-                      :txn_date => payment.created_at.strftime("%Y-%m-%d"),
-                      :ref_number => payment.number,
-                      :total_amount => sprintf('%.2f', payment.amount),
-                      :payment_method_ref => {
-                        :full_name => payment.payment_method.name
-                      },
-                      :deposit_to_account_ref => { 
-                        :full_name => "Undeposited Funds" 
-                      },
-                      :is_auto_apply => true
-                    }
-                  }
-                }
-              end # end payments.each
-            end # end if payments
 
             # Add Order as Invoice ------------------------------------------------------
             
@@ -308,6 +278,35 @@ module Spree
               }
             }
 
+            # Add payments -------------------------------------------------------------
+            if order.payment_state == "paid"
+              # add new payment_requests
+              order.payments.each do |payment|
+                requests <<
+                {
+                  :receive_payment_add_rq => {
+                    :receive_payment_add => {
+                      :customer_ref => {
+                        :full_name => full_name
+                      },
+                      :ar_account_ref => {
+                        :full_name => "Accounts Receivable"
+                      },
+                      :txn_date => payment.created_at.strftime("%Y-%m-%d"),
+                      :ref_number => payment.number,
+                      :total_amount => sprintf('%.2f', payment.amount),
+                      :payment_method_ref => {
+                        :full_name => payment.payment_method.name
+                      },
+                      :deposit_to_account_ref => { 
+                        :full_name => "Undeposited Funds" 
+                      },
+                      :is_auto_apply => true
+                    }
+                  }
+                }
+              end # end payments.each
+            end # end if payments
           end # end if customer
 
         end # Loop through each order
