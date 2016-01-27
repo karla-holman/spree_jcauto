@@ -51,6 +51,7 @@ Spree::Core::Engine.add_routes do
     get '/variants/search', to: "variants#search", as: :search_variants
 
     get '/activities', to: "users#activity"
+    get '/quickbooks-activities', to: "users#quickbooks_activity"
 
     resources :option_types do
       collection do

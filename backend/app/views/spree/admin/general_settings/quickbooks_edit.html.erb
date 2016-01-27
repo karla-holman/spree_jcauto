@@ -2,54 +2,29 @@
   <%= Spree.t(:upload_to_quickbooks) %>
 <% end %>
 
-<div class="col-md-6 col-lg-4">
-	<div class="panel panel-default">
-	  <div class="panel-heading">
-	  	<div style="float:left">
-	  		<h3>Clear All Jobs</h3>
-	  	</div>
-	  	<div style="float:right; margin: 26px 0">
-	  		<strong> <%= link_to "/downloads/product.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
-	  	</div>
-	  	<div style="clear:both"></div>
-	  </div>
-	  <div class="panel-body">
-	    <%= form_tag 'clear_jobs', :multipart => true do %>
-			<%= submit_tag "Clear Jobs", class: "btn btn-primary" %>
-		<% end %>
-	  </div>
-	</div>
-</div>
+<div class="modal fade image-previews" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">View Image</h4>
+      </div>
+      <div class="modal-body">
+        <%= image_tag "quickbooks/large/create_jobs.png", id: "lightbox-image", style: "width: 100%" %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <div class="col-md-6 col-lg-4">
 	<div class="panel panel-default">
 	  <div class="panel-heading">
-	  	<div style="float:left">
-	  		<h3>Add Customer Jobs</h3>
-	  	</div>
-	  	<div style="float:right; margin: 26px 0">
-	  		<strong> <%= link_to "/downloads/inventory.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
-	  	</div>
-	  	<div style="clear:both"></div>
-	  </div>
-	  <div class="panel-body">
-	    <%= form_tag 'create_customer_requests', :multipart => true do %>
-   			<%= submit_tag "Create Customer Upload Job", class: "btn btn-primary" %>
-		<% end %>
-	  </div>
-	</div>
-</div>
-
-<div class="col-md-6 col-lg-4">
-	<div class="panel panel-default">
-	  <div class="panel-heading">
-	  	<div style="float:left">
+	  	<div>
 	  		<h3>Update Invoice Jobs</h3>
 	  	</div>
-	  	<div style="float:right; margin: 26px 0">
-	  		<strong> <%= link_to "/downloads/vendor.xlsx" do %><span class="icon icon-download-alt"></span></strong><% end %>
-	  	</div>
-	  	<div style="clear:both"></div>
 	  </div>
 	  <div class="panel-body">
 	    <%= form_tag 'create_invoice_requests', :multipart => true do %>
@@ -59,32 +34,222 @@
 	</div>
 </div>
 
-<% if @errors && @errors.length > 0 %>
+<div class="clearfix"></div>
+
+<% if @orders && @orders.length > 0 %>
 	<div class="col-md-12">
-		<h3>Errors</h3>
+		<h3>Orders added:</h3>
 		<table id="product-properties" class="table table-striped" data-hook>
 			<tbody>
-				<% css_class = cycle('even', 'odd', :name => "errors_table") %>
-				<tr class="<%= css_class %>">
-					<th>Product Number</th>
-					<th>Condition</th>
-					<th>Message</th>
+				<tr>
+					<th>Order Number</th>
+					<th>Customer</th>
+					<th>Amount</th>
+					<th>Check Taxes</th>
+					<th>Payment?</th>
 				</tr>
-				<% @errors.each do |error| %>
-				    <tr class="<%= css_class %>">
+				<% @orders.each do |order| %>
+				    <tr>
 				      <td>
-				        <%= error[:part_number] %>
+				        <%= order.number %>
 				      </td>
 				      <td>
-				        <%= error[:condition] %>
+				      	<% 
+				      		if order.user 
+				      			my_user = order.user
+				      			address = my_user.bill_address ? my_user.bill_address : (my_user.ship_address ? my_user.ship_address : nil)
+				      		else
+				      			my_user = order
+            					address = order.bill_address ? order.bill_address : (order.ship_address ? order.ship_address : nil)
+            				end
+            				name = "#{address ? address.lastname : order.email}#{address ? ", " + address.firstname : "" }"
+				      	%>
+
+				        <%= name  %>
 				      </td>
 				      <td>
-				        <%= error[:message] %>
+				      	<%= order.display_total.to_html %>
+				      </td>
+				      <td>
+				      	<span class="label label-<%= address.state_id == 3577 ? "balance_due" : "complete" %>"><%= link_to "#{address.state_id == 3577 ? 'Yes' : 'No'}", edit_admin_order_path(order) %></span>
+				      <td>
+				        <%= order.payment_state == "paid" ? "Yes" : "No" %>
 				      </td>
 				    </tr>
 				<% end %>
-			  	<% reset_cycle('errors_table') %>
 			</tbody>
 		</table>
 	</div>
 <% end %>
+
+<div class="clearfix"></div>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+	<div class="panel panel-default">
+	<div class="panel-heading" role="tab" id="headingOne">
+	  <h4 class="panel-title">
+	    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+	      Creating QuickBooks Jobs
+	    </a>
+	  </h4>
+	</div>
+	<div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+	  <div class="panel-body">
+	    <div class="col-sm-6 col-md-2">
+					<!-- Button trigger modal -->
+					<div data-toggle="modal" data-target=".image-previews" data-path="<%= asset_path("quickbooks/large/create_jobs.png") %>" style="padding: 0">
+						<div id="click-text"><h5>Click to enlarge</h5></div>
+					 	<%= image_tag "quickbooks/create_jobs.png", class: "icon" %>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-10">
+					<h3>Adding Invoice Jobs</h3>
+					<p>Jobs must be sent to QuickBooks through the QuickBooks Web Connector. These jobs are created from orders that have not yet been uploaded to QuickBooks when you click the "Create Invoices" button above. For each new order, the following will be added to QuickBooks:</p>
+					<ul>
+						<li>The customer (if they do not already exist)</li>
+					    <li>The order (represented by an invoice for that customer)</li>
+					    <li>A payment (if the order has been paid)</li>
+					</ul>
+					<p>The JC Auto Database will automatically flag the orders sent to QuickBooks, so that they will only be sent once. It will also show you a list of the orders flagged so that you may double check it against the data sent to QuickBooks in the next step.</p>
+				</div>
+			</div><!-- Panel Body -->
+		</div><!-- Collapse -->
+	</div><!-- Panel -->
+	<div class="panel panel-default">
+	<div class="panel-heading" role="tab" id="headingTwo">
+	  <h4 class="panel-title">
+	    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+	      Running Jobs
+	    </a>
+	  </h4>
+	</div>
+	<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+	  <div class="panel-body">
+	    <div class="col-sm-6 col-md-2">
+			<div data-toggle="modal" data-target=".image-previews" data-path="<%= asset_path("quickbooks/large/open_qbwc.png") %>" style="padding: 0">
+				<div id="click-text"><h5>Click to enlarge</h5></div>
+				<%= image_tag "quickbooks/open_qbwc.png", class: "icon" %>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-10">
+			<h3>Run From New Yorker</h3>
+			<p>Once you have generated the Quikcbooks jobs, you must run them on New Yorker before creating another set of jobs (otherwise they will be erased). This can be done with the following steps:</p>
+			<ul>
+				<li>Log onto New Yorker</li>
+				<li>Log into QuickBooks</li>
+				<li>Open the QuickBooks Web Connector (from the Start menu: All Programs -> QuickBooks -> Web Connector)</li>
+			</ul>
+		</div>
+		<div class="clearfix"></div>
+		<hr>
+		<div class="col-sm-6 col-md-2">
+			<div data-toggle="modal" data-target=".image-previews" data-path="<%= asset_path("quickbooks/large/check_box.png") %>" style="padding: 0">
+				<div id="click-text"><h5>Click to enlarge</h5></div>
+				<%= image_tag "quickbooks/check_box.png", class: "icon" %>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-10">
+			<h3>Configure the Web Connector</h3>	
+			<p>The JC Auto Application is already installed in QuickBooks and ready to go. You just need to check the following before running the invoice jobs:</p>
+			<ul>
+				<li>Check the box to the left of "JCAuto Production."</li>
+				<li>Ensure that no other Applications are checked.</li>
+			</ul>
+		</div>
+		<div class="clearfix"></div>
+		<hr>
+		<div class="col-sm-6 col-md-2">
+			<div data-toggle="modal" data-target=".image-previews" data-path="<%= asset_path("quickbooks/large/update.png") %>" style="padding: 0">
+				<div id="click-text"><h5>Click to enlarge</h5></div>
+				<%= image_tag "quickbooks/update.png", class: "icon" %>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-10">
+			<h3>Run the Job</h3>	
+			<p>Click "Update Selected" to run the invoice jobs you built through the JC Auto Web Application. Progress will be displayed as each request is run.</p>
+		</div>
+		<div class="clearfix"></div>
+		<hr>
+		<div class="col-sm-6 col-md-2">
+			<div data-toggle="modal" data-target=".image-previews" data-path="<%= asset_path("quickbooks/large/ok_check.png") %>" style="padding: 0">
+				<div id="click-text"><h5>Click to enlarge</h5></div>
+				<%= image_tag "quickbooks/ok_check.png", class: "icon" %>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-10">
+			<h3>Validate Successful Completion</h3>	
+			<p>QuickBooks will upload the latest orders, payments, and customers. Check to make sure that the last result is "OK" under the status column. If, for any reason, there is an error, double check to make sure that QuickBooks is open and you are logged in. If you are logged in, click the "View Log" button in the upper right and save the log file where it is accessible.</p>
+		</div>
+	  </div>
+	</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="headingThree">
+		  <h4 class="panel-title">
+		    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+		      Check the Upload Results
+		    </a>
+		  </h4>
+		</div>
+		<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+		<div class="panel-body">
+		    <div class="col-sm-6 col-md-2">
+				<div data-toggle="modal" data-target=".image-previews" data-path="<%= asset_path("quickbooks/large/customer.png") %>" style="padding: 0">
+					<div id="click-text"><h5>Click to enlarge</h5></div>
+					<%= image_tag "quickbooks/customer.png", class: "icon" %>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-10">
+				<h3>Validate in QuickBooks</h3>
+				<p>Review the orders listed and validate that the proper customers were created, and that no duplicate customers were created. Check to ensure that the invoice and the payment match the amount specified.</p>
+			</div>
+			<div class="clearfix"></div>
+			<hr>
+			<div class="col-sm-6 col-md-2">
+				<div data-toggle="modal" data-target=".image-previews" data-path="<%= asset_path("quickbooks/large/order_list.png") %>" style="padding: 0">
+					<div id="click-text"><h5>Click to enlarge</h5></div>
+					<%= image_tag "quickbooks/order_list.png", class: "icon" %>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-10">
+				<h3>Check Taxes</h3>
+				<p>For all users in Washington State you must update the taxes applied to each invoice to represent the county/city of the shipping address. Out of state users will be updated automatically. Use the order list generated on this page after uploading jobs to determine which orders need checking. Once you have updated the tax data, verify that the payment matches the invoice amount and that the customer has no outstanding balances.</p>
+			</div>
+			<div class="clearfix"></div>
+			<hr>
+			<div class="col-sm-6 col-md-2">
+				<div data-toggle="modal" data-target=".image-previews" data-path="<%= asset_path("quickbooks/large/order_list.png") %>" style="padding: 0">
+					<div id="click-text"><h5>Click to enlarge</h5></div>
+					<%= image_tag "quickbooks/washington.png", class: "icon" %>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-10">
+				<h3>Update Washington Taxes</h3>
+				<p>For all orders shipped within Washington, the invoice will have the default Washington Exise Tax applied. Update new Washington invoices by using the drop down menu at the botton of the invoice to select the proper county/city.</p>
+			</div>
+		</div>
+		</div>
+	</div>
+</div><!-- Panel group -->
+
+<script>
+	$('[data-toggle="modal"]').click( function(event) {
+		$('#lightbox-image').attr("src", $(this).data("path"));
+	});
+
+  $('[data-toggle="modal"]').hover( 
+  	function(event) {
+	 		$( this ).children("img").first().fadeTo( "fast", 0.2, 
+	 			function(event) {
+	 				$( this ).siblings("#click-text").first().show();
+	 			}
+	 		);
+	 	}, function(event) {
+	 		$( this ).children("img").first().fadeTo( "fast", 1.0, 
+	 			function(event) {
+	 				$( this ).siblings("#click-text").first().hide();
+	 			}
+	 		);
+	 	}
+ );
+ </script>

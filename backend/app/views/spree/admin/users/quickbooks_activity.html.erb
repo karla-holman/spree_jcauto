@@ -1,0 +1,110 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:quickbooks_activity) %>
+<% end %>
+
+<% content_for :table_filter_title do %>
+  <%= Spree.t(:search) %>
+<% end %>
+<!-- % content_for :table_filter do % -->
+  <div data-hook="admin_users_index_search">
+    <h3>Filter Results</h3>
+    <%= search_form_for [:admin, @search], url: spree.admin_activities_url do |f| %>
+    <div class="form-group">
+      <div class="col-md-6">
+        <%= f.label Spree.t(:user) %>
+        <%= f.select :whodunnit_eq, options_for_select(Spree::User.all.collect {|u| [ u.email, u.id ] }), {:include_blank => Spree.t('match_choices.none')}, {:class=> "select2"} %> 
+      </div>
+      <div class="col-md-6">
+        <%= f.label "Find Product Updates"%>
+        <%= f.select :object_cont, options_for_select(Spree::Order.where("in_quickbooks", true).collect {|o| [o.number] }), {:include_blank => Spree.t('match_choices.none')}, {:class=> "select2"} %> 
+        <!-- %= f.text_field :item_id_eq, class: "form-control js-quick-search-target" % -->
+      </div>
+    </div>
+    <div data-hook="admin_users_index_search_buttons" class="form-actions col-md-4" style="margin: 20px 0">
+        <%= button Spree.t(:search), 'search' %>
+        <%= link_to Spree.t(:clear_filters), { action: 'activity' }, method: :get, class: "button-link", style: "margin-left: 20px" %>
+    </div>
+
+    <% end %>
+  </div>
+<!-- % end % -->
+
+<hr>
+
+<table class="table" id="listing_users" data-hook>
+  <thead>
+    <tr data-hook="admin_users_index_headers">
+      <th>
+        <%= sort_link @search,:object, "Order Number", {}, {:title => 'users_email_title'} %>
+      </th>
+      <th>
+        <%= sort_link @search,:object_changes, Spree.t(:changes), {}, {:title => 'users_email_title'} %>
+      </th>
+      <th>
+        <%= sort_link @search,:created_at, Spree.t(:updated), {}, {:title => 'users_email_title'} %>
+      </th>
+      <th>
+        <%= sort_link @search,:whodunnit, Spree.t(:user), {}, {:title => 'users_email_title'} %>
+      </th>
+      <th data-toggle="tooltip" data-placement="top" title="Order shipped to Washington and needs city or county selected in QuickBooks">
+        Check Taxes?
+      </th>
+      <th data-hook="admin_users_index_header_actions" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @activities.each do |activity|%>
+      <% 
+        object = {}
+        object_info = activity.object.split("\n") # get array of object attributes
+        object_info.shift # remove ---
+        object_info.each do |info|
+          object[info.split(": ")[0]] = info.split(": ")[1]
+        end
+
+        order = Spree::Order.find(object["id"])
+      %>
+      <tr id="<%= spree_dom_id activity %>" data-hook="admin_users_index_rows">
+        <td class='user_email'>
+          <%= order ? (link_to order.number, edit_admin_order_path(order)) : object["number"] %>
+        </td>
+        <td class='user_email'>
+          <% 
+            change_text = ""
+            if activity.object_changes
+              changes = activity.object_changes.gsub("-", "").split("\n")
+              if changes[2].include?("false") && changes[3].include?("true")
+                # added to quickbooks
+                change_text = "<span class='icon icon-ok' style='color: green; margin-right: 10px'></span>Marked as added to QuickBooks"
+              elsif changes[2].include?("true") && changes[3].include?("false")
+                change_text = "<span class='icon icon-remove' style='color: #bf210a; margin-right: 10px'></span>Marked as removed from QuickBooks"
+              else
+                change_text = "Unable to determine status"
+              end
+            end 
+          %>
+          <%= change_text.html_safe %>
+        </td>
+        <td class='user_email'>
+          <% if activity.created_at.to_date <= Date.today.prev_week %>
+            <%= local_time(activity.created_at) %>
+          <% else %>
+            <%= local_time_ago(activity.created_at) %>
+          <% end %>
+        </td>
+        <td class='user_email'>
+          <% if activity.whodunnit %>
+            <%= Spree::User.where("id=?", activity.whodunnit).first.email %>
+          <% else %>
+            No User Logged
+          <% end %>
+        </td>
+        <td class='user_email'>
+          <span class="label label-<%= order.ship_address.state_id == 3577 ? "balance_due" : "complete" %>"><%= link_to "#{order.ship_address.state_id == 3577 ? 'Yes' : 'No'}" %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @activities %>

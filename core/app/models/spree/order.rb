@@ -87,6 +87,8 @@ module Spree
       end
     end
 
+    has_paper_trail :only => [:in_quickbooks]
+
     accepts_nested_attributes_for :line_items
     accepts_nested_attributes_for :bill_address
     accepts_nested_attributes_for :ship_address

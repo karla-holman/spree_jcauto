@@ -149,7 +149,7 @@ module Spree
         # Clear any existing job
         QBWC.delete_job(:add_invoice)
 
-        my_orders = Spree::Order.where("in_quickbooks=?", false)
+        my_orders = Spree::Order.complete.where("in_quickbooks=?", false)
         # for each order, check customers, invoices, and payments
         my_orders.each do |order|
           # Add customer and order only if user attached (should always be the case)
@@ -320,14 +320,16 @@ module Spree
         end
 
         # Add job if all XML passes
+        @orders = []
         QBWC.add_job(:add_invoice, true, '', InvoiceWorker, requests)
         my_orders.each do |order|
+          @orders << order
           order.update_attribute("in_quickbooks", true)
         end
 
         flash[:success] = "Invoice job added. Remember to run Quickbooks Web Connector!"
 
-        redirect_to quickbooks_edit_admin_general_settings_path
+        render :action => :quickbooks_edit
       end
 
       def quickbooks_edit
