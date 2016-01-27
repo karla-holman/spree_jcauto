@@ -152,11 +152,39 @@ module Spree
               if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
                 base_scope = base_scope.send(scope_name, *scope_attribute)
               else
-                base_scope = base_scope.merge(Spree::Product.ransack({scope_name => scope_attribute}).result)
+                # Narrow down all scopes except make and model (want to get all makes and models)
+                if (scope_name == :product_applications_application_make_id_eq) || (scope_name == :product_applications_application_model_id_eq)
+                  make = search[:product_applications_application_make_id_eq] ? search[:product_applications_application_make_id_eq].to_i : nil
+                  model = search[:product_applications_application_model_id_eq] ? search[:product_applications_application_model_id_eq].to_i : nil
+                  # handle just make
+                  if make && model 
+                    model_object = Spree::Model.find(model)
+                    word_list = {:make_id => make, :model_id => model, :year_start => model_object.start_year, :year_end => model_object.end_year}
+                    base_scope = base_scope.send(:in_make_model, word_list)
+                  elsif make
+                    word_list = {:make_id => make}
+                    base_scope = base_scope.send(:in_make, word_list)
+                  end
+                else
+                  base_scope = base_scope.merge(Spree::Product.ransack({scope_name => scope_attribute}).result)
+                end
               end
             end if search
+
             base_scope
           end
+
+=begin
+          def check_for_make_model(base_scope)
+            make_id = search["product_applications_application_make_id_eq"]
+            model_id = search["product_applications_application_model_id_eq"]
+            # If no make or model nothing to do
+            if make_id && model_id
+              base_scope += Spree::Product.ransack({:product_applications_application_make_id_eq => nil}.result
+              base_scope = base_scope.merge(Spree::Product.ransack({:product_applications_application_model_id_eq => nil}).result)
+            end
+          end
+=end
 
           # method should return new scope based on base_scope
           def get_products_conditions_for(base_scope, query)

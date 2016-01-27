@@ -96,14 +96,39 @@
     check_models();
   });
 
-  $("#search_product_applications_application_make_id_eq").change( function(){
-    check_models();
+  $(".desktop-collapse #search_product_applications_application_make_id_eq").change( function(){
+    check_models(true);
+  });
+
+  $(".mobile-collapse #search_product_applications_application_make_id_eq").change( function(){
+    check_models(false);
   });
 
   // change models available based on make selected
-  function check_models() {
-    $("select[name='search[product_applications_application_model_id_eq]']").each( function(){
-      var make_name = $("#search_product_applications_application_make_id_eq option:selected").text().split(" ");
+  function check_models(desktop_change) {
+    $(".desktop-collapse select[name='search[product_applications_application_model_id_eq]']").each( function(){
+      var make_name
+      if(desktop_change) {
+        make_name = $(".desktop-collapse #search_product_applications_application_make_id_eq option:selected").text().split(" ");
+      } else {
+        make_name = $(".mobile-collapse #search_product_applications_application_make_id_eq option:selected").text().split(" ");
+      }
+      var model_name = $(this).parent().siblings("h5").html().split(" ");
+      if( model_name[4] == make_name[0] ) {
+        $(this).prop( "disabled", false );
+        $(this).parents(".navigation").show();
+      } else {
+        $(this).parents(".navigation").hide();
+        $(this).prop( "disabled", true );
+      }
+    });
+    $(".mobile-collapse select[name='search[product_applications_application_model_id_eq]']").each( function(){
+      var make_name
+      if(desktop_change) {
+        make_name = $(".desktop_collapse #search_product_applications_application_make_id_eq option:selected").text().split(" ");
+      } else {
+        make_name = $(".mobile_collapse #search_product_applications_application_make_id_eq option:selected").text().split(" ");
+      }
       var model_name = $(this).parent().siblings("h5").html().split(" ");
       if( model_name[4] == make_name[0] ) {
         $(this).prop( "disabled", false );

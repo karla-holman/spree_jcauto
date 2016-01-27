@@ -43,10 +43,24 @@ module Spree
       applications = Application.table_name
 
       if make && model
-        { "#{applications}.make_id" => make, "#{applications}.model_id" => model }
-        { "#{applications}.make_id" => make, "#{applications}.model_id" => nil }
-      else
-        { "#{applications}.make_id" => make }
+        model = Spree::Model.find(model)
+        start = model.start_year
+        finish = model.end_year
+        arguments = {:query => "(#{applications}.make_id=? AND #{applications}.model_id=?) OR (#{applications}.make_id=? AND #{applications}.model_id IS ?) OR (#{applications}.make_id IS ? AND #{applications}.model_id IS ?)", 
+                   :arg1 => make,
+                   :arg2 => model,
+                   :arg3 => make,
+                   :arg4 => nil,
+                   :arg5 => nil,
+                   :arg6 => nil }
+      elsif make
+        arguments = {:query => "(#{applications}.make_id=? AND #{applications}.model_id IS ?) OR (#{applications}.make_id IS ? AND #{applications}.model_id IS ?) OR (#{applications}.make_id IS ? AND #{applications}.model_id IS ?)", 
+                   :arg1 => make,
+                   :arg2 => nil,
+                   :arg3 => nil,
+                   :arg4 => nil,
+                   :arg5 => nil,
+                   :arg6 => nil }
       end
 
     end
@@ -187,6 +201,19 @@ module Spree
       joins(:applications)
         .where("#{ProductApplication.table_name}.start_year <= ? AND #{ProductApplication.table_name}.end_year >= ?", words[:year], words[:year])
         .where(application_conditions(words[:make_id], words[:model_id]))
+    end
+
+    # Finds all products that have a name, description, meta_description or meta_keywords containing the given keywords.
+    add_search_scope :in_make_model do |words|
+      joins(:applications)
+        .where("(#{ProductApplication.table_name}.start_year BETWEEN ? AND ?) OR (#{ProductApplication.table_name}.end_year BETWEEN ? AND ?)", words[:year_start], words[:year_end], words[:year_start], words[:year_end])
+        .where(application_conditions(words[:make_id], words[:model_id])[:query], application_conditions(words[:make_id], words[:model_id])[:arg1],application_conditions(words[:make_id], words[:model_id])[:arg2],application_conditions(words[:make_id], words[:model_id])[:arg3],application_conditions(words[:make_id], words[:model_id])[:arg4],application_conditions(words[:make_id], words[:model_id])[:arg5],application_conditions(words[:make_id], words[:model_id])[:arg6])
+    end
+
+    # Finds all products that have a name, description, meta_description or meta_keywords containing the given keywords.
+    add_search_scope :in_make do |words|
+      joins(:applications)
+        .where(application_conditions(words[:make_id], nil)[:query], application_conditions(words[:make_id], words[:model_id])[:arg1],application_conditions(words[:make_id], words[:model_id])[:arg2],application_conditions(words[:make_id], words[:model_id])[:arg3],application_conditions(words[:make_id], words[:model_id])[:arg4],application_conditions(words[:make_id], words[:model_id])[:arg5],application_conditions(words[:make_id], words[:model_id])[:arg6])
     end
 
     # Finds all products that have the ids matching the given collection of ids.

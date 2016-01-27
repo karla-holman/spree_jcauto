@@ -11,7 +11,12 @@ module Spree
 
       params_string = ""
       if params.length != 0 && params[:search]
-        params_string = "?search[product_applications_application_make_id_eq]=#{params[:search][:product_applications_application_make_id_eq]}&search[product_applications_application_model_id_eq]=#{params[:search][:product_applications_application_model_id_eq]}&search[year_range_any]=#{params[:search][:year_range_any]}&search[taxons_id_eq]=&search[name_or_meta_keywords_or_description_or_product_properties_value_cont_any]=#{params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].gsub(' ', '+')}#{params[:match_exact] ? '&match_exact=1' : ''}"
+        search_make_id = params[:search][:product_applications_application_make_id_eq] ? params[:search][:product_applications_application_make_id_eq] : ""
+        search_model_id = params[:search][:product_applications_application_model_id_eq] ? params[:search][:product_applications_application_model_id_eq] : ""
+        search_year_any = params[:search][:year_range_any] ? params[:search][:year_range_any] : ""
+        search_keywords = params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any] ? params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].gsub(' ', '+') : ""
+        search_match_exact = params[:match_exact] ? '&match_exact=1' : ''
+        params_string = "?search[product_applications_application_make_id_eq]=#{search_make_id}&search[product_applications_application_model_id_eq]=#{search_model_id}&search[year_range_any]=#{search_year_any}&search[taxons_id_eq]=&search[name_or_meta_keywords_or_description_or_product_properties_value_cont_any]=#{search_keywords}#{search_match_exact}"
       end
 
       crumbs = []
@@ -102,7 +107,12 @@ module Spree
       string += '<option value="">Select category</option>'
       params_string = ""
       if params.length != 0 && params[:search]
-        params_string = "?search[product_applications_application_make_id_eq]=#{params[:search][:product_applications_application_make_id_eq]}&search[product_applications_application_model_id_eq]=#{params[:search][:product_applications_application_model_id_eq]}&search[year_range_any]=#{params[:search][:year_range_any]}&search[taxons_id_eq]=&search[name_or_meta_keywords_or_description_or_product_properties_value_cont_any]=#{params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].gsub(' ', '+')}#{params[:match_exact] ? '&match_exact=1' : ''}"
+        search_make_id = params[:search][:product_applications_application_make_id_eq] ? params[:search][:product_applications_application_make_id_eq] : ""
+        search_model_id = params[:search][:product_applications_application_model_id_eq] ? params[:search][:product_applications_application_model_id_eq] : ""
+        search_year_any = params[:search][:year_range_any] ? params[:search][:year_range_any] : ""
+        search_keywords = params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any] ? params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].gsub(' ', '+') : ""
+        search_match_exact = params[:match_exact] ? '&match_exact=1' : ''
+        params_string = "?search[product_applications_application_make_id_eq]=#{search_make_id}&search[product_applications_application_model_id_eq]=#{search_model_id}&search[year_range_any]=#{search_year_any}&search[taxons_id_eq]=&search[name_or_meta_keywords_or_description_or_product_properties_value_cont_any]=#{search_keywords}#{search_match_exact}"
       end
       string += '<option value=' + seo_url(current_taxon) + params_string + '>All Categories</option>'
       current_taxon.children.map do |taxon|
