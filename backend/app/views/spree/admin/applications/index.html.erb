@@ -44,7 +44,7 @@
     <tbody>
       <% my_apps.each do |app| %>
         <tr id="<%= spree_dom_id app %>" data-hook="listing_applications_row">
-          <td><%= app.make.name %></td>
+          <td><%= app.make ? app.make.name : "All cars" %></td>
           <td><%= app.model ? app.model.name : "no model specified" %></td>
           <td class="actions actions-2 text-right">
             <%= link_to_edit(app, :no_text => true) %>

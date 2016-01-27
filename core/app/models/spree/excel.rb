@@ -359,10 +359,12 @@ module Spree
             my_application = Spree::Application.where("make_id=? AND model_id IS ?", my_make.id, nil).first
           elsif(my_model)
             my_application = Spree::Application.where("model_id=?", my_model.id).first
+          else # Applies to all
+            my_application = Spree::Application.where("make_id IS ? AND model_id IS ?", nil, nil).first
           end
 
           # if my notes and my model is empty, applies to all
-          my_notes = ((!my_notes || my_notes=="") && !my_model) ? "all" : my_notes
+          my_notes = ((!my_notes || my_notes=="") && !my_model) ? "all models" : my_notes
 
           # add exceptions to the end of notes
           my_notes += (my_notes!="" && my_exceptions != "") ? " " + my_exceptions : my_exceptions
@@ -375,7 +377,7 @@ module Spree
                                          :notes => my_notes
           end
 
-          if(!my_application)
+          if( !my_make && !my_model )
             @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not find make or model for " + make_model_set }
           end
 
