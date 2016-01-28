@@ -19,6 +19,8 @@ module Spree
       	subject = "#{Spree::Store.current.name} Sell Request From Customer"
       elsif(user[:quote_car])
         subject = "#{Spree::Store.current.name} Service Request From Customer"
+      elsif(user[:part_car])
+        subject = "#{Spree::Store.current.name} Sales Car Request From Customer"
       else
       	subject = "#{Spree::Store.current.name} Contact From Customer"
       end
