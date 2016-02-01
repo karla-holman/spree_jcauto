@@ -288,7 +288,7 @@ module Spree
           my_model = nil
 
           # If exception, it includes remaining words
-          if (exceptions = make_model_set.match(/(.*|\A)(exc{0,1}[\.\s]{0,1})(.*)/)) || (exceptions = make_model_set.match(/(.*|\A)(except\s{0,1})(.*)/))
+          if (exceptions = make_model_set.match(/(.*|\A)(exc{0,1}[\.\s]{1})(.*)/)) || (exceptions = make_model_set.match(/(.*|\A)(except\s{0,1})(.*)/))
             next_values = ""
             found_current=false
             while true # loop to find exception, then add all words after it to exception notes
@@ -419,11 +419,11 @@ module Spree
         end
       end
 
-      if(date_range[0][2].slice(/\;.*/)) # scan items separated by semi-colon
+      #if(date_range[0][2].slice(/\;.*/)) # scan items separated by semi-colon
         scan_app(date_range[0][2].slice!(/\;.*/))
-      else
-        scan_app(date_range[0][2].slice!(/\d{2}-{0,1}\d{0,2}\s.*/)) # scan dates remaining
-      end
+      #else
+        #scan_app(date_range[0][2].slice!(/\d{2}-{0,1}\d{0,2}\s.*/)) # scan dates remaining
+      #end
 
       @app_data << { :start_year => date_range[0][0], :end_year => date_range[0][1], :text => date_range[0][2].strip}
       # end

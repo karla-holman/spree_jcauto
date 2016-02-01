@@ -41,6 +41,11 @@
               <%= apps_form.text_field :end_year, class: 'datecomplete form-control' %>
               <!--%= f.date_select :end_year, :order => [:year], :start_year => 1900, :end_year => Time.now.year, :prompt => {:year => "Select year"} %-->
             </td>
+            <td class="actions actions-1">
+              <% if apps_form.object.persisted? && can?(:destroy, apps_form.object) %>
+                <%= link_to_delete apps_form.object, no_text: true %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
