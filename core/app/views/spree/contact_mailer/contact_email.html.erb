@@ -22,6 +22,9 @@
         <% if @user[:quote_car] %>
         <br><strong>Make and Model: </strong><%= @user[:quote_car] %>
         <% end %>
+        <% if @user[:part_car] %>
+        <br><strong>Desired Sale Car: </strong><%= @user[:part_car] %>
+        <% end %>
       </p>
       <p><strong>Customer Message:</p>
       <p>
