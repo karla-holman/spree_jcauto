@@ -129,7 +129,7 @@
   </div>
 </div>
 
-<% cache [I18n.locale, current_currency, @product, @product.possible_promotions] do %>
+<% cache [I18n.locale, current_currency, @product.possible_promotions] do %>
   <% lowest_taxon = @product.taxons.order("description desc").first %>
   <ol class="breadcrumb">
     <li><%= link_to products_path do %>Products<% end %></li>
@@ -151,7 +151,7 @@
             <a href="" data-toggle="modal" data-target="#myModal">
               <div id="main-image" class="panel panel-default" data-hook>
                 <div class="panel-body text-center" >
-                  <%= render :partial => 'image' %>
+                  <%= render :partial => 'image', :locals => { :image => @product.variant_images.first } %>
                 </div>
               </div>
             </a>
