@@ -1,62 +1,74 @@
-<% unless @product_properties.empty? %>  
-  <h3 class="product-section-title"><%= Spree.t('properties')%></h3>
-  <table id="product-properties" class="table table-striped" data-hook>
-    <tbody>
-      <% @product_properties.each do |product_property| %>
-        <% css_class = cycle('even', 'odd', :name => "properties") %>
-        <tr class="<%= css_class %>">
-          <td><strong><%= product_property.property.presentation %></strong></td>
-          <td>
-            <% if product_property.property.presentation == "Cross Reference" %>
-              <!-- Only show chrysler numbers -->
-              <% cross_found = false %>
-              <% product_property.value.split(",").each_with_index do |cross, index| %>
-                <% if matches = cross.strip.match(/(\d{7})/) %>
-                    <%= ((index != 0 && cross_found) ? ", " : "") + matches[1] %> 
-                    <% cross_found = true %>
-                <% end %>
-              <% end %>
-              <% if !cross_found %>
-                N/A
-              <% end %>
-            <% else %>
-              <%= product_property.value %>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-      <% reset_cycle('properties') %>
-    </tbody>
-  </table>
-<% end %>
-
-<% unless @product_applications.empty? %>  
-  <h3 class="product-section-title">Applications</h3>
-  <table id="product-properties" class="table table-striped" data-hook>
-    <thead>
-      <tr style="border-top: 1px solid #DDD">
-        <th>Years</th>
-        <th>Make</th>
-        <th>Model/Notes</th>
-      </tr>
-    </thead>
-    <tbody>
-        <% @product.product_applications.order('start_year asc').each do |product_application| %>
+<% unless @product_properties.empty? %> 
+  <div class="col-md-4"> 
+    <h3 class="product-section-title"><%= Spree.t('properties')%></h3>
+    <table id="product-properties" class="table table-striped" data-hook>
+        <thead>
+          <tr style="border-top: 1px solid #DDD">
+            <th>Property</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% @product_properties.each do |product_property| %>
           <% css_class = cycle('even', 'odd', :name => "properties") %>
           <tr class="<%= css_class %>">
-            <td><%= product_application.range %></td>
-            <td><%= product_application.application && product_application.application.make ? product_application.application.make.name : "-" %></td>
-            <% notes = product_application.notes === "" ? "" : product_application.notes %>
+            <td><strong><%= product_property.property.presentation %></strong></td>
             <td>
-              <%= product_application.application && product_application.application.model ? product_application.application.model.name + " " + notes : notes!="" ? notes : "-" %>
+              <% if product_property.property.presentation == "Cross Reference" %>
+                <!-- Only show chrysler numbers -->
+                <% cross_found = false %>
+                <% product_property.value.split(",").each_with_index do |cross, index| %>
+                  <% if matches = cross.strip.match(/(\d{7})/) %>
+                      <%= ((index != 0 && cross_found) ? ", " : "") + matches[1] %> 
+                      <% cross_found = true %>
+                  <% end %>
+                <% end %>
+                <% if !cross_found %>
+                  N/A
+                <% end %>
+              <% else %>
+                <%= product_property.value %>
+              <% end %>
             </td>
           </tr>
         <% end %>
-      <% reset_cycle('properties') %>
-    </tbody>
-  </table>
+        <% reset_cycle('properties') %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<% unless @product_applications.empty? %>  
+  <div class="col-md-4">
+    <h3 class="product-section-title">Applications</h3>
+    <table id="product-properties" class="table table-striped" data-hook>
+      <thead>
+        <tr style="border-top: 1px solid #DDD">
+          <th>Years</th>
+          <th>Make</th>
+          <th>Model/Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+          <% @product.product_applications.order('start_year asc').each do |product_application| %>
+            <% css_class = cycle('even', 'odd', :name => "properties") %>
+            <tr class="<%= css_class %>">
+              <td><%= product_application.range %></td>
+              <td><%= product_application.application && product_application.application.make ? product_application.application.make.name : "-" %></td>
+              <% notes = product_application.notes === "" ? "" : product_application.notes %>
+              <td>
+                <%= product_application.application && product_application.application.model ? product_application.application.model.name + " " + notes : notes!="" ? notes : "-" %>
+              </td>
+            </tr>
+          <% end %>
+        <% reset_cycle('properties') %>
+      </tbody>
+    </table>
+  </div>
 <% end %>
 
 <div>
-  <%= render :partial => 'taxons' %>
+  <div class="col-md-4">
+    <%= render :partial => 'taxons' %>
+  </div>
 </div>

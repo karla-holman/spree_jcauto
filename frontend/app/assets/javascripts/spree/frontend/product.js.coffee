@@ -33,21 +33,23 @@ Spree.ready ($) ->
   Spree.updateVariantTotal = (variant) ->
     variantPrice = variant.data('total')
     ($ '.total.selling').text(variantPrice) if variantPrice
-  radios = ($ '#product-variants input[type="radio"]')
+  radios = ($ '#product-variants select#variant_id option')
 
   Spree.updateVariantCore = (variant) ->
     variantPrice = variant.data('core')
     ($ '.core.selling').text(variantPrice) if variantPrice
-  radios = ($ '#product-variants input[type="radio"]')
+  radios = ($ '#product-variants select#variant_id option')
 
   Spree.updateVariantPrice = (variant) ->
     variantPrice = variant.data('price')
     ($ '.price.selling').text(variantPrice) if variantPrice
-  radios = ($ '#product-variants input[type="radio"]')
+  radios = ($ '#product-variants select#variant_id option')
 
   if radios.length > 0
-    selectedRadio = ($ '#product-variants input[type="radio"][checked="checked"]')
-    Spree.showVariantImages selectedRadio.attr('value')
+    # selectedRadio = ($ '#product-variants input[type="radio"][checked="checked"]')
+    selectedRadio = ($ '#product-variants select#variant_id option:selected')
+    # Spree.showVariantImages selectedRadio.attr('value')
+    Spree.showVariantImages selectedRadio.val()
     Spree.updateVariantPrice selectedRadio
     Spree.updateVariantTotal selectedRadio
     Spree.updateVariantCore selectedRadio

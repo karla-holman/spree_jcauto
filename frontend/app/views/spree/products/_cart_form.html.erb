@@ -1,43 +1,40 @@
 <%= form_for :order, :url => populate_orders_path do |f| %>
   <div id="inside-product-cart-form" data-hook="inside_product_cart_form" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
     <% if @product.variants_and_option_values(current_currency).any? %>
-      <div id="product-variants" class="col-md-6">
-        <h3 class="product-section-title">
+      <div id="product-variants">
+        <h3 class="product-section-title" style="margin-top: -8px">
           <%= Spree.t(:variants) %>
           <a href="" data-toggle="modal" data-target="#conditionModal" >
             <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
           </a>
         </h3>
         <div class="clearfix"></div>
-        <ul class="list-group">
-          <% @product.variants_and_option_values(current_currency).each_with_index do |variant, index| %>
-            <li>
-              <!-- %= label_tag "variant_id_#{ variant.id }" do %-->
-                <!-- span class="variant-description"-->
-                <p style="font-weight: 700; margin-bottom: 0px">
-                  <% price_in_currency = variant.price_in(current_currency) %>
-                  <%= radio_button_tag "variant_id", variant.id, index == 0, 'data-price' => price_in_currency.money, 'data-core' => price_in_currency.money_core, 'data-total' => price_in_currency.money_total %>
-                  <%= variant_options variant %><%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>
-                </p>
-                <% if variant_price variant %>
-                  <!--span class="price diff"-->
-                  <p style="margin-left: 20px; margin-bottom: 0px"><%= variant_price variant %></p>
-                <% end %>
-                <% unless variant.can_supply? %>
-                  <!--span class="out-of-stock"-->
-                  <p style="margin-left: 20px; margin-bottom: 5px; color: #bf210a"><%= Spree.t(:out_of_stock) %></p>
-                <% end %>
-              <!--% end %-->
-            </li>
-          <% end%>
-        </ul>
+
+          <% 
+            options = []
+            @product.variants_and_option_values(current_currency).each_with_index do |variant, index|
+              price_in_currency = variant.price_in(current_currency) 
+              data_core = price_in_currency.money_core
+              data_price = price_in_currency.money
+              data_total = price_in_currency.money_total
+
+              notes = (variant_options variant) + ((variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "") + " (" + (variant_price variant) + ")" 
+
+              unless variant.can_supply?
+                notes += ' - ' + Spree.t(:out_of_stock)
+              end
+
+              options << [notes.html_safe, variant.id, { :id => 'variant_id_'+variant.id.to_s, 'data-core' => data_core, 'data-price' => data_price, 'data-total' => data_total }]
+          %>
+          
+          <% end %>
+          <%= select_tag :variant_id, options_for_select(options), class: "form-control" %>
       </div>
     <% else %>
       <%= hidden_field_tag "variant_id", @product.master.id %>
     <% end %>
-
     <% if @product.price_in(current_currency) and !@product.price.nil? %>
-      <div data-hook="product_price" class="col-md-5">
+      <div data-hook="product_price">
         <div id="product-price">
           <h3 class="product-section-title"><%= Spree.t(:price) %></h3>
           <table id="product-price-table" class="table table-striped" data-hook>
@@ -105,7 +102,6 @@
         </div>
 
         <div class="add-to-cart">
-          <br/>
           <div class="input-group">
             <%= number_field_tag :quantity, 1, :class => 'title form-control', :min => 1 %>
             <span class="input-group-btn">
