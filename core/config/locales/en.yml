@@ -356,6 +356,7 @@ en:
     user_sessions:
       signed_in: Signed in successfully.
       signed_out: Signed out successfully.
+      already_signed_out: User is already signed out.
   errors:
     messages:
       already_confirmed: was already confirmed
