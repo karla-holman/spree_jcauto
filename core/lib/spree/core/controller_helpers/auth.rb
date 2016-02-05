@@ -31,7 +31,6 @@ module Spree
 
         def store_location
           # disallow return to login, logout, signup pages
-          byebug
           authentication_routes = [:spree_signup_path, :spree_login_path, :spree_logout_path, :wished_products_path]
           disallowed_urls = []
           authentication_routes.each do |route|
