@@ -16,6 +16,7 @@ module Spree
         def retrieve_products(part_num_words, taxon_words, make_model_year_words)
           # logger.debug("Debug-Logging: Base (16), calling get_base_scope")
           @products = get_base_scope(part_num_words, taxon_words, make_model_year_words)
+
           curr_page = page || 1
 
           unless Spree::Config.show_products_without_price
@@ -64,6 +65,9 @@ module Spree
             base_scope = add_search_scopes(base_scope)
 
             base_scope = add_eagerload_scopes(base_scope)
+            
+            # Sort by name and uniq entries if no taxon present, otherwise already sorted
+            base_scope = base_scope.uniq.order("name ASC") unless !taxon.blank?
             base_scope_hash = {"base" => base_scope, "part_num" => part_num_scope, "taxon" => taxon_scope, "application" => application_scope, "application_filter" => application_filter_scope}
           end
 

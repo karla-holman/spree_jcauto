@@ -18,21 +18,13 @@
   <% end %>
 </div>
 <% if products.any? %>
-  <% 
-    begin
-      my_products = products.uniq
-      my_products.first
-    rescue
-      my_products = products
-    end
-   %>
   <!-- Test display -->
   <table class="table table-hover">
     <tr>
       <th>Image</th>
       <th>Info</th>
     </tr>
-    <% my_products.each do |product| %>
+    <% products.each do |product| %>
       <!-- Spree Setup -->
       <% url = spree.product_url(product) %>
       <% # url = spree.product_url(product, taxon_id: @taxon.try(:id)) %>
