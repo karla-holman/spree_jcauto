@@ -3,4 +3,7 @@
  *= require spree/frontend/frontend_bootstrap
  *= require_self
  *= require_tree .
+ *= require social-share-button
 */
+
+@import "social-share-button";

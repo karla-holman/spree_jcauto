@@ -171,16 +171,19 @@
             <!-- Wishlist and email friend buttons -->
           </div>
         </div>
+        <div>
+          <%= social_share_button_tag("Check out this part at JC Auto Restoration! " + @product.name + ": " + @product.description) %>
+        </div>
       </div>
     </div>
     <hr>
     <!-- Properties and other information -->
     <div class="row" style="margin-top: 0; margin-bottom: 0; padding-bottom: 0; padding-top: 0">
-      <div class="col-sm-12 col-md-12">
-          <div data-hook="product_properties">
-            <%= render :partial => 'properties' %>
-          </div>
+
+      <div data-hook="product_properties">
+        <%= render :partial => 'properties' %>
       </div>
+ 
       <div class="col-sm-6 col-md-4">
         <div data-hook="promotions">
           <%= render :partial => 'promotions' %>

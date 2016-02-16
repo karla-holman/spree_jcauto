@@ -3,7 +3,7 @@
     <% if @product.variants_and_option_values(current_currency).any? %>
       <div id="product-variants">
         <h3 class="product-section-title" style="margin-top: -8px">
-          <%= Spree.t(:variants) %>
+          <%= Spree.t(:select_variant) %>
           <a href="" data-toggle="modal" data-target="#conditionModal" >
             <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
           </a>
