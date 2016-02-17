@@ -197,13 +197,13 @@
   $(document).ready(function(){
     $('div.zoom-image').zoom({ 
       touch: false,
-      magnify: 2,
-      onZoomIn: function() {
-        $(this).siblings('img:not(".zoomImg")').first().fadeTo("fast", 0);
-      },
-      onZoomOut: function() {
-        $(this).siblings('img:not(".zoomImg")').first().fadeTo("fast", 1);
-      }
+      magnify: 2
     });
+
+    $('div.zoom-image').hover(function() {
+      $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 0);
+    }, function() {
+      $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 0);
+    }
   });
 </script>
