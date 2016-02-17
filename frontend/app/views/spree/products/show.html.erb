@@ -195,9 +195,13 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
+    // Change zoom data on start
+    $('div.zoom-image').children('img.zoomImg').first().data("large", $('.vtmb').first().data("large"));
+
     $('div.zoom-image').zoom({ 
+      url: $('div.zoom-image').children('img.zoomImg').first().data("large"),
       touch: false, 
-      url: $(this).children('img.zoomImg').first().data("large")
+      magnify: 1.2
     });
 
     $('div.zoom-image').hover(function() {
@@ -205,9 +209,6 @@
     }, function() {
       $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 1);
     });
-
-    // Change zoom data on start
-    $('div.zoom-image').children('img.zoomImg').first().data("large", $('.vtmb').first().data("large"));
 
     $('.vtmb').click(function(){
       $('div.zoom-image').children('img.zoomImg').first().data("large", $(this).data("large"));
