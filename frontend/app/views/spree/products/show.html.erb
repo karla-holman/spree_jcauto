@@ -20,7 +20,7 @@
           <div class="carousel-inner" role="listbox">
             <% if @product.variant_images && !@product.variant_images.empty? %>
               <% (@product.variant_images).each_with_index do |image, index| %>
-              <div class="item zoom-image <%= (index) == 0 ? "active" : "" %>" >
+              <div class="item <%= (index) == 0 ? "active" : "" %>" >
                 <%= image_tag(image.attachment.url(:large)) %>
                 <div class="carousel-caption" style="color: $gray-dark">
                   <% variant = Spree::Variant.find(image.viewable_id) %>
@@ -150,7 +150,7 @@
           <div id="product-images" data-hook="product_images">
             <a href="" data-toggle="modal" data-target="#myModal">
               <div id="main-image" class="panel panel-default" data-hook>
-                <div class="panel-body text-center" >
+                <div class="panel-body text-center zoom-image" >
                   <%= render :partial => 'image', :locals => { :image => @product.variant_images.first } %>
                 </div>
               </div>
@@ -195,6 +195,15 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-    $('div.zoom-image').zoom({ touch: false });
+    $('div.zoom-image').zoom({ 
+      touch: false,
+      magnify: 2,
+      onZoomIn: function() {
+        $(this).siblings('img:not(".zoomImg")').first().fadeTo("fast", 0);
+      },
+      onZoomOut: function() {
+        $(this).siblings('img:not(".zoomImg")').first().fadeTo("fast", 1);
+      }
+    });
   });
 </script>
