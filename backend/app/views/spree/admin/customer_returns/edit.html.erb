@@ -23,6 +23,10 @@
     <legend><%= Spree.t(:accepted) %></legend>
     <%= render partial: 'return_item_decision', locals: {return_items: @accepted_return_items, show_decision: false} %>
   </fieldset>
+  <fieldset data-hook="accepted_return_items">
+    <legend><%= Spree.t(:accepted_locations) %></legend>
+    <%= render partial: 'return_item_locations', locals: {return_items: @accepted_return_items, show_decision: false} %>
+  </fieldset>
 <% end %>
 
 <% if @rejected_return_items.any? %>
