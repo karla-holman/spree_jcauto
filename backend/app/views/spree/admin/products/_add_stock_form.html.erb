@@ -18,7 +18,7 @@
         <div class="form-group">
           <%= f.field_container :stock_location do %>
             <%= label_tag :stock_location_id, Spree.t(:stock_location) %>
-            <%= select_tag 'stock_location_id', options_from_collection_for_select(@stock_locations, :id, :name),
+            <%= select_tag 'stock_location_id', options_from_collection_for_select(@stock_locations, :id, :admin_name),
               class: 'select2' %>
           <% end %>
         </div>

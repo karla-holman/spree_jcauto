@@ -102,7 +102,17 @@ module Spree
           end
         end
       else # handle restock
-        stock_item_or_create(variant).stock_movements.create!(quantity: my_quantity,
+        # find first viable sub location
+        new_sub_location = nil
+        variant.stock_items.each do |my_stock_item|
+          if my_stock_item.sub_location 
+            new_sub_location = my_stock_item.sub_location
+            break
+          end
+        end
+        # movements = variant.stock_items.stock_movments.where(originator: originator)
+        
+        stock_item_or_create(variant, new_sub_location).stock_movements.create!(quantity: my_quantity,
                                                             originator: originator)
       end
     end

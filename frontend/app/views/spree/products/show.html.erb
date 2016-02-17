@@ -150,7 +150,7 @@
           <div id="product-images" data-hook="product_images">
             <a href="" data-toggle="modal" data-target="#myModal">
               <div id="main-image" class="panel panel-default" data-hook>
-                <div class="panel-body text-center" >
+                <div class="panel-body text-center zoom-image" >
                   <%= render :partial => 'image', :locals => { :image => @product.variant_images.first } %>
                 </div>
               </div>
@@ -192,3 +192,9 @@
     </div>
   </div>
 <% end %>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('div.zoom-image').zoom();
+  });
+</script>

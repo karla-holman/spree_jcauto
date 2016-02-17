@@ -55,7 +55,7 @@
                     <% next unless (@stock_locations.include?(item.stock_location) && (item.sub_location || item.count_on_hand > 0)) %>
                     <tr id="stock-item-<%= item.id %>">
                         <td>
-                          <%= item.stock_location.name %>
+                          <%= item.stock_location.name + " (" + item.stock_location.admin_name + ")"  %>
                         </td>
                         <td>
                           <%= item.sub_location %>
