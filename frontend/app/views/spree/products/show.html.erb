@@ -196,14 +196,21 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('div.zoom-image').zoom({ 
-      touch: false,
-      magnify: 2
+      touch: false, 
+      url: $(this).children('img.zoomImg').first().data("large")
     });
 
     $('div.zoom-image').hover(function() {
       $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 0);
     }, function() {
-      $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 0);
+      $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 1);
+    });
+
+    // Change zoom data on start
+    $('div.zoom-image').children('img.zoomImg').first().data("large", $('.vtmb').first().data("large"));
+
+    $('.vtmb').click(function(){
+      $('div.zoom-image').children('img.zoomImg').first().data("large", $(this).data("large"));
     });
   });
 </script>
