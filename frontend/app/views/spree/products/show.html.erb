@@ -172,6 +172,12 @@
     $('div.zoom-image').mouseleave(function() {
       $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 1);
     }); */
+    $('div.zoom-image-modal').mouseenter(function() {
+      $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 0);
+    });
+    $('div.zoom-image-modal').mouseleave(function() {
+      $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 1);
+    }); */
 
     $('.vtmb a').click(function(){
       var largePath = $(this).data("large");
