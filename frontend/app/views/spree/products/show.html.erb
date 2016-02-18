@@ -134,7 +134,7 @@
           </div>
         </div>
         <div>
-          <%= social_share_button_tag("Check out this part at JC Auto Restoration! " + @product.name + ": " + @product.description) %>
+          <%= social_share_button_tag("Check out this part at JC Auto Restoration! Part Number " + @product.name, :image => @product.variant_images.first.attachment.url(:large), :desc => @product.description) %>
         </div>
       </div>
     </div>
