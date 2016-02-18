@@ -185,6 +185,7 @@
       // $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", largePath);
       // Change source for modal
       $('#product-modal-image').attr("src", largePath);
+      $('div.zoom-image-modal').children('img.zoomImg').first().attr("src", largePath);
     });
   });
 </script>
