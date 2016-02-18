@@ -196,22 +196,23 @@
 <script type="text/javascript">
   $(document).ready(function(){
     // Change zoom data on start
-    $('div.zoom-image').children('img.zoomImg').first().data("large", $('.vtmb a').first().data("large"));
+    $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", $('.vtmb a').first().data("large"));
 
     $('div.zoom-image').zoom({ 
-      url: $('div.zoom-image').children('img.zoomImg').first().data("large"),
+      url: $('div.zoom-image').children('img:not(".zoomImg")').first().data("large"),
       touch: false, 
       magnify: 1.2
     });
 
     $('div.zoom-image').hover(function() {
+      $(this).children('img.zoomImg').first().attr("src", $(this).children('img:not(".zoomImg")').first().data("large"));
       $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 0);
     }, function() {
       $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 1);
     });
 
     $('.vtmb a').click(function(){
-      $('div.zoom-image').children('img.zoomImg').first().data("large", $(this).data("large"));
+      $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", $(this).data("large"));
     });
   });
 </script>
