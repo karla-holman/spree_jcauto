@@ -9,47 +9,7 @@
         <h3 class="modal-title" id="myModalLabel">Image for <%= @product.name %></h3>
       </div><!-- header -->
       <div class="modal-body">
-        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-          <!-- Indicators -->
-          <ol class="carousel-indicators">
-            <% @product.variant_images.length.times do |i| %>
-              <li data-target="#carousel-example-generic" data-slide-to="<%=i%>" class="<%= (i) == 0 ? "active" : "" %>"></li>
-            <% end %>
-          </ol>
-          <!-- Wrapper for slides -->
-          <div class="carousel-inner" role="listbox">
-            <% if @product.variant_images && !@product.variant_images.empty? %>
-              <% (@product.variant_images).each_with_index do |image, index| %>
-              <div class="item <%= (index) == 0 ? "active" : "" %>" >
-                <%= image_tag(image.attachment.url(:large)) %>
-                <div class="carousel-caption" style="color: $gray-dark">
-                  <% variant = Spree::Variant.find(image.viewable_id) %>
-                  <%= variant_options variant %>
-                </div>
-              </div>
-              <% end %>
-            <% else %>
-              <div class="item active">
-                <%= product_image(@product, :itemprop => "image") %>
-                <div class="carousel-caption">
-                </div>
-              </div>
-            <% end %>
-          </div>
-
-          <!-- Controls -->
-          <% if @product.variant_images && @product.variant_images.length > 0 %>
-            <!-- Controls -->
-            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
-            </a>
-            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
-            </a>
-          <% end %>
-        </div>
+        <%= image_tag(@product.variant_images.first.attachment.url(:large), id: "product-modal-image") %>
       </div><!-- Modal body -->
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -199,20 +159,23 @@
     $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", $('.vtmb a').first().data("large"));
 
     $('div.zoom-image').zoom({ 
-      url: $('div.zoom-image').children('img:not(".zoomImg")').first().data("large"),
-      touch: false, 
-      magnify: 1.2
+      touch: false
     });
 
-    $('div.zoom-image').hover(function() {
+    $('div.zoom-image').mouseenter(function() {
       $(this).children('img.zoomImg').first().attr("src", $(this).children('img:not(".zoomImg")').first().data("large"));
       $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 0);
-    }, function() {
+    });
+    $('div.zoom-image').mouseleave(function() {
       $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 1);
     });
 
     $('.vtmb a').click(function(){
-      $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", $(this).data("large"));
+      var largePath = $(this).data("large");
+      // Change source for zoom image
+      $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", largePath);
+      // Change source for modal
+      $('#product-modal-image').attr("src", largePath);
     });
   });
 </script>
