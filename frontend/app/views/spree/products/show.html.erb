@@ -9,7 +9,9 @@
         <h3 class="modal-title" id="myModalLabel">Image for <%= @product.name %></h3>
       </div><!-- header -->
       <div class="modal-body">
-        <%= image_tag(@product.variant_images.first.attachment.url(:large), id: "product-modal-image") %>
+        <div class="zoom-image-modal">
+          <%= image_tag(@product.variant_images.first.attachment.url(:large), id: "product-modal-image", style: "width: 100%") %>
+        </div>
       </div><!-- Modal body -->
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -156,24 +158,25 @@
 <script type="text/javascript">
   $(document).ready(function(){
     // Change zoom data on start
-    $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", $('.vtmb a').first().data("large"));
+    // $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", $('.vtmb a').first().data("large"));
 
-    $('div.zoom-image').zoom({ 
-      touch: false
+    $('div.zoom-image-modal').zoom({ 
+      touch: false,
+      magnify: 1.2
     });
 
-    $('div.zoom-image').mouseenter(function() {
+    /* $('div.zoom-image').mouseenter(function() {
       $(this).children('img.zoomImg').first().attr("src", $(this).children('img:not(".zoomImg")').first().data("large"));
       $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 0);
     });
     $('div.zoom-image').mouseleave(function() {
       $(this).children('img:not(".zoomImg")').first().fadeTo("fast", 1);
-    });
+    }); */
 
     $('.vtmb a').click(function(){
       var largePath = $(this).data("large");
       // Change source for zoom image
-      $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", largePath);
+      // $('div.zoom-image').children('img:not(".zoomImg")').first().data("large", largePath);
       // Change source for modal
       $('#product-modal-image').attr("src", largePath);
     });
