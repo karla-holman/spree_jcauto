@@ -10,7 +10,7 @@
       </div><!-- header -->
       <div class="modal-body">
         <div class="zoom-image-modal">
-          <%= image_tag(@product.variant_images.first.attachment.url(:large), id: "product-modal-image", style: "width: 100%") %>
+          <%= image_tag(@product.variant_images.first.attachment ? @product.variant_images.first.attachment.url(:large) : product_image(@product, :itemprop => "image"), id: "product-modal-image", style: "width: 100%") %>
         </div>
       </div><!-- Modal body -->
       <div class="modal-footer">
