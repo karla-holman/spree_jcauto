@@ -197,13 +197,17 @@ module Spree
 
     # parse part group number and add appropriate taxon
     def add_part_group_taxon()
-      my_taxon = Spree::Taxon.where("description=?", @product_row[:category].to_s)
-      my_taxonomy = Spree::Taxon.where("description=?", @product_row[:category].to_s.split('-')[0])
-      if(my_taxon.length === 0 || my_taxonomy.length === 0)
-        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Unable to identify proper part group for " + @product_row[:category].to_s }
+      new_taxons = @product_row[:category].to_s.split(",")
+      new_taxons.each do |category|
+        category.strip!
+        my_taxon = Spree::Taxon.where("description=?", category)
+        my_taxonomy = Spree::Taxon.where("description=?", category.split('-')[0])
+        if(my_taxon.length === 0 || my_taxonomy.length === 0)
+          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Unable to identify proper part group for " + @product_row[:category].to_s }
+        end
+        @new_product.taxons << my_taxon
+        @new_product.taxons << my_taxonomy
       end
-      @new_product.taxons << my_taxon
-      @new_product.taxons << my_taxonomy
 
       # add package taxon
       if(@product_row[:package] && @product_row[:package].to_s.downcase === "y")
