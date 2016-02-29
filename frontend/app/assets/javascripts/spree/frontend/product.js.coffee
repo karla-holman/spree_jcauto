@@ -24,9 +24,12 @@ Spree.ready ($) ->
       thumb = ($ ($ '#product-images ul.thumbnails li:visible.vtmb').eq(0))
       thumb = ($ ($ '#product-images ul.thumbnails li:visible').eq(0)) unless thumb.length > 0
       newImg = thumb.find('a').attr('href')
+      newModalImg = thumb.find('a').data('large')
       ($ '#product-images ul.thumbnails li').removeClass 'selected'
       thumb.addClass 'selected'
       ($ '#main-image img').attr 'src', newImg
+      ($ '#product-modal-image').attr 'src', newModalImg
+      ($ 'div.zoom-image-modal').children('img.zoomImg').first().attr 'src', newModalImg
       ($ '#main-image').data 'selectedThumb', newImg
       ($ '#main-image').data 'selectedThumbId', thumb.attr('id')
 
