@@ -10,7 +10,7 @@
       </div><!-- header -->
       <div class="modal-body">
         <div class="zoom-image-modal">
-          <%= image_tag(@product.variant_images.first ? @product.variant_images.first.attachment.url(:large) : product_image(@product, :itemprop => "image"), id: "product-modal-image", style: "width: 100%") %>
+          <%= render :partial => 'modalimage', :locals => { :image => @product.variant_images.first } %>
         </div>
       </div><!-- Modal body -->
       <div class="modal-footer">
@@ -134,7 +134,11 @@
           </div>
         </div>
         <div>
-          <%= social_share_button_tag("Check out this part at JC Auto Restoration! Part Number " + @product.name, :image => @product.variant_images.first.attachment.url(:large), :desc => @product.description) %>
+          <% if @product.variant_images.first %>
+            <%= social_share_button_tag("Check out this part at JC Auto Restoration! Part Number " + @product.name, :image => @product.variant_images.first.attachment.url(:large), :desc => @product.description) %>
+          <% else %>
+            <%= social_share_button_tag("Check out this part at JC Auto Restoration! Part Number " + @product.name, :desc => @product.description) %>
+          <% end %>
         </div>
       </div>
     </div>
