@@ -18,7 +18,7 @@
         <%= render partial: 'spree/shared/sidebar' if content_for? :sidebar %>
 
         <div id="content" class="<%= !content_for?(:sidebar) ? "col-sm-12" : "col-sm-8 col-md-9" %>" data-hook>
-          <%= flash_messages %>
+          <%= flash_alert(flash) %>
           <%= yield %>
         </div>
 
@@ -33,6 +33,7 @@
     <%= javascript_include_tag "odometer.min.js" %>
     <%= javascript_include_tag "main.js" %>
     <%= javascript_include_tag "modernizr.js" %>
+    <%= javascript_include_tag "admin.js" %>
     <%= javascript_include_tag "jquery.zoom.min.js" %>
     <%= javascript_include_tag "spree/frontend/checkout/shipping_prices.js" %>
     <%= javascript_include_tag "jquery.zoom.min.js" %>

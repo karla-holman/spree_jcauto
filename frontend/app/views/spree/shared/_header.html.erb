@@ -21,6 +21,7 @@
                     <li><%= link_to "Admin Dashboard", admin_path %></li>
                   <% end %>
                   <li><%= link_to Spree.t(:my_account), spree.account_path %></li>
+                  <li><%= link_to Spree.t(:my_cars), "/my-cars" %></li>
                   <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
                   <li><%= link_to "Wishlists", spree.wishlists_path %></li>
                 <% else %>

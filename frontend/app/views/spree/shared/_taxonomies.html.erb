@@ -3,10 +3,27 @@
 <nav id="taxonomies" class="sidebar-item" data-hook>
 	<h3>Find Parts</h3>
 	<% @taxonomies.each do |taxonomy| %>
-		<% next unless taxonomy.name == "Part Groups" %>
-		<% # cache [I18n.locale, taxonomy, max_level, @taxon] do %>
-			<h5 class='taxonomy-root'><%= Spree.t(:shop_by_taxonomy, :taxonomy => taxonomy.name) %></h5>
-			<%= taxons_tree(taxonomy.root, taxonomy.root, max_level, (params ? params : {})) %>
-		<% # end %>
+		<% if taxonomy.name == "Part Groups" %>
+			<% # cache [I18n.locale, taxonomy, max_level, @taxon] do %>
+				<h5 class='taxonomy-root'><%= Spree.t(:shop_by_taxonomy, :taxonomy => taxonomy.name) %></h5>
+				<%= taxons_tree(taxonomy.root, taxonomy.root, max_level, (params ? params : {})) %>
+			<% # end %>
+		<% elsif taxonomy.name == "Packages and Assemblies" %>
+			<% # cache [I18n.locale, taxonomy, max_level, @taxon] do %>
+				<h5 class='taxonomy-root'>Or by Category</h5>
+				<% 
+					params_string = ""
+      				if params.length != 0 && params[:search]
+						search_make_id = params[:search][:product_applications_application_make_id_eq] ? params[:search][:product_applications_application_make_id_eq] : ""
+				        search_model_id = params[:search][:product_applications_application_model_id_eq] ? params[:search][:product_applications_application_model_id_eq] : ""
+				        search_year_any = params[:search][:year_range_any] ? params[:search][:year_range_any] : ""
+				        search_keywords = params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any] ? params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].gsub(' ', '+') : ""
+				        search_match_exact = params[:match_exact] ? '&match_exact=1' : ''
+				        params_string = "?search[product_applications_application_make_id_eq]=#{search_make_id}&search[product_applications_application_model_id_eq]=#{search_model_id}&search[year_range_any]=#{search_year_any}&search[taxons_id_eq]=&search[name_or_meta_keywords_or_description_or_product_properties_value_cont_any]=#{search_keywords}#{search_match_exact}"
+				    end
+			    %>
+				<%= link_to(taxonomy.taxons.first.name, seo_url(taxonomy.taxons.first) + params_string ) %>
+			<% # end %>
+		<% end %>
 	<% end %>
 </nav>

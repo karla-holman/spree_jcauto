@@ -227,6 +227,15 @@ module Spree
         }
       end
 
+      def ProductFilters.recent_filter
+        {
+          name:   'Recently Added Parts',
+          scope:  :created_at_gteq,
+          labels: [ ["Last Month", Date.today.prev_month], ["Last Week", Date.today.prev_week], ["Yesterday", Date.today.prev_day] ],
+          conds:  nil
+        }
+      end
+
       Spree::Product.add_search_scope :year_range_any do |*opts|
         conds = opts.map {|o| o.to_i}.reject { |y| y.nil? }
         scope = conds.shift

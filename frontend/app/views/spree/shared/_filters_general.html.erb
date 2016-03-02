@@ -19,6 +19,9 @@
   # filter by keywords
   filters << Spree::Core::ProductFilters.keyword_filter if Spree::Core::ProductFilters.respond_to?(:keyword_filter)
 
+  # filter by date added
+  filters << Spree::Core::ProductFilters.recent_filter if Spree::Core::ProductFilters.respond_to?(:keyword_filter)
+
   # filter by price
   filters << Spree::Core::ProductFilters.price_filter if Spree::Core::ProductFilters.respond_to?(:price_filter)
 %>
@@ -48,6 +51,22 @@
             <div class="form-group inline">
               <%= check_box_tag :match_exact, "1", match %><%= label_tag "match_exact", "Match exact search?", style: "margin-left: 10px; margin-top: -5px" %>
               <%= text_field_tag "search[#{filter[:scope].to_s}]", value, {class: "form-control"} %>
+            </div>
+          <% elsif filter[:name] == 'Recently Added Parts' %>
+            <% collection = [] %>
+            <% selected = [] %>
+            <% labels.each do |nm,val| %>
+              <% label = val %>
+              <% component = [nm, label] %>
+              <% 
+                if params[:search] && params[:search][filter[:scope]] && params[:search][filter[:scope]].include?(val.to_s)
+                  selected = component
+                end
+               %>
+              <% collection << component %>
+            <% end %>
+            <div class="form-group">
+              <%= select_tag "search[#{filter[:scope].to_s}]", options_for_select(collection, selected), {prompt: "All", class: "form-control"} %>
             </div>
           <% else %>
             <% collection = [] %>
