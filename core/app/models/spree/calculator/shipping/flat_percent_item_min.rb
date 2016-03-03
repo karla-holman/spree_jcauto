@@ -23,7 +23,7 @@ module Spree
 
         # check if minimum met
         if dollar_val < self.preferred_minimal_amount
-          self.preferred_normal_amount
+          self.preferred_minimal_amount
         else
           dollar_val
         end
