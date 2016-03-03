@@ -32,4 +32,4 @@ attachment_config.each do |key, value|
 end
 
 config = Rails.application.config
-config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatPercentItemTotalMin
+config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatPercentItemMin
