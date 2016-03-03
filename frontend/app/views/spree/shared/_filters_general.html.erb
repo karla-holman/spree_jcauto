@@ -36,10 +36,11 @@
       <% labels = filter[:labels] || filter[:conds].map {|m,c| [m,m]} %>
       <% next if labels.empty? %>
       <div class="navigation" data-hook="navigation">
-        <h5 class="filter-title"><%= filter[:name] %></h5>
+        <h5 class="filter-title" style="float: left"><%= filter[:name] %></h5>
 
         <!-- Handle drop down for long lists -->
         <% if filter[:name] != "Price Range" %>
+          <div class="clearfix"></div>
           <% if filter[:name] == 'Parts by Keyword' %>
             <% 
               if params[:search] && params[:search][filter[:scope]]
@@ -85,27 +86,33 @@
               <%= select_tag "search[#{filter[:scope].to_s}]", options_for_select(collection, selected), {prompt: "All", class: "form-control"} %>
             </div>
           <% end %>
-        <% else %>
+        <% else %><!-- Price Range -->
         <!-- Handle drop down for short lists -->
-          <ul class="list-group"><!-- Otherwise use checkbox -->
-            <% labels.each do |nm,val| %>
-              <% label = "#{filter[:name]}_#{nm}".gsub(/\s+/,'_') %>
-              <li class="list-group-item">
-                <input type="checkbox"
-                       id="<%= label %>"
-                       name="search[<%= filter[:scope].to_s %>][]"
-                       value="<%= val %>"
-                       <%= params[:search] && params[:search][filter[:scope]] && params[:search][filter[:scope]].include?(val.to_s) ? "checked" : "" %> />
-                <label class="nowrap" for="<%= label %>"> <%= nm %> </label>
-              </li>
-            <% end %>
-          </ul>
+          <button class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target=".collapse#priceCollapse" aria-expanded="false" aria-controls="priceCollapse" style="float: left; margin-left: 20px; margin-top: 10px">
+            show/hide
+          </button>
+          <div class="clearfix"></div>
+          <div class="collapse" id="priceCollapse">
+            <ul class="list-group"><!-- Otherwise use checkbox -->
+              <% labels.each do |nm,val| %>
+                <% label = "#{filter[:name]}_#{nm}".gsub(/\s+/,'_') %>
+                <li class="list-group-item">
+                  <input type="checkbox"
+                         id="<%= label %>"
+                         name="search[<%= filter[:scope].to_s %>][]"
+                         value="<%= val %>"
+                         <%= params[:search] && params[:search][filter[:scope]] && params[:search][filter[:scope]].include?(val.to_s) ? "checked" : "" %> />
+                  <label class="nowrap" for="<%= label %>"> <%= nm %> </label>
+                </li>
+              <% end %>
+            </ul>
+          </div>
         <% end %>
 
       </div>
     <% end %>
-    <%= submit_tag Spree.t(:filter), :name => nil, :class => 'btn btn-primary' %>
-    <%= link_to Spree.t(:clear), products_path, :class => 'btn btn-info', :id => 'reset' %>
+    <%= submit_tag Spree.t(:filter), :name => nil, :class => 'btn btn-primary', style: "margin-top: 10px" %>
+    <%= link_to Spree.t(:clear), products_path, :class => 'btn btn-info', :id => 'reset', style: "margin-top: 10px" %>
   <% end %>
   <hr style="border-color: #777">
 <% end %>

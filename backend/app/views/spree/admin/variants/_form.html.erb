@@ -33,13 +33,6 @@
         <%= f.label :cost_price, Spree.t(:cost_price) %>
         <%= f.text_field :cost_price, :value => number_to_currency(@variant.cost_price, :unit => ''), :class => 'form-control' %>
       </div>
-
-      <div class="form-group" data-hook="active">
-        <%= f.label :active do %>
-            <%= f.check_box :active %>
-            <%= Spree.t(:active) %>
-        <% end %>
-      </div>
     </div>
   </div>
 
@@ -51,8 +44,14 @@
       </div>
     <% end %>
     <div class="form-group" data-hook="tax_category">
-        <%= f.label :tax_category_id, Spree.t(:tax_category) %>
-        <%= f.collection_select(:tax_category_id, @tax_categories, :id, :name, { :include_blank => Spree.t('match_choices.none') }, { :class => 'select2' }) %>
-      </div>
+      <%= f.label :tax_category_id, Spree.t(:tax_category) %>
+      <%= f.collection_select(:tax_category_id, @tax_categories, :id, :name, { :include_blank => Spree.t('match_choices.none') }, { :class => 'select2' }) %>
+    </div>
+    <div class="form-group" data-hook="active" style="margin-top: 40px">
+      <%= f.label :active do %>
+          <%= f.check_box :active %>
+          <%= Spree.t(:active) %>
+      <% end %>
+    </div>
   </div>
 </div>

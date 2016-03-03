@@ -5,10 +5,8 @@ module Spree
       @body_class
     end
 
-    def breadcrumbs(taxon, params={})
-      return "" if current_page?("/") || taxon.nil?
-      separator = raw("&nbsp;")
-
+    def paramstring()
+      # set search params
       params_string = ""
       if params.length != 0 && params[:search]
         search_make_id = params[:search][:product_applications_application_make_id_eq] ? params[:search][:product_applications_application_make_id_eq] : ""
@@ -16,15 +14,22 @@ module Spree
         search_year_any = params[:search][:year_range_any] ? params[:search][:year_range_any] : ""
         search_keywords = params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any] ? params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].gsub(' ', '+') : ""
         search_match_exact = params[:match_exact] ? '&match_exact=1' : ''
-        params_string = "?search[product_applications_application_make_id_eq]=#{search_make_id}&search[product_applications_application_model_id_eq]=#{search_model_id}&search[year_range_any]=#{search_year_any}&search[taxons_id_eq]=&search[name_or_meta_keywords_or_description_or_product_properties_value_cont_any]=#{search_keywords}#{search_match_exact}"
+        search_recent = params[:search][:created_at_gteq] ? params[:search][:created_at_gteq] : ""
+        params_string = "?search[product_applications_application_make_id_eq]=#{search_make_id}&search[product_applications_application_model_id_eq]=#{search_model_id}&search[year_range_any]=#{search_year_any}&search[taxons_id_eq]=&search[name_or_meta_keywords_or_description_or_product_properties_value_cont_any]=#{search_keywords}#{search_match_exact}&search[created_at_gteq]=#{search_recent}"
       end
+
+      params_string
+    end
+    def breadcrumbs(taxon, my_params="")
+      return "" if current_page?("/") || taxon.nil?
+      separator = raw("&nbsp;")
 
       crumbs = []
       # crumbs = [content_tag(:li, content_tag(:span, link_to(content_tag(:span, Spree.t(:home), itemprop: "name"), spree.root_path, itemprop: "url") + separator, itemprop: "item"), itemscope: "itemscope", itemtype: "https://schema.org/ListItem", itemprop: "itemListElement")]
       if taxon
-        crumbs << content_tag(:li, content_tag(:span, link_to(content_tag(:span, Spree.t(:products), itemprop: "name"), spree.products_path + params_string, itemprop: "url") + separator, itemprop: "item"), itemscope: "itemscope", itemtype: "https://schema.org/ListItem", itemprop: "itemListElement")
-        crumbs << taxon.ancestors.collect { |ancestor| content_tag(:li, content_tag(:span, link_to(content_tag(:span, ancestor.name, itemprop: "name"), seo_url(ancestor) + params_string, itemprop: "url") + separator, itemprop: "item"), itemscope: "itemscope", itemtype: "https://schema.org/ListItem", itemprop: "itemListElement") } unless taxon.ancestors.empty?
-        crumbs << content_tag(:li, content_tag(:span, link_to(content_tag(:span, taxon.name, itemprop: "name") , seo_url(taxon), itemprop: "url"), itemprop: "item"), class: 'active', itemscope: "itemscope", itemtype: "https://schema.org/ListItem", itemprop: "itemListElement")
+        crumbs << content_tag(:li, content_tag(:span, link_to(content_tag(:span, Spree.t(:products), itemprop: "name"), spree.products_path + my_params, itemprop: "url") + separator, itemprop: "item"), itemscope: "itemscope", itemtype: "https://schema.org/ListItem", itemprop: "itemListElement")
+        crumbs << taxon.ancestors.collect { |ancestor| content_tag(:li, content_tag(:span, link_to(content_tag(:span, ancestor.name, itemprop: "name"), seo_url(ancestor) + my_params, itemprop: "url") + separator, itemprop: "item"), itemscope: "itemscope", itemtype: "https://schema.org/ListItem", itemprop: "itemListElement") } unless taxon.ancestors.empty?
+        crumbs << content_tag(:li, content_tag(:span, taxon.name, itemprop: "item"), class: 'active', itemscope: "itemscope", itemtype: "https://schema.org/ListItem", itemprop: "itemListElement")
       else
         crumbs << content_tag(:li, content_tag(:span, Spree.t(:products), itemprop: "item"), class: 'active', itemscope: "itemscope", itemtype: "https://schema.org/ListItem", itemprop: "itemListElement")
       end
@@ -92,7 +97,7 @@ module Spree
       %w{thank_you}.exclude? params[:action]
     end
 
-    def taxons_tree(root_taxon, current_taxon, max_level = 1, params = {})
+    def taxons_tree(root_taxon, current_taxon, max_level = 1, my_params="")
       return '' if max_level < 1 || root_taxon.leaf?
 
 =begin
@@ -105,18 +110,10 @@ module Spree
 =end
       string = '<select class="form-control" onChange="window.location.href=this.value">'
       string += '<option value="">Select category</option>'
-      params_string = ""
-      if params.length != 0 && params[:search]
-        search_make_id = params[:search][:product_applications_application_make_id_eq] ? params[:search][:product_applications_application_make_id_eq] : ""
-        search_model_id = params[:search][:product_applications_application_model_id_eq] ? params[:search][:product_applications_application_model_id_eq] : ""
-        search_year_any = params[:search][:year_range_any] ? params[:search][:year_range_any] : ""
-        search_keywords = params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any] ? params[:search][:name_or_meta_keywords_or_description_or_product_properties_value_cont_any].gsub(' ', '+') : ""
-        search_match_exact = params[:match_exact] ? '&match_exact=1' : ''
-        params_string = "?search[product_applications_application_make_id_eq]=#{search_make_id}&search[product_applications_application_model_id_eq]=#{search_model_id}&search[year_range_any]=#{search_year_any}&search[taxons_id_eq]=&search[name_or_meta_keywords_or_description_or_product_properties_value_cont_any]=#{search_keywords}#{search_match_exact}"
-      end
-      string += '<option value=' + seo_url(current_taxon) + params_string + '>All Categories</option>'
+
+      string += '<option value=' + seo_url(current_taxon) + my_params + '>All Categories</option>'
       current_taxon.children.map do |taxon|
-        string += '<option value=' + seo_url(taxon) + params_string + '>' + taxon.name + '</option>'
+        string += '<option value=' + seo_url(taxon) + my_params + '>' + taxon.name + '</option>'
       end
       string += '</select>'
       string.html_safe

@@ -22,7 +22,8 @@
             <span class="icon icon-move handle"></span>
           <% end %>
         </td>
-        <td><%= variant.options_text %></td>
+        <td>
+          <%= variant.options_text + ( (variant.notes && variant.notes!="") ? (" (" + variant.notes + ") ") : "") %></td>
         <td><%= variant.display_price.to_html %></td>
         <td><%= variant.sku %></td>
         <td><%= variant.active ? "Yes" : "No" %></td>
