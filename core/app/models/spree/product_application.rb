@@ -34,11 +34,8 @@ module Spree
       if self.application && self.application.model
         model_start = self.application.model.start_year
         model_end = self.application.model.end_year
-        if self.start_year < model_start || self.start_year > model_end
+        if self.start_year > model_end || self.end_year > model_start
           errors.add(:start_year, "can't be outside of model construction dates")
-        end
-        if self.end_year < model_start || self.end_year > model_end
-          errors.add(:end_year, "can't be outside of model construction dates")
         end
       end
     end

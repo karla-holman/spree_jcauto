@@ -10,6 +10,11 @@
       <% end %>
 
       <div class="form-group" data-hook="sku">
+        <%= f.label :notes, Spree.t(:notes) %>
+        <%= f.text_field :notes, :class => 'form-control' %>
+      </div>
+
+      <div class="form-group" data-hook="sku">
         <%= f.label :sku, Spree.t(:sku) %>
         <%= f.text_field :sku, :class => 'form-control' %>
       </div>

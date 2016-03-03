@@ -206,7 +206,7 @@ module Spree
     # Finds all products that have a name, description, meta_description or meta_keywords containing the given keywords.
     add_search_scope :in_make_model do |words|
       joins(:applications)
-        .where("(#{ProductApplication.table_name}.start_year BETWEEN ? AND ?) OR (#{ProductApplication.table_name}.end_year BETWEEN ? AND ?)", words[:year_start], words[:year_end], words[:year_start], words[:year_end])
+        .where("(#{ProductApplication.table_name}.start_year <= ?) AND (#{ProductApplication.table_name}.end_year >= ?)", words[:year_end], words[:year_start])
         .where(application_conditions(words[:make_id], words[:model_id])[:query], application_conditions(words[:make_id], words[:model_id])[:arg1],application_conditions(words[:make_id], words[:model_id])[:arg2],application_conditions(words[:make_id], words[:model_id])[:arg3],application_conditions(words[:make_id], words[:model_id])[:arg4],application_conditions(words[:make_id], words[:model_id])[:arg5],application_conditions(words[:make_id], words[:model_id])[:arg6])
     end
 
@@ -220,6 +220,11 @@ module Spree
     # Alternatively, you could use find(collection_of_ids), but that would raise an exception if one product couldn't be found
     add_search_scope :with_ids do |*ids|
       where(id: ids)
+    end
+
+    add_search_scope :year_range_any do |scope|
+      Spree::Product.joins(:applications)
+      .where("#{ProductApplication.table_name}.start_year <= ? AND #{ProductApplication.table_name}.end_year >= ?", scope, scope)
     end
 
     # Sorts products from most popular (popularity is extracted from how many

@@ -231,7 +231,7 @@ module Spree
         {
           name:   'Recently Added Parts',
           scope:  :created_at_gteq,
-          labels: [ ["Last Month", Date.today.prev_month], ["Last Week", Date.today.prev_week], ["Yesterday", Date.today.prev_day] ],
+          labels: [ ["Last Month", "prev_month"], ["Last Week", "prev_week"], ["Yesterday", "prev_day"] ],
           conds:  nil
         }
       end

@@ -153,7 +153,17 @@ module Spree
           def add_search_scopes(base_scope)
             search.each do |name, scope_attribute|
               scope_name = name.to_sym
-              if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
+              # Handle date comparison
+              if scope_name === :created_at_gteq
+                case scope_attribute
+                when "prev_month"
+                  base_scope = base_scope.merge(Spree::Product.where("spree_products.created_at >= ?", DateTime.now.prev_month))
+                when "prev_week"
+                  base_scope = base_scope.merge(Spree::Product.where("spree_products.created_at >= ?", DateTime.now.prev_week))
+                when "prev_day"
+                  base_scope = base_scope.merge(Spree::Product.where("spree_products.created_at >= ?", DateTime.now.prev_day))
+                end
+              elsif base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
                 base_scope = base_scope.send(scope_name, *scope_attribute)
               else
                 # Narrow down all scopes except make and model (want to get all makes and models)
@@ -174,7 +184,7 @@ module Spree
                 end
               end
             end if search
-
+            
             base_scope
           end
 
