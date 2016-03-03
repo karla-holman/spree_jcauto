@@ -34,7 +34,8 @@
       <tr>
         <!-- Image and part number -->
         <td style="vertical-align: middle; text-align: center; max-width: 130px"><!-- Image -->
-          <%= link_to small_image(product, itemprop: "image"), url, itemprop: 'url' %>
+          <% prod_image_large = product_image(product, itemprop: 'image') %>
+          <%= link_to small_image(product, itemprop: "image"), url, itemprop: 'url', role: "button", data: { toggle: "popover", trigger: "hover", content: "#{prod_image_large.html_safe}", html: true }, title: product.name %>
           <h5><%= link_to product.name, url, itemprop: "name", title: product.property("Part Number") %></h5>
         </td>
         <!-- Information -->
@@ -95,3 +96,9 @@
 <% if paginated_products.respond_to?(:num_pages) %>
   <%= paginate paginated_products, theme: 'twitter-bootstrap-3' %>
 <% end %>
+
+<script>
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  })
+</script>

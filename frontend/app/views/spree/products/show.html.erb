@@ -107,7 +107,7 @@
       <div class="col-md-12">
         <h2 class="product-title" itemprop="name" style="margin-top: 0"><%= @product.name %>: <%= product_description(@product) rescue Spree.t(:product_has_no_description) %></h2>
       </div>
-      <div class="col-sm-6 col-md-6" data-hook="product_left_part">
+      <div class="col-xs-12 col-sm-6 col-md-6" data-hook="product_left_part">
         <div data-hook="product_left_part_wrap">
           <div id="product-images" data-hook="product_images">
             <a href="" data-toggle="modal" data-target="#myModal">
@@ -124,7 +124,7 @@
         </div>
       </div><!-- Left column -->
       <!-- Right Column -->
-      <div class="col-md-6">
+      <div class="col-xs-12 col-sm-6 col-md-6">
         <div id="cart-form">
           <%= render :partial => 'cart_form' %>
         </div>
@@ -139,6 +139,7 @@
           <% else %>
             <%= social_share_button_tag("Check out this part at JC Auto Restoration! Part Number " + @product.name, :desc => @product.description) %>
           <% end %>
+          <%= render :partial => 'promotions_short' %>
         </div>
       </div>
     </div>
@@ -149,12 +150,7 @@
       <div data-hook="product_properties">
         <%= render :partial => 'properties' %>
       </div>
- 
-      <div class="col-sm-6 col-md-4">
-        <div data-hook="promotions">
-          <%= render :partial => 'promotions' %>
-        </div>
-      </div>
+
     </div>
   </div>
 <% end %>

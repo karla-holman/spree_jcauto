@@ -1,0 +1,8 @@
+<% promotions = @product.possible_promotions %>
+
+<% if promotions.any? %>
+  <h5 style="color: #bf210a">Promotions available for this part!</h5>
+  <% promotions.each do |promotion| %>
+    <p><%= promotion.name +  (promotion.description ? ": " + promotion.description : "") %></p>
+  <% end %>
+<% end %>
