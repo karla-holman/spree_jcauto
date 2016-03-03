@@ -106,7 +106,7 @@
                       <% end %>
                     </span>
                     <% price_in_currency = variant.price_in(current_currency) %>
-                    (<%= variant_options variant %><%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>)
+                    <%= variant_options variant %><%= (variant.notes && variant.notes != "") ? " (" + variant.notes + ")" : "" %>
                     <% unless variant.can_supply? %>
                       <!--span class="out-of-stock"-->
                       <span style="color: #bf210a"><%= Spree.t(:out_of_stock) %></span>
