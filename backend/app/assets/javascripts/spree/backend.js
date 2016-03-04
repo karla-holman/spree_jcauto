@@ -5,6 +5,7 @@
 //= require jquery-ui/datepicker
 //= require jquery-ui/sortable
 //= require jquery-ui/autocomplete
+//= require bootstrap-sprockets
 //= require modernizr
 //= require underscore-min.js
 //= require velocity
