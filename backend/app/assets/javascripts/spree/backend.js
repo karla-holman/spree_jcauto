@@ -1,3 +1,4 @@
+//= require bootstrap
 //= require bootstrap-sprockets
 //= require jquery
 //= require jquery.cookie
