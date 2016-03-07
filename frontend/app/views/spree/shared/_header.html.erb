@@ -123,12 +123,15 @@
 
 <% if @page === 'home' %>
   <div class="header-img">
-      <div class="center" id="about-overlay">
+      <div class="center" id="about-overlay" style="padding-top: 25vh">
+        <%= image_tag "Logo-new.png", style: "width: auto; max-width: 90%; height: auto; max-height: 75vh;" %>
+        <!-- 
         <h1 class="inverse" style="font-size: 2em; text-align: center; line-height: 1.0em;">Serving the</h1>
         <h4 class="inverse" style="font-size: 3em; text-align: center; line-height: 1em; margin-top: -10px;">MoPar Community</h4>
         <h1 class="inverse" style="font-size: 4em; text-align: center; line-height: 1em; margin-bottom: -10px">Since</h1>
         <h4 class="inverse" style="font-size: 6em; text-align: center; line-height: 1em">1978</h4>
-        <h4 class="inverse" style="font-size: 3em; text-align: center; line-height: 1em; margin-top: 0px;"><span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></h4>
+        -->
+        <h4 class="inverse" style="font-size: 3em; text-align: center; line-height: 1em; color: #363636; position: absolute; bottom: 0; left: 0; right: 0"><span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></h4>
       </div>
       <%= image_tag "Header Image.png", style: "width: 100%; visibility: hidden;" %>
   </div>
