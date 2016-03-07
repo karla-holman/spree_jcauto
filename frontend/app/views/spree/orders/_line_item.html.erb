@@ -14,12 +14,12 @@
       <span class="line-item-description" style="font-weight: 700; color: #bf210a" data-hook="line_item_description">
         <%= line_item_description_text(line_item.description) %>
       </span>
-      (<%= variant.options_text -%>
+      <%= variant.options_text -%>
       <% if line_item.insufficient_stock? -%>
-        <span class="out-of-stock">
+        <span class="out-of-stock" style="color: #bf210a">
           <%= Spree.t(:out_of_stock) -%>&nbsp;&nbsp;<br />
         </span>
-      <% end -%>)
+      <% end -%>
     </td>
     <td class="lead cart-item-price" data-hook="cart_item_price">
       <%= line_item.single_money.to_html %>
