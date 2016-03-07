@@ -10,25 +10,19 @@
     <p><%= promotion.name +  (promotion.description ? ": " + promotion.description : "") %></p>
   <% end %>
 <% end %>
-
-<% 
-	taxon_promotions = Spree::Promotion::Rules::Taxon.all
-	if taxon_promotions.any?
-		taxon_promotions.each do |promotion|
-			promotion.taxons.each do |promo_taxon|
-				if @product.taxons.find(promo_taxon)
-					if !header_display
-%>
-						<h5 style="color: #bf210a">Promotions available for this part!</h5>
-<%
-					header_display = true
-					end
-%>				
-					  <p><%= promotion.promotion.name +  (promotion.promotion.description ? ": " + promotion.promotion.description : "") %></p>
-<%
-					break # don't list same promotion multiple times
-				end
-			end
-		end
-	end
-%>
+ 
+<% taxon_promotions = Spree::Promotion::Rules::Taxon.all %>
+<% if taxon_promotions.any? %>
+	<% taxon_promotions.each do |promotion| %>
+		<% promotion.taxons.each do |promo_taxon| %>
+			<% if @product.taxons.where("taxon_id=?", promo_taxon.id).length > 0  %>
+				<% if !header_display %>
+					<h5 style="color: #bf210a">Promotions available for this part!</h5>
+					<% header_display = true %>
+				<% end %>
+				<p><%= promotion.promotion.name +  (promotion.promotion.description ? ": " + promotion.promotion.description : "") %></p>
+				<% break # don't list same promotion multiple times %>
+			<% end %>
+		<% end %>
+	<% end %>
+<% end %>
