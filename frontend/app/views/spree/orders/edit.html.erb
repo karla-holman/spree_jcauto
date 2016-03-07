@@ -34,8 +34,7 @@
       <%= form_tag empty_cart_path, method: :put do %>
         <p id="clear_cart_link" data-hook>
           <%= submit_tag Spree.t(:empty_cart), class: 'btn btn-default' %>
-          <%= Spree.t(:or) %>
-          <%= link_to Spree.t(:continue_shopping), products_path, class: 'continue' %>
+          <%= link_to Spree.t(:continue_shopping), products_path, class: 'btn btn-default' %>
         </p>
       <% end %>
     </div>
