@@ -91,7 +91,7 @@
   </div>
 </div>
 
-<% cache [I18n.locale, current_currency] do %>
+<% cache [I18n.locale, current_currency, @product, @product.possible_promotions] do %>
   <% lowest_taxon = @product.taxons.order("description desc").first %>
   <ol class="breadcrumb">
     <li><%= link_to products_path do %>Products<% end %></li>
