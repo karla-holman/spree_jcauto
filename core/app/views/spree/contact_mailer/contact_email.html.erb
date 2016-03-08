@@ -18,6 +18,8 @@
         <strong>Email: </strong><%= @user[:address] %>
         <% if @user[:part_numbers] %>
         <br><strong>Part Numbers: </strong><%= @user[:part_numbers] %>
+        <% elsif @user[:sell_part_numbers] %>
+        <br><strong>Part Numbers: </strong><%= @user[:sell_part_numbers] %>
         <% end %>
         <% if @user[:quote_car] %>
         <br><strong>Make and Model: </strong><%= @user[:quote_car] %>

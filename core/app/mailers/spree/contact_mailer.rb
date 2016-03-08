@@ -16,7 +16,9 @@ module Spree
       
       # determine subject based on form
       if(user[:part_numbers])
-      	subject = "#{Spree::Store.current.name} Sell Request From Customer"
+      	subject = "#{Spree::Store.current.name} Part Request From Customer"
+      elsif(user[:sell_part_numbers])
+        subject = "#{Spree::Store.current.name} Sell to us Request From Customer"
       elsif(user[:quote_car])
         subject = "#{Spree::Store.current.name} Service Request From Customer"
       elsif(user[:part_car])
