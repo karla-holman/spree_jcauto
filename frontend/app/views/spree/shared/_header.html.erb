@@ -3,49 +3,47 @@
     $('#secondNav').removeClass("affix");
   </script>
   <div class="container">
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-0 col-sm-4 col-md-0 col-lg-0" id="sm-logo">
-            <a href="/">JC Auto Restoration</a>
-        </div>
-        <%= render :partial => 'spree/shared/nav_bar' %>
-        <div class="col-xs-12 col-sm-4 col-md-5" id="top-nav-bar">
-          <ul id="nav-bar" class="nav navbar-nav navbar-right" data-hook>
-            <li>
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                Account <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                <% if spree_current_user %>
-                  <% if spree_current_user && (spree_current_user.has_spree_role? "admin") %>
-                    <li><%= link_to "Admin Dashboard", admin_path %></li>
-                  <% end %>
-                  <li><%= link_to Spree.t(:my_account), spree.account_path %></li>
-                  <li><%= link_to Spree.t(:my_cars), "/my-cars" %></li>
-                  <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
-                  <li><%= link_to "Wishlists", spree.wishlists_path %></li>
-                <% else %>
-                  <li id="link-to-login"><%= link_to Spree.t(:login), spree.login_path %></li>
+    <div class="row">
+      <div class="col-xs-0 col-sm-4 col-md-0 col-lg-0" id="sm-logo">
+          <a href="/">JC Auto Restoration</a>
+      </div>
+      <%= render :partial => 'spree/shared/nav_bar' %>
+      <div class="col-xs-12 col-sm-4 col-md-5" id="top-nav-bar">
+        <ul id="nav-bar" class="nav navbar-nav navbar-right" data-hook>
+          <li>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              Account <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <% if spree_current_user %>
+                <% if spree_current_user && (spree_current_user.has_spree_role? "admin") %>
+                  <li><%= link_to "Admin Dashboard", admin_path %></li>
                 <% end %>
-              </ul>
-            </li>
-            <li id="link-to-cart" data-hook>
-              <noscript>
-                <%= link_to Spree.t(:cart), '/cart' %>
-              </noscript>
-              &nbsp;
-            </li>
-            <script>
-              try {
-                Spree.fetch_cart()
-              } catch (ReferenceError) {
-                $("#link-to-cart").html('<%= link_to Spree.t(:cart), spree.cart_path %>');
-              }
-            </script>
-          </ul>
-        </div>
-      </div><!-- End Row -->
-    </div><!-- End Container -->
+                <li><%= link_to Spree.t(:my_account), spree.account_path %></li>
+                <li><%= link_to Spree.t(:my_cars), "/my-cars" %></li>
+                <li><%= link_to Spree.t(:logout), spree.logout_path %></li>
+                <li><%= link_to "Wishlists", spree.wishlists_path %></li>
+              <% else %>
+                <li id="link-to-login"><%= link_to Spree.t(:login), spree.login_path %></li>
+              <% end %>
+            </ul>
+          </li>
+          <li id="link-to-cart" data-hook>
+            <noscript>
+              <%= link_to Spree.t(:cart), '/cart' %>
+            </noscript>
+            &nbsp;
+          </li>
+          <script>
+            try {
+              Spree.fetch_cart()
+            } catch (ReferenceError) {
+              $("#link-to-cart").html('<%= link_to Spree.t(:cart), spree.cart_path %>');
+            }
+          </script>
+        </ul>
+      </div>
+    </div><!-- End Row -->
   </div><!-- End Affix -->
 </div><!-- End Header -->
 
