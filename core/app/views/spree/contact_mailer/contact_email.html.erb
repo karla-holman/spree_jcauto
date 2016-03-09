@@ -3,9 +3,15 @@
     <td>
       <p class="lede">
         <% if(@user[:part_numbers]) %>
+          You have received a part request from a customer:
+        <% elsif(@user[:sell_part_numbers]) %>
           You have received a sale offer from a customer:
         <% elsif(@user[:quote_car]) %>
           You have received a service request from a customer:
+        <% elsif(@user[:part_car]) %>
+          You have received a sale car request from a customer:
+        <% elsif(@user[:vehicle]) %>
+          You have received a story submission from a customer:
         <% else %>
           You have recieved the following customer message:
         <% end %>
@@ -23,9 +29,17 @@
         <% end %>
         <% if @user[:quote_car] %>
         <br><strong>Make and Model: </strong><%= @user[:quote_car] %>
+        <% elsif @user[:vehicle] %>
+        <br><strong>Make and Model: </strong><%= @user[:vehicle] %>
+        <% end %>
+        <% if @user[:title] %>
+        <br><strong>Story Title: </strong><%= @user[:title] %>
         <% end %>
         <% if @user[:part_car] %>
         <br><strong>Desired Sale Car: </strong><%= @user[:part_car] %>
+        <% end %>
+        <% if @user[:terms] %>
+        <br><strong>Agreed to terms: </strong><%= @user[:terms] == "1" ? "YES" : "NO" %>
         <% end %>
       </p>
       <p><strong>Customer Message:</p>

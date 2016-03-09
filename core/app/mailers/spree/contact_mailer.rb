@@ -23,11 +23,14 @@ module Spree
         subject = "#{Spree::Store.current.name} Service Request From Customer"
       elsif(user[:part_car])
         subject = "#{Spree::Store.current.name} Sales Car Request From Customer"
+      elsif(user[:vehicle])
+        subject = "#{Spree::Store.current.name} Story Submission"
       else
       	subject = "#{Spree::Store.current.name} Contact From Customer"
       end
       
       mail(to: from_address, from: user[:address], subject: subject)
+
     end
   end
 end
