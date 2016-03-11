@@ -10,6 +10,7 @@ module Spree
     validates :firstname, :lastname, :address1, :city, :country, presence: true
     validates :zipcode, presence: true, if: :require_zipcode?
     validates :phone, presence: true, if: :require_phone?
+    validates :commercial, presence: true
 
     validate :state_validate, :postal_code_validate
 

@@ -33,4 +33,5 @@ end
 
 # Shipping calculator
 config = Rails.application.config
-config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatPercentItemMin
+config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatPercentItemMinResidential
+config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatPercentItemMinCommercial

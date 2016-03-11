@@ -28,6 +28,19 @@ module Spree
 
     def include?(address)
       return false unless address
+
+      # If the address is residential
+      if !address.commercial
+        # do not include any methods specified as commercial
+        if self.calculator.methods.include? "commercial" && self.calculator.commercial
+          return false
+        end
+      else # do not include any methods specified as residential
+        if self.calculator.methods.include? "commercial" && !self.calculator.commercial
+          return false
+        end
+      end
+
       zones.any? do |zone|
         zone.include?(address)
       end

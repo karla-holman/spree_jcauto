@@ -2,7 +2,7 @@ require_dependency 'spree/shipping_calculator'
 
 module Spree
   module Calculator::Shipping
-    class FlatPercentItemMin < ShippingCalculator
+    class FlatPercentItemMinCommercial < ShippingCalculator
       preference :flat_percent, :decimal, default: 0
       preference :minimal_amount, :decimal, default: 0
 
@@ -27,6 +27,10 @@ module Spree
         else
           dollar_val
         end
+      end
+
+      def commercial
+        true
       end
     end
   end
