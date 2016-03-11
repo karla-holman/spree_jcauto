@@ -68,8 +68,8 @@
     <%= form.phone_field :phone, :class => "form-control #{'required' if address.require_phone?}" %>
   </p>
   <p class="form-group" id=<%="#{address_id}commercial" %>>
-    <%= form.check_box :commercial, :class => "required" %>
-    <%= form.label :commercial, Spree.t(:commercial) %><span class="required">*</span><br />
+    <%= form.check_box :commercial %>
+    <%= form.label :commercial, Spree.t(:commercial_address) %>
   </p>
   <% if Spree::Config[:alternative_shipping_phone] %>
     <p class="form-group" id=<%="#{address_id}altphone" %>>

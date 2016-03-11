@@ -7,7 +7,7 @@ module Spree
       preference :minimal_amount, :decimal, default: 0
 
       def self.description
-        "Flat percent with minimal amount"
+        "Flat percent with minimal amount for residential addresses"
       end
 
       def compute_package(package)
