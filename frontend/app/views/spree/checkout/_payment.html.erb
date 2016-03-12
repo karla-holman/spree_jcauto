@@ -45,18 +45,34 @@
     <% end %>
 
     <ul class="list-group" id="payment-method-fields" data-hook>
-      <% @order.available_payment_methods.each do |method| %>
+      <% usa_order = true %>
+      <% usa_zone = Spree::Zone.where("name=?", "USA").first %>
+      <% 
+        unless usa_zone.include?(@order.shipping_address)
+          usa_order = false
+        end
+      %>
+
+      <% payment_options = [] %>
+      <% if usa_order
+          payment_options = @order.available_payment_methods.select { |m| !m.name.include? "International"}
+        else
+          payment_options = @order.available_payment_methods.select { |m| m.name.include? "International"}
+        end
+      %>
+      <% payment_options.each do |method| %>
         <li class="list-group-item">
           <label>
             <%= radio_button_tag "order[payments_attributes][][payment_method_id]", method.id, method == @order.available_payment_methods.first %>
             <%= Spree.t(method.name, :scope => :payment_methods, :default => method.name) %>
           </label>
+          <%= method.description %>
         </li>
       <% end %>
     </ul>
 
     <ul class="nav" id="payment-methods" data-hook>
-      <% @order.available_payment_methods.each do |method| %>
+      <% payment_options.each do |method| %>
         <li id="payment_method_<%= method.id %>" class="<%= 'last' if method == @order.available_payment_methods.last %>" data-hook>
           <fieldset>
             <%= render :partial => "spree/checkout/payment/#{method.method_type}", :locals => { :payment_method => method } %>
