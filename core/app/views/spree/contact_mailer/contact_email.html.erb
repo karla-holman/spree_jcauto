@@ -1,66 +1,439 @@
-<table>
-  <tr>
-    <td>
-      <p class="lede">
-        <% if(@user[:part_numbers]) %>
-          You have received a part request from a customer:
-        <% elsif(@user[:sell_part_numbers]) %>
-          You have received a sale offer from a customer:
-        <% elsif(@user[:quote_car]) %>
-          You have received a service request from a customer:
-        <% elsif(@user[:part_car]) %>
-          You have received a sale car request from a customer:
-        <% elsif(@user[:vehicle]) %>
-          You have received a story submission from a customer:
-        <% else %>
-          You have recieved the following customer message:
-        <% end %>
+<!-- Greeting -->
+<table style="border-spacing: 0;border-collapse: collapse;vertical-align: top;background-color: #fff9cc" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+  <tbody>
+    <tr style="vertical-align: top">
+      <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+        <!--[if gte mso 9]>
+        <table id="outlookholder" border="0" cellspacing="0" cellpadding="0" align="center"><tr><td>
+        <![endif]-->
+        <!--[if (IE)]>
+        <table width="500" align="center" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td>
+        <![endif]-->
+        <table class="container" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;max-width: 500px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+          <tbody>
+            <tr style="vertical-align: top">
+              <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+                <table class="block-grid" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;width: 100%;max-width: 500px;color: #000000;background-color: transparent" cellpadding="0" cellspacing="0" width="100%" bgcolor="transparent">
+                  <tbody>
+                    <tr style="vertical-align: top">
+                      <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;text-align: center;font-size: 0"><!--[if (gte mso 9)|(IE)]><table width="100%" align="center" bgcolor="transparent" cellpadding="0" cellspacing="0" border="0"><tr><![endif]--><!--[if (gte mso 9)|(IE)]><td valign="top" width="500"><![endif]-->
+                        <div class="col num12" style="display: inline-block;vertical-align: top;width: 100%">
+                          <table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                            <tbody>
+                              <tr style="vertical-align: top">
+                                <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;background-color: transparent;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent">
+                                  <table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" width="100%">
+                                    <tbody>
+                                      <tr style="vertical-align: top">
+                                        <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
+                                          <div style="color:#363636;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">            
+                                            <div style="font-size: 14px;line-height: 17px;color:#363636;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
+                                              <p style="margin: 0;font-size: 14px;line-height: 17px">
+                                                <span style="font-family: tahoma,arial,helvetica,sans-serif; font-size: 14px; line-height: 16px;">
+                                                  <% if(@user[:part_numbers]) %>
+                                                    You have received a part request from a customer:
+                                                  <% elsif(@user[:sell_part_numbers]) %>
+                                                    You have received a sale offer from a customer:
+                                                  <% elsif(@user[:quote_car]) %>
+                                                    You have received a service request from a customer:
+                                                  <% elsif(@user[:part_car]) %>
+                                                    You have received a sale car request from a customer:
+                                                  <% elsif(@user[:vehicle]) %>
+                                                    You have received a story submission from a customer:
+                                                  <% else %>
+                                                    You have received the following customer message:
+                                                  <% end %>
+                                                </span>
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div><!--[if (gte mso 9)|(IE)]></td><![endif]--><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]-->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!--[if mso]>
+        </td></tr></table>
+        <![endif]-->
+        <!--[if (IE)]>
+        </td></tr></table>
+        <![endif]-->
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-      </p>
 
-      <p>
-        <strong>From: </strong><%= @user[:name] %><br>
-        <strong>Phone: </strong><%= @user[:phone] %><br>
-        <strong>Email: </strong><%= @user[:address] %>
-        <% if @user[:part_numbers] %>
-        <br><strong>Part Numbers: </strong><%= @user[:part_numbers] %>
-        <% elsif @user[:sell_part_numbers] %>
-        <br><strong>Part Numbers: </strong><%= @user[:sell_part_numbers] %>
-        <% end %>
-        <% if @user[:quote_car] %>
-        <br><strong>Make and Model: </strong><%= @user[:quote_car] %>
-        <% elsif @user[:vehicle] %>
-        <br><strong>Make and Model: </strong><%= @user[:vehicle] %>
-        <% end %>
-        <% if @user[:title] %>
-        <br><strong>Story Title: </strong><%= @user[:title] %>
-        <% end %>
-        <% if @user[:part_car] %>
-        <br><strong>Desired Sale Car: </strong><%= @user[:part_car] %>
-        <% end %>
-        <% if @user[:terms] %>
-        <br><strong>Agreed to terms: </strong><%= @user[:terms] == "1" ? "YES" : "NO" %>
-        <% end %>
-      </p>
-      <p><strong>Customer Message:</p>
-      <p>
-        <%= @message %>
-      </p>
-      <% if attachments.length > 1 %>
-        <hr>
-        <p><strong>Customer Uploaded Images:</strong></p>
-        <% attachments.each_with_index do |attachment, index| %>
-          <% next if index + 1 == attachments.length %>
-          <%= image_tag attachments["User-#{index+1}.png"].url, alt: '', style: "width: 35%; margin-top: 20px; float: left" %>
-        <% end %>
-      <% end %>
+
+
+<!-- Customer Info - From -->
+<%= render :partial => 'info', :locals => { :my_field => "From:", :my_value => @user[:name] } %>
+
+<!-- Customer Info - Phone -->
+<%= render :partial => 'info', :locals => { :my_field => "Phone:", :my_value => @user[:phone] } %>
+
+<!-- Customer Info - Email -->
+<%= render :partial => 'info', :locals => { :my_field => "Email:", :my_value => @user[:address] } %>
+
+<% if @user[:part_numbers] %>
+  <%= render :partial => 'info', :locals => { :my_field => "Part Numbers:", :my_value => @user[:part_numbers] } %>
+<% elsif @user[:sell_part_numbers] %>
+  <%= render :partial => 'info', :locals => { :my_field => "Part Numbers:", :my_value => @user[:sell_part_numbers] } %>
+<% end %>
+
+<% if @user[:quote_car] %>
+  <%= render :partial => 'info', :locals => { :my_field => "Make and Model:", :my_value => @user[:quote_car] } %>
+<% elsif @user[:vehicle] %>
+  <%= render :partial => 'info', :locals => { :my_field => "Make and Model:", :my_value => @user[:vehicle] } %>
+<% end %>
+
+<% if @user[:title] %>
+  <%= render :partial => 'info', :locals => { :my_field => "Story Title:", :my_value => @user[:title] } %>
+<% end %>
+
+<% if @user[:part_car] %>
+  <%= render :partial => 'info', :locals => { :my_field => "Desired Sale Car:", :my_value => @user[:part_car] } %>
+<% end %>
+
+<% if @user[:terms] %>
+  <%= render :partial => 'info', :locals => { :my_field => "Agreed to terms:", :my_value => (@user[:terms] == "1" ? "YES" : "NO") } %>
+<% end %>
+
+
+<!-- Horizontal rule -->
+<table style="border-spacing: 0;border-collapse: collapse;vertical-align: top;background-color: transparent" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                <tbody><tr style="vertical-align: top">
+                  <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+                    <!--[if gte mso 9]>
+                    <table id="outlookholder" border="0" cellspacing="0" cellpadding="0" align="center"><tr><td>
+                    <![endif]-->
+                    <!--[if (IE)]>
+                    <table width="500" align="center" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td>
+                    <![endif]-->
+                    <table class="container" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;max-width: 500px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%"><table class="block-grid" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;width: 100%;max-width: 500px;color: #000000;background-color: transparent" cellpadding="0" cellspacing="0" width="100%" bgcolor="transparent"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;text-align: center;font-size: 0"><!--[if (gte mso 9)|(IE)]><table width="100%" align="center" bgcolor="transparent" cellpadding="0" cellspacing="0" border="0"><tr><![endif]--><!--[if (gte mso 9)|(IE)]><td valign="top" width="500"><![endif]--><div class="col num12" style="display: inline-block;vertical-align: top;width: 100%"><table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;background-color: transparent;padding-top: 5px;padding-right: 0px;padding-bottom: 5px;padding-left: 0px;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent"><table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tbody><tr style="vertical-align: top">
+        <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px" align="center">
+            <div style="height: 1px;">
+                <table style="border-spacing: 0;border-collapse: collapse;vertical-align: top;border-top: 1px solid #BBBBBB;width: 100%" align="center" border="0" cellspacing="0">
+                    <tbody><tr style="vertical-align: top">
+                        <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" align="center"></td>
+                    </tr>
+                </tbody></table>
+            </div>
+        </td>
+    </tr>
+</tbody></table></td></tr></tbody></table></div><!--[if (gte mso 9)|(IE)]></td><![endif]--><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></table></td></tr></tbody></table>
+                    <!--[if mso]>
+                    </td></tr></table>
+                    <![endif]-->
+                    <!--[if (IE)]>
+                    </td></tr></table>
+                    <![endif]-->
+                  </td>
+                </tr>
+              </tbody></table>
+
+
+
+<!-- Customer Message -->
+<table class="container" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;max-width: 500px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+  <tbody>
+    <tr style="vertical-align: top">
+      <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+        <table class="block-grid" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;width: 100%;max-width: 500px;color: #000000;background-color: transparent" cellpadding="0" cellspacing="0" width="100%" bgcolor="transparent">
+          <tbody>
+            <tr style="vertical-align: top">
+              <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;text-align: center;font-size: 0">
+                <!--[if (gte mso 9)|(IE)]><table width="100%" align="center" bgcolor="transparent" cellpadding="0" cellspacing="0" border="0"><tr><![endif]--><!--[if (gte mso 9)|(IE)]><td valign="top" width="500"><![endif]-->
+                <div class="col num12" style="display: inline-block;vertical-align: top;width: 100%">
+                  <table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                    <tbody>
+                      <tr style="vertical-align: top">
+                        <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;background-color: transparent;padding-top: 5px;padding-right: 0px;padding-bottom: 5px;padding-left: 0px;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent">
+                          <table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" width="100%">
+                            <tbody>
+                              <tr style="vertical-align: top">
+                                <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
+                                  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">            
+                                    <div style="font-size:14px;line-height:17px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
+                                      <p style="margin: 0;font-size: 14px;line-height: 17px">
+                                        <span style="font-family: tahoma,arial,helvetica,sans-serif; font-size: 14px; line-height: 17px;">
+                                          <strong>Customer Message:</strong>
+                                        </span>
+                                        <br>
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" width="100%">
+                            <tbody>
+                              <tr style="vertical-align: top">
+                                <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
+                                  <div style="color:#555555;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">            
+                                    <div style="font-size:14px;line-height:17px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;">
+                                      <p style="margin: 0;font-size: 14px;line-height: 17px">
+                                        <span style="font-family: tahoma,arial,helvetica,sans-serif; font-size: 14px; line-height: 17px;">
+                                          <%= @message %>
+                                        </span>
+                                        <br>
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]></td><![endif]--><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- Images -->
+<% attachments_1 = attachments %>
+<% if attachments.length > 3 %>
+  <% attachments_1 = attachments[0, 2] %>
+  <% if attachments.length == 4 %>
+    <% attachments_2 = attachments[3] %>
+  <% else %>
+    <% attachments_2 = attachments[3, attachments.length] %>
+  <% end %>
+<% end %>
+
+<% if attachments_1 %>
+<table style="border-spacing: 0;border-collapse: collapse;vertical-align: top;background-color: transparent" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+  <tbody>
+    <tr style="vertical-align: top">
+      <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+      <!--[if gte mso 9]>
+      <table id="outlookholder" border="0" cellspacing="0" cellpadding="0" align="center"><tr><td>
+      <![endif]-->
+      <!--[if (IE)]>
+      <table width="500" align="center" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+              <td>
+      <![endif]-->
+        <table class="container" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;max-width: 500px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+          <tbody>
+            <tr style="vertical-align: top">
+              <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+                <table class="block-grid three-up" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;width: 100%;max-width: 500px;color: #000000;background-color: transparent" cellpadding="0" cellspacing="0" width="100%" bgcolor="transparent">
+                  <tbody>
+                    <tr style="vertical-align: top">
+                      <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;text-align: center;font-size: 0">
+                        <!--[if (gte mso 9)|(IE)]>
+                          <table width="100%" align="center" bgcolor="transparent" cellpadding="0" cellspacing="0" border="0"><tr>
+                        <![endif]-->
+                        <!--[if (gte mso 9)|(IE)]><td valign="top" width="167"><![endif]-->
+
+                        <% attachments_1.each_with_index do |attachment, index| %>
+                          <% next if index + 1 == attachments_1.length %>
+                          <%= render :partial => 'image', :locals => { :attachments => attachments_1, :index => index } %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!--[if mso]>
+        </td></tr></table>
+        <![endif]-->
+        <!--[if (IE)]>
+        </td></tr></table>
+        <![endif]-->
+      </td>
+    </tr>
+  </tbody>
+</table>
+<% end %>
+
+<% if attachments_2 %>
+<table style="border-spacing: 0;border-collapse: collapse;vertical-align: top;background-color: transparent" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+  <tbody>
+    <tr style="vertical-align: top">
+      <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+      <!--[if gte mso 9]>
+      <table id="outlookholder" border="0" cellspacing="0" cellpadding="0" align="center"><tr><td>
+      <![endif]-->
+      <!--[if (IE)]>
+      <table width="500" align="center" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+              <td>
+      <![endif]-->
+        <table class="container" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;max-width: 500px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+          <tbody>
+            <tr style="vertical-align: top">
+              <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+                <table class="block-grid three-up" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;width: 100%;max-width: 500px;color: #000000;background-color: transparent" cellpadding="0" cellspacing="0" width="100%" bgcolor="transparent">
+                  <tbody>
+                    <tr style="vertical-align: top">
+                      <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;text-align: center;font-size: 0">
+                        <!--[if (gte mso 9)|(IE)]>
+                          <table width="100%" align="center" bgcolor="transparent" cellpadding="0" cellspacing="0" border="0"><tr>
+                        <![endif]-->
+                        <!--[if (gte mso 9)|(IE)]><td valign="top" width="167"><![endif]-->
+                        <% attachments_2.each_with_index do |attachment, index| %>
+                          <% next if index + 1 == attachments_2.length %>
+                          <%= render :partial => 'image', :locals => { :attachments => attachments_2, :index => index } %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!--[if mso]>
+        </td></tr></table>
+        <![endif]-->
+        <!--[if (IE)]>
+        </td></tr></table>
+        <![endif]-->
+      </td>
+    </tr>
+  </tbody>
+</table>
+<% end %>
+
+
+
+
+<!-- Signature Row -->
+<table style="border-spacing: 0;border-collapse: collapse;vertical-align: top;background-color: transparent" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+  <tbody><tr style="vertical-align: top">
+    <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+      <!--[if gte mso 9]>
+      <table id="outlookholder" border="0" cellspacing="0" cellpadding="0" align="center"><tr><td>
+      <![endif]-->
+      <!--[if (IE)]>
+      <table width="500" align="center" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+              <td>
+      <![endif]-->
+      <table class="container" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;max-width: 500px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%"><table class="block-grid" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;width: 100%;max-width: 500px;color: #000000;background-color: transparent" cellpadding="0" cellspacing="0" width="100%" bgcolor="transparent"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;text-align: center;font-size: 0"><!--[if (gte mso 9)|(IE)]><table width="100%" align="center" bgcolor="transparent" cellpadding="0" cellspacing="0" border="0"><tr><![endif]--><!--[if (gte mso 9)|(IE)]><td valign="top" width="500"><![endif]--><div class="col num12" style="display: inline-block;vertical-align: top;width: 100%"><table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;background-color: transparent;padding-top: 5px;padding-right: 0px;padding-bottom: 5px;padding-left: 0px;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent"><table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tbody><tr style="vertical-align: top">
+        <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-top: 10px;padding-right: 10px;padding-bottom: 20px;padding-left: 10px" align="center">
+            <div style="height: 1px;">
+                <table style="border-spacing: 0;border-collapse: collapse;vertical-align: top;border-top: 1px solid #dddddd;width: 100%" align="center" border="0" cellspacing="0">
+                    <tbody><tr style="vertical-align: top">
+                        <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" align="center"></td>
+                    </tr>
+                </tbody></table>
+            </div>
+        </td>
+    </tr>
+</tbody></table><table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" width="100%">
+  <tbody><tr style="vertical-align: top">
+    <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
+        <div style="color:#363636;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">            
+          <div style="font-size: 14px;line-height: 17px;color:#363636;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px"><span style="font-family: tahoma,arial,helvetica,sans-serif; font-size: 14px; line-height: 16px;">Thank you!</span></p></div>
+        </div>
     </td>
-    <td class="expander"></td>
   </tr>
-  <tr>
-    <p>
-      <a href="http://www.jcauto.com" target="_blank">JC Auto Restoration, Inc.</a><br>
-      <%= image_tag attachments['Logo.png'].url, alt: '', style: "width: 35%; margin-top: 20px" %>
-    </p>
+</tbody></table>
+<table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" width="100%">
+  <tbody><tr style="vertical-align: top">
+    <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
+        <div style="color:#363636;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">            
+          <div style="font-size:14px;line-height:17px;color:#363636;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px"><span style="font-family: tahoma,arial,helvetica,sans-serif; line-height: 16px; font-size: 14px;">Jeff Carter</span><br><span style="font-family: tahoma,arial,helvetica,sans-serif; line-height: 16px; font-size: 14px;"> <a style="color:#200099;text-decoration: none" href="jcauto.com" target="_blank">JC Auto Restoration, Inc.</a></span></p></div>
+        </div>
+    </td>
   </tr>
+</tbody></table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <!--[if (gte mso 9)|(IE)]></td><![endif]--><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]-->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!--[if mso]>
+        </td></tr></table>
+        <![endif]-->
+        <!--[if (IE)]>
+        </td></tr></table>
+        <![endif]-->
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+<!-- Spacing Row -->
+<table style="border-spacing: 0;border-collapse: collapse;vertical-align: top;background-color: transparent" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+  <tbody>
+    <tr style="vertical-align: top">
+      <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%">
+      <!--[if gte mso 9]>
+      <table id="outlookholder" border="0" cellspacing="0" cellpadding="0" align="center"><tr><td>
+      <![endif]-->
+      <!--[if (IE)]>
+      <table width="500" align="center" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+              <td>
+      <![endif]-->
+        <table class="container" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;max-width: 500px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" width="100%"><table class="block-grid" style="border-spacing: 0;border-collapse: collapse;vertical-align: top;width: 100%;max-width: 500px;color: #333;background-color: transparent" cellpadding="0" cellspacing="0" width="100%" bgcolor="transparent"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;text-align: center;font-size: 0"><!--[if (gte mso 9)|(IE)]><table width="100%" align="center" bgcolor="transparent" cellpadding="0" cellspacing="0" border="0"><tr><![endif]--><!--[if (gte mso 9)|(IE)]><td valign="top" width="500"><![endif]--><div class="col num12" style="display: inline-block;vertical-align: top;width: 100%"><table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0"><tbody><tr style="vertical-align: top"><td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;background-color: transparent;padding-top: 5px;padding-right: 0px;padding-bottom: 5px;padding-left: 0px;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent"><table style="border-spacing: 0;border-collapse: collapse;vertical-align: top" align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tbody><tr style="vertical-align: top">
+        <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px" align="center">
+            <div style="height: 10px;">
+                <table style="border-spacing: 0;border-collapse: collapse;vertical-align: top;border-top: 10px solid transparent;width: 100%" align="center" border="0" cellspacing="0">
+                    <tbody><tr style="vertical-align: top">
+                        <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top" align="center"></td>
+                    </tr>
+                </tbody></table>
+            </div>
+        </td>
+    </tr>
+</tbody></table></td></tr></tbody></table></div><!--[if (gte mso 9)|(IE)]></td><![endif]--><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></table></td></tr></tbody></table>
+                    <!--[if mso]>
+                    </td></tr></table>
+                    <![endif]-->
+                    <!--[if (IE)]>
+                    </td></tr></table>
+                    <![endif]-->
+                  </td>
+                </tr>
+              </tbody>
 </table>

@@ -8,23 +8,24 @@
           <li>
             <%= image_tag "footer/hours.png", class: "icon" %>
             <%= link_to "Hours", "/contact" %> 
-            <p>Monday-Friday<br>8:00 am - 5:00 pm PST</p>
+            <p>Monday-Friday<br>8:00 am - 5:00 pm <%= DateTime.now.in_time_zone("Pacific Time (US & Canada)").to_a[9] %></p>
           </li>
           <li>
             <%= image_tag "footer/location.png", class: "icon" %>
-            <%= link_to "Contact Us", "/contact" %> 
+            <%= link_to "Visit Us", "http://maps.google.com/?q=JC Auto Restoration, Inc., 52nd Avenue West, Lynnwood, WA 98036", target: "_blank" %> 
             <p>20815 52nd Ave W<br>
             Lynnwood, WA 98036</p>
           </li>
           <li>
             <%= image_tag "footer/phone.png", class: "icon" %>
-            <%= link_to "Telephone", "/contact" %> 
+            <%= link_to "Call Us", "tel: 4256728324", class: "hidden-sm hidden-md hidden-lg" %> 
+            <%= link_to "Call Us", "/contact", class: "hidden-xs" %> 
             <p>425.672.8324</p>
           </li>
           <li>
             <%= image_tag "footer/email.png", class: "icon" %>
             <%= link_to "Email", "/contact" %> 
-            <p>parts@jcauto.com</p>
+            <p>jcauto@jcauto.com</p>
           </li>
         </ul>
       </div>

@@ -12,7 +12,7 @@ module Spree
       end
 
       # JC Auto Logo
-      attachments.inline['Logo.png'] = File.read(Rails.root.join("public", "Logo-new.png"))
+      # attachments.inline['Logo.png'] = File.read(Rails.root.join("public", "Logo-new.png"))
       
       # determine subject based on form
       if(user[:part_numbers])
