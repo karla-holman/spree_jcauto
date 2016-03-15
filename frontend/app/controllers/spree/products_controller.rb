@@ -20,7 +20,7 @@ module Spree
       search_words = params[:keywords]? params[:keywords].split : []
       # Handle special search values
       search_words.each do |word|
-        if word.length === part_number_length && integer?(word)
+        if word =~ /\d/
           part_cast_words << word
         elsif word.length === year_length && integer?(word)
           make_model_year_words[:keywords] << word
