@@ -22,7 +22,9 @@ module Spree
       search_words.each do |word|
         if word =~ /\d/
           part_cast_words << word
-        elsif word.length === year_length && integer?(word)
+        end
+
+        if word.length === year_length && integer?(word)
           make_model_year_words[:keywords] << word
         # tie in with database later
         elsif "chrysler dodge plymouth imperial desoto truck".include?(word)
