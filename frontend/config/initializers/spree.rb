@@ -37,3 +37,4 @@ config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatPe
 config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatPercentItemMinCommercial
 config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatPercentItemRangeResidential
 config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatPercentItemRangeCommercial
+config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::FlatRateInsurance

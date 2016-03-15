@@ -20,9 +20,9 @@ module Spree
 
       def compute_from_price(price)
         # get amount to add
-        if price <= self.cutoff_low
+        if price <= self.preferred_cutoff_low
           value = price * BigDecimal(self.preferred_flat_percent_low.to_s) / 100.0
-        elsif price <= self.cutoff_med
+        elsif price <= self.preferred_cutoff_med
           value = price * BigDecimal(self.preferred_flat_percent_med.to_s) / 100.0
         else
           value = price * BigDecimal(self.preferred_flat_percent_high.to_s) / 100.0
