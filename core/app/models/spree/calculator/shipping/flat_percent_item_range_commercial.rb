@@ -8,6 +8,7 @@ module Spree
       preference :flat_percent_high, :decimal, default: 0
       preference :cutoff_low, :decimal, default: 0
       preference :cutoff_med, :decimal, default: 0
+      preference :minimal_amount, :decimal, default: 0
 
       def self.description
         "Flat percent based on price range for commercial addresses"
@@ -30,7 +31,12 @@ module Spree
         # get dollar value
         dollar_val = (value * 100).round.to_f / 100
 
-        dollar_val
+        # check if minimum met
+        if dollar_val < self.preferred_minimal_amount
+          self.preferred_minimal_amount
+        else
+          dollar_val
+        end
       end
 
       def commercial
