@@ -6,8 +6,8 @@ module Spree
       preference :flat_percent_low, :decimal, default: 0
       preference :flat_percent_med, :decimal, default: 0
       preference :flat_percent_high, :decimal, default: 0
-      preference :cutoff_low
-      preference :cutoff_med
+      preference :cutoff_low, :decimal, default: 0
+      preference :cutoff_med, :decimal, default: 0
 
       def self.description
         "Flat percent based on price range for commercial addresses"
