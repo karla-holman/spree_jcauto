@@ -219,15 +219,9 @@
 
 
 <!-- Images -->
-<% byebug %>
 <% attachments_1 = attachments %>
 <% if attachments.length > 3 %>
-  <% attachments_1 = attachments[0, 2] %>
-  <% if attachments.length == 4 %>
-    <% attachments_2 = attachments[3] %>
-  <% else %>
-    <% attachments_2 = attachments[3, attachments.length] %>
-  <% end %>
+  <% attachments_2 = attachments_1.pop(attachments.length - 3) %>
 <% end %>
 
 <% if attachments_1 %>
@@ -255,10 +249,9 @@
                           <table width="100%" align="center" bgcolor="transparent" cellpadding="0" cellspacing="0" border="0"><tr>
                         <![endif]-->
                         <!--[if (gte mso 9)|(IE)]><td valign="top" width="167"><![endif]-->
-
                         <% attachments_1.each_with_index do |attachment, index| %>
-                          <% next if index + 1 == attachments_1.length %>
-                          <%= render :partial => 'image', :locals => { :attachments => attachments_1, :index => index } %>
+                          <% next if index == attachments_1.length %>
+                          <%= render :partial => 'image', :locals => { :my_attachments => attachments_1, :index => index } %>
                         <% end %>
                       </td>
                     </tr>
@@ -306,8 +299,8 @@
                         <![endif]-->
                         <!--[if (gte mso 9)|(IE)]><td valign="top" width="167"><![endif]-->
                         <% attachments_2.each_with_index do |attachment, index| %>
-                          <% next if index + 1 == attachments_2.length %>
-                          <%= render :partial => 'image', :locals => { :attachments => attachments_2, :index => index } %>
+                          <% next if index == attachments_2.length %>
+                          <%= render :partial => 'image', :locals => { :my_attachments => attachments_2, :index => index } %>
                         <% end %>
                       </td>
                     </tr>
