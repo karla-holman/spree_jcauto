@@ -22,6 +22,7 @@ module Spree
     @@value_resleeved = Spree::OptionValue.where("name=?", "resleeved").first
     @@value_core = Spree::OptionValue.where("name=?", "core").first
     @@value_restored = Spree::OptionValue.where("name=?", "restored").first
+    @@value_relined = Spree::OptionValue.where("name=?", "relined").first
 
     # Stock Locations
     @@loc_suite2 = Spree::StockLocation.where("admin_name=?", "Suite 2").first
@@ -547,6 +548,8 @@ module Spree
           @@value_restored
         when /core/
           @@value_core
+        when /relined/
+          @@value_relined
         else
           @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not identify condition" }
           return false
