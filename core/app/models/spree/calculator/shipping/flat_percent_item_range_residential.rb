@@ -1,0 +1,41 @@
+require_dependency 'spree/shipping_calculator'
+
+module Spree
+  module Calculator::Shipping
+    class FlatPercentItemRangeResidential < ShippingCalculator
+      preference :flat_percent_low, :decimal, default: 0
+      preference :flat_percent_med, :decimal, default: 0
+      preference :flat_percent_high, :decimal, default: 0
+      preference :cutoff_low
+      preference :cutoff_med
+
+      def self.description
+        "Flat percent based on price range for commercial addresses"
+      end
+
+      def compute_package(package)
+        compute_from_price(total(package.contents))
+      end
+
+      def compute_from_price(price)
+        # get amount to add
+        if price <= self.cutoff_low
+          value = price * BigDecimal(self.preferred_flat_percent_low.to_s) / 100.0
+        elsif price <= self.cutoff_med
+          value = price * BigDecimal(self.preferred_flat_percent_med.to_s) / 100.0
+        else
+          value = price * BigDecimal(self.preferred_flat_percent_high.to_s) / 100.0
+        end
+
+        # get dollar value
+        dollar_val = (value * 100).round.to_f / 100
+
+        dollar_val
+      end
+
+      def commercial
+        false
+      end
+    end
+  end
+end
