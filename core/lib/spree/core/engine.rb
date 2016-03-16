@@ -26,8 +26,13 @@ module Spree
       end
 
       initializer "spree.register.stock_splitters" do |app|
+=begin
         app.config.spree.stock_splitters = [
           Spree::Stock::Splitter::ShippingCategory,
+          Spree::Stock::Splitter::Backordered
+        ]
+=end
+        app.config.spree.stock_splitters = [
           Spree::Stock::Splitter::Backordered
         ]
       end
