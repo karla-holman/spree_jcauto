@@ -101,7 +101,7 @@
           <% end %>
         </td>
         <td class='user_email'>
-          <% if activity.whodunnit %>
+          <% if activity.whodunnit &&  activity.whodunnit.is_a? Integer %>
             <%= Spree::User.where("id=?", activity.whodunnit).first.email %>
           <% else %>
             No User Logged
