@@ -70,8 +70,8 @@
 <% else %>
   <div data-hook="homepage_products">
     <h2 class="search-results-title">All Products</h2>
-    <% cache(cache_key_for_products) do %>
+    <% # cache(cache_key_for_products) do %>
       <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :taxon => @taxon } %>
-    <% end %>
+    <% # end %>
   </div>
 <% end %>

@@ -231,6 +231,7 @@ module Spree
             end
             @properties[:search] = params[:search] ? params[:search].reject{|_, v| v == ""} : params[:search] # don't take empty search filters
 
+            puts "Debug-Logging: Base prepared with search #{@properties[:search]}"
             per_page = params[:per_page].to_i
             @properties[:per_page] = per_page > 0 ? per_page : Spree::Config[:products_per_page]
             if params[:page].respond_to?(:to_i)
