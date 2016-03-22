@@ -22,6 +22,8 @@ module Spree
           unless Spree::Config.show_products_without_price
             @products["base"] = @products["base"].where("spree_prices.amount IS NOT NULL").where("spree_prices.currency" => current_currency)
           end
+
+          # Paginate keyword search and num pages
           @products["base"] = @products["base"].page(curr_page).per(per_page)
 
           @products
@@ -60,14 +62,15 @@ module Spree
 
             # Handle regular search
             base_scope = get_products_conditions_for(base_scope, keywords)
-
+  
             # search based on filters (ex. price)
             base_scope = add_search_scopes(base_scope)
 
             base_scope = add_eagerload_scopes(base_scope)
-            
+
             # Sort by name and uniq entries if no taxon present, otherwise already sorted
             base_scope = base_scope.uniq.order("name ASC") unless !taxon.blank?
+
             base_scope_hash = {"base" => base_scope, "part_num" => part_num_scope, "taxon" => taxon_scope, "application" => application_scope, "application_filter" => application_filter_scope}
           end
 
@@ -150,6 +153,7 @@ module Spree
             base_scope
           end
 =end
+          # Handle Filters
           def add_search_scopes(base_scope)
             search.each do |name, scope_attribute|
               scope_name = name.to_sym
