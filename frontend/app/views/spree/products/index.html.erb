@@ -1,7 +1,7 @@
 <% if "spree/products" == params[:controller] && @taxon || !@taxonomies.empty? %>
   <% content_for :sidebar do %>
     <div class="well">
-      <h5>More Parts Available</h5>
+      <h5 style="margin-top: 0">More Parts Available</h5>
       <p style="display: inline-block">We have thousands of parts in our shop. Can't find the part you need online?</p>
       <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
     </div>
