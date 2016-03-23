@@ -41,6 +41,11 @@
       <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :search_type => "base", :taxon => @taxon } %>
     <% else %>
       <p>No general search results.</p>
+      <div class="well">
+        <h5 style="margin-top: 0">Many More Parts Available!</h5>
+        <p style="display: inline-block">We have thousands of parts in our shop, and are adding more to our online database daily. Can't find the part you need online? Let us know what you're looking for, most likely we have it in stock.</p>
+        <%= link_to "Contact Us", "/contact", class: "btn btn-primary", style: "width: 100%" %>
+      </div>
     <% end %>
     <% if !@products["taxon"].nil? %>
       <h3>Parts with Matching Taxons</h3>
