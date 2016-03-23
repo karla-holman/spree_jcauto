@@ -32,47 +32,26 @@
 <% if params[:keywords] %>
   <div data-hook="search_results">
     <h2 class="search-results-title">Search Results for "<%= params[:keywords] %>"</h2>
+    <% if !@products["part_num"].nil? %>
+      <h3>Parts with Matching Part Number, Cast Number, or Cross Reference</h3>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["part_num"], :search_type => "part_num", :taxon => @taxon } %>
+    <% end %>
     <% if !@products["base"].empty? %>
       <h3>Search results</h3>
-      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :taxon => @taxon } %>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :search_type => "base", :taxon => @taxon } %>
     <% else %>
       <p>No general search results.</p>
     <% end %>
-    <% if !@products["part_num"].nil? %>
-      <h3>Parts with Matching Part Number, Cast Number, or Cross Reference</h3>
-      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["part_num"], :taxon => @taxon } %>
-    <% end %>
     <% if !@products["taxon"].nil? %>
       <h3>Parts with Matching Taxons</h3>
-      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["taxon"], :taxon => @taxon } %>
-    <% end %>
-    <% if !@products["application"].nil? %>
-      <h3>Parts with Matching Make, Model, or year</h3>
-      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["application"], :taxon => @taxon } %>
-    <% end %>
-  </div>
-<% elsif params[:make_id] %>
-  <div data-hook="search_results">
-    <% make = Spree::Make.where("id=?", params[:make_id]).first.name %>
-
-    <% if params[:model_id] === "" || !params[:model_id] %>
-        <% model = "(no model specified)" %>
-    <% else %>
-        <% model = Spree::Model.where("id=?", params[:model_id]).first.name %> 
-    <% end %>
-
-    <% year = params[:year] %>
-
-    <h2 class="search-results-title">Search Results for <%= "#{make} #{model} #{year}" %></h2>
-    <% if !@products["application_filter"].nil? %>
-      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["application_filter"], :taxon => @taxon } %>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["taxon"], :search_type => "taxon", :taxon => @taxon } %>
     <% end %>
   </div>
 <% else %>
   <div data-hook="homepage_products">
     <h2 class="search-results-title">All Products</h2>
     <% # cache(cache_key_for_products) do %>
-      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :taxon => @taxon } %>
+      <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :search_type => "base", :taxon => @taxon } %>
     <% # end %>
   </div>
 <% end %>

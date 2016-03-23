@@ -13,7 +13,7 @@
 
 <div data-hook="homepage_products">
   <% # cache(cache_key_for_products) do %>
-    <%= render :partial => 'spree/shared/products', :locals => { :products => @products } %>
+    <%= render :partial => 'spree/shared/products', :locals => { :products => @products["base"], :search_type => "base", :taxon => @taxon } %>
   <% # end %>
 </div>
 

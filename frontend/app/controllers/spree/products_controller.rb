@@ -11,7 +11,7 @@ module Spree
     def index
       taxon_words = []
 
-      part_cast_words = process_keywords      
+      part_cast_words = process_keywords 
 
       # Get general search results
       @searcher = build_searcher(params.merge(include_images: true))
@@ -84,6 +84,7 @@ module Spree
 
         # return array
         part_cast_words = []
+        remaining_words = []
         
         # symbols for search params
         make_sym = :product_applications_application_make_id_eq
@@ -113,11 +114,11 @@ module Spree
               added = true
               params[:search][year_sym] = "19" + word
             end
-            # Check for part number
-            if word.length >= 4
-              added = true
-              part_cast_words << word
-            end
+          end
+
+          # Check for part number (still treat like keyword)
+          if word.length >= 4
+            part_cast_words << word
           end
 
           # check for make / model (could be integer, ex. 300)
