@@ -152,7 +152,7 @@ module Spree
         end
 
         # loop through remaining keywords
-        if search_words.length > 0
+        if remaining_words.length > 0
           params[:keywords] = remaining_words.map { |w| w }.join(' ')
         else
           params.delete(:keywords)
