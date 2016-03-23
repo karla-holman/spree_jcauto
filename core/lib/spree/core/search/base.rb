@@ -47,7 +47,6 @@ module Spree
 
             # Get new scope based on base_scope (matches name and description)
             if part_num_words.length > 0
-              byebug
               part_num_scope = perform_custom_search(base_scope, part_num_words, "with_part_cast_number")
             end
             if taxon_words.length > 0
