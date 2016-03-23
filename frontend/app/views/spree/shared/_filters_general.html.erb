@@ -76,7 +76,7 @@
               <% label = val.to_i %>
               <% component = [nm, label] %>
               <% 
-                if params[:search] && params[:search][filter[:scope]] && params[:search][filter[:scope]].include?(val.to_s)
+                if params[:search] && params[:search][filter[:scope]] && params[:search][filter[:scope]] == (val.to_s)
                   selected = component
                 end
                %>
@@ -128,6 +128,18 @@
 
   $(".mobile-collapse #search_product_applications_application_make_id_eq").change( function(){
     check_models(false);
+  });
+
+  // Update mobile model if desktop changes
+  $(".desktop-collapse #search_product_applications_application_model_id_eq").change( function(){
+    model_id = $(".desktop-collapse #search_product_applications_application_model_id_eq").val()
+    $(".mobile-collapse #search_product_applications_application_model_id_eq").val(model_id);
+  });
+
+  // Update desktop model if mobile changes
+  $(".mobile-collapse #search_product_applications_application_model_id_eq").change( function(){
+    model_id = $(".mobile-collapse #search_product_applications_application_model_id_eq").val()
+    $(".desktop-collapse #search_product_applications_application_model_id_eq").val(model_id);
   });
 
   // change models available based on make selected

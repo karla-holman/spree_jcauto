@@ -9,45 +9,9 @@ module Spree
     respond_to :html
 
     def index
-      # Constants
-      year_length = 4
-      part_cast_words = []
-      # make_model_year_words = {:keywords => []}
       taxon_words = []
 
-      # get all keywords for part/cast number search
-      search_words = params[:keywords]? params[:keywords].split : []
-      if search_words.length > 0
-        # set up search params (simulate filter)
-        params[:search] = {:product_applications_application_make_id_eq => "",
-                           :product_applications_application_model_id_eq => "",
-                           :year_range_any => ""}
-      end
-      # Handle special search values
-      search_words.each do |word|
-        # handle numerical values
-        if integer?(word)
-          # Check for year
-          if (word.length === year_length) && (1924..Date.today.year).include?(word.to_i)
-            params[:search][:year_range_any] = word
-          end
-
-          # Check for part number
-          part_cast_words << word
-
-        # check for make / model 
-        else
-          possible_make = Spree::Make.where("lower(abbreviation)=? OR lower(name)=?", word.downcase, word.downcase)
-          possible_model = Spree::Model.where("lower(abbreviation)=? OR lower(name)=?", word.downcase, word.downcase)
-
-          # try to add make first, if make exists try to add model
-          if possible_make.length > 0 && (!params[:search][:product_applications_application_make_id_eq] || params[:search][:product_applications_application_make_id_eq] == "")
-            params[:search][:product_applications_application_make_id_eq] = possible_make.first.id.to_s
-          elsif possible_model.length > 0 && (!params[:search][:product_applications_application_model_id_eq] || params[:search][:product_applications_application_model_id_eq] == "")
-            params[:search][:product_applications_application_model_id_eq] = possible_model.first.id.to_s
-          end
-        end
-      end
+      part_cast_words = process_keywords      
 
       # Get general search results
       @searcher = build_searcher(params.merge(include_images: true))
@@ -105,6 +69,96 @@ module Spree
       # Determine if user search words are integer
       def integer?(str)
         /\A[+-]?\d+\z/ === str
+      end
+
+      ####################################################################
+      # Function:     process_keywords
+      # Description:  Handle keywords input from search box
+      # Input:        None
+      # Return:       Array of possible part or cast numbers
+      ####################################################################
+      def process_keywords
+        # Constants
+        year_length = 4
+        year_short_length = 2
+
+        # return array
+        part_cast_words = []
+        
+        # symbols for search params
+        make_sym = :product_applications_application_make_id_eq
+        model_sym = :product_applications_application_model_id_eq
+        year_sym = :year_range_any
+
+        # get all keywords
+        search_words = params[:keywords] ? params[:keywords].split : []
+        if search_words.length > 0
+          # set up search params (simulate filter)
+          params[:search] = { make_sym => "",
+                              model_sym => "",
+                              year_sym => ""}
+          remaining_words = search_words.map {|w| w}
+        end
+
+        # Check and identify each keyword
+        search_words.each do |word|
+          added = false
+          # handle numerical values
+          if integer?(word)
+            # Check for year
+            if (word.length === year_length) && (1924..Date.today.year).include?(word.to_i)
+              added = true
+              params[:search][year_sym] = word
+            elsif (word.length === year_short_length) && (24..99).include?(word.to_i)
+              added = true
+              params[:search][year_sym] = "19" + word
+            end
+            # Check for part number
+            if word.length >= 4
+              added = true
+              part_cast_words << word
+            end
+          end
+
+          # check for make / model (could be integer, ex. 300)
+          possible_make = Spree::Make.where("lower(abbreviation)=? OR lower(name)=?", word.downcase, word.downcase)
+          possible_model = Spree::Model.where("lower(abbreviation)=? OR lower(name)=?", word.downcase, word.downcase)
+          # Add make unless already exists
+          if possible_make.length > 0 && !params[:search][make_sym].present?
+            added = true
+            params[:search][make_sym] = possible_make.first.id.to_s
+          elsif possible_model.length > 0 && !params[:search][model_sym].present?
+            # check if make already found
+            make_id = params[:search][make_sym]
+            model = possible_model.first
+            if make_id && make_id != ""
+              if make_id.to_i == model.make_id
+                added = true
+                params[:search][model_sym] = model.id.to_s
+              end
+            else # Add model and applicable make
+              added = true
+              params[:search][model_sym] = model.id.to_s
+              params[:search][make_sym] = model.make_id.to_s
+
+              remaining_words.delete_if{ |w| w.downcase == model.make.name.downcase || w.downcase == model.make.abbreviation.downcase}
+            end
+          end
+          
+          # remove from keyword search if identified above
+          if added
+            remaining_words.delete_if{ |w| w.downcase == word.downcase }
+          end
+        end
+
+        # loop through remaining keywords
+        if search_words.length > 0
+          params[:keywords] = remaining_words.map { |w| w }.join(' ')
+        else
+          params.delete(:keywords)
+        end
+
+        part_cast_words
       end
   end
 end
