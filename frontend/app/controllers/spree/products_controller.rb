@@ -10,44 +10,50 @@ module Spree
 
     def index
       # Constants
-      part_number_length = 7
       year_length = 4
       part_cast_words = []
-      make_model_year_words = {:keywords => []}
+      # make_model_year_words = {:keywords => []}
       taxon_words = []
 
       # get all keywords for part/cast number search
       search_words = params[:keywords]? params[:keywords].split : []
+      if search_words.length > 0
+        # set up search params (simulate filter)
+        params[:search] = {:product_applications_application_make_id_eq => "",
+                           :product_applications_application_model_id_eq => "",
+                           :year_range_any => ""}
+      end
       # Handle special search values
       search_words.each do |word|
-        if word =~ /\d/
+        # handle numerical values
+        if integer?(word)
+          # Check for year
+          if (word.length === year_length) && (1924..Date.today.year).include?(word.to_i)
+            params[:search][:year_range_any] = word
+          end
+
+          # Check for part number
           part_cast_words << word
-        end
 
-        if word.length === year_length && integer?(word)
-          make_model_year_words[:keywords] << word
-        # tie in with database later
-        elsif "chrysler dodge plymouth imperial desoto truck".include?(word)
-          make_model_year_words[:keywords] << word
-        end
-      end
+        # check for make / model 
+        else
+          possible_make = Spree::Make.where("lower(abbreviation)=? OR lower(name)=?", word.downcase, word.downcase)
+          possible_model = Spree::Model.where("lower(abbreviation)=? OR lower(name)=?", word.downcase, word.downcase)
 
-      # check make/model/year params
-      if params[:make_id]
-        make_model_year_words[:make_id] = params[:make_id]
-      end
-      if params[:model_id]
-        make_model_year_words[:model_id] = params[:model_id] === "" ? nil : params[:model_id] 
-      end
-      if params[:year]
-        make_model_year_words[:year] = params[:year]
+          # try to add make first, if make exists try to add model
+          if possible_make.length > 0 && (!params[:search][:product_applications_application_make_id_eq] || params[:search][:product_applications_application_make_id_eq] == "")
+            params[:search][:product_applications_application_make_id_eq] = possible_make.first.id.to_s
+          elsif possible_model.length > 0 && (!params[:search][:product_applications_application_model_id_eq] || params[:search][:product_applications_application_model_id_eq] == "")
+            params[:search][:product_applications_application_model_id_eq] = possible_model.first.id.to_s
+          end
+        end
       end
 
       # Get general search results
       @searcher = build_searcher(params.merge(include_images: true))
 
       # Hash of { "scope" => base_scope } for each scope type
-      @products = @searcher.retrieve_products(part_cast_words, taxon_words, make_model_year_words) # get all products that match name and description
+      @products = @searcher.retrieve_products(part_cast_words, taxon_words) #, make_model_year_words) # get all products that match name and description
 
       @part_number_id = Spree::Property.where("name=?", "Part Number")
       @cast_number_id = Spree::Property.where("name=?", "Cast Number")
