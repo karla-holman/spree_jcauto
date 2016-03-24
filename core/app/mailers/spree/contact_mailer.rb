@@ -29,7 +29,7 @@ module Spree
       	subject = "#{Spree::Store.current.name} Contact From Customer"
       end
       
-      mail(to: from_address, from: user[:address], subject: subject)
+      mail(to: from_address, from: from_address, subject: subject)
 
     end
   end
