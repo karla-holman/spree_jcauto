@@ -72,7 +72,7 @@
           <!-- Only show chrysler numbers -->
           <% cross_found = false %>
           <% if !product.product_properties.where("property_id=?", 3).empty? %>
-            <% product.property("Cross Reference").split(",").each_with_index do |cross, index| %>
+            <% product.property("Cross Reference").gsub(/;/,",").split(",").each_with_index do |cross, index| %>
               <% if matches = cross.strip.match(/(\d{7})/) %>
                   <%= ((index != 0 && cross_found) ? ", " : "") + matches[1] %> 
                   <% cross_found = true %>
