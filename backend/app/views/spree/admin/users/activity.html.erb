@@ -16,12 +16,7 @@
       </div>
       <div class="col-md-6">
         <%= f.label "Find Product Updates"%>
-        <%= f.select :object_cont, options_for_select(Spree::Variant.all.collect {|v| [ 
-          if v.is_master 
-            (v.product.property("Part Number") ? v.product.property("Part Number") : v.product.name) + " (Product)"
-          else
-            v.sku + " " + v.options_text
-          end, "variant_id: " + v.id.to_s ] }), {:include_blank => Spree.t('match_choices.none')}, {:class=> "select2"} %> 
+        <%= f.text_field :object_cont_any, { value: "#{@part_number}", class: "form-control"} %> 
         <!-- %= f.text_field :item_id_eq, class: "form-control js-quick-search-target" % -->
       </div>
     </div>

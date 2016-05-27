@@ -36,6 +36,14 @@ module Spree
 
       def activity
         params[:q] = {} if params[:q].blank?
+        @part_number = ""
+        # Check for part number
+        if params[:q].include?("object_cont_any") && !params[:q][:object_cont_any].empty?
+          @part_number = params[:q][:object_cont_any]
+          variants = Spree::Variant.all.find_all {|variant| variant.product.property("Part Number") == params[:q][:object_cont_any]}
+          params[:q][:object_cont_any] = variants.map {|v| "variant_id: #{v.id}"}
+        end
+
         # @activities = PaperTrail::Version.order('created_at desc')
         @search = PaperTrail::Version.ransack(params[:q])
         @activities = @search.result.order('created_at desc').page(params[:page]).per(Spree::Config[:admin_products_per_page])
