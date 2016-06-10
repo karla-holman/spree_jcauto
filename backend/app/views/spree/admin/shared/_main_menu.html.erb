@@ -28,6 +28,12 @@
   </ul>
 <% end %>
 
+<% if can? :admin, Customer %>
+  <ul class="nav nav-sidebar">
+    <%= main_menu_tree "Customers", icon: "user", sub_menu: "customers", url: "#sidebar-customers" %>
+  </ul>
+<% end %>
+
 <% if can? :admin, current_store %>
   <ul class="nav nav-sidebar">
     <%= main_menu_tree Spree.t(:configurations), icon: "wrench", sub_menu: "configuration", url: "#sidebar-configuration" %>
