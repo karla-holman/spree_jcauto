@@ -62,7 +62,7 @@ module Spree
         end
 =end
         byebug
-        ExcelWorker.perform_async(params[:file])
+        Spree::ExcelWorker.perform_async(params[:file])
         render :action => :upload
       end
 
