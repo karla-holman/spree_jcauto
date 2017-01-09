@@ -39,6 +39,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'ransack', '~> 1.4.1'
   s.add_dependency 'responders'
   s.add_dependency 'state_machines-activerecord', '~> 0.2'
+  s.add_dependency 'sidekiq'
   s.add_dependency 'stringex'
   s.add_dependency 'truncate_html', '0.9.2'
   s.add_dependency 'twitter_cldr', '~> 3.0'

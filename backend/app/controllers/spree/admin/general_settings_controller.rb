@@ -46,6 +46,7 @@ module Spree
 
       # Upload excel document to populate database
       def upload_product_excel
+=begin
         begin
           my_excel = Spree::Excel.new(params[:file])
         rescue Exception => e
@@ -59,6 +60,9 @@ module Spree
         if @errors && @errors.length > 0
           flash[:error] = "Errors in upload, see table below"
         end
+=end
+        byebug
+        ExcelWorker.perform_async(params[:file])
         render :action => :upload
       end
 

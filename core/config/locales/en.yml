@@ -81,7 +81,7 @@ en:
         cost_price: Cost Price
         description: Description
         master_price: Master Price
-        name: Name
+        name: Part Number
         on_hand: On Hand
         shipping_category: Shipping Category
         tax_category: Tax Category
