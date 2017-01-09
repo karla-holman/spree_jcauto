@@ -4,7 +4,6 @@ module Spree
 		errors = []
 
 		def perform(file)
-			byebug
 			begin
 				my_excel = Spree::Excel.new(file)
 			rescue Exception => e

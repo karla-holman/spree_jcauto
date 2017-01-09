@@ -61,7 +61,6 @@ module Spree
           flash[:error] = "Errors in upload, see table below"
         end
 =end
-        byebug
         Spree::ExcelWorker.perform_async(params[:file])
         render :action => :upload
       end
