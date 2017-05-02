@@ -13,7 +13,7 @@ module Spree
 
       # JC Auto Logo
       # attachments.inline['Logo.png'] = File.read(Rails.root.join("public", "Logo-new.png"))
-      
+
       # determine subject based on form
       if(user[:part_numbers])
       	subject = "#{Spree::Store.current.name} Part Request From Customer"
@@ -25,10 +25,12 @@ module Spree
         subject = "#{Spree::Store.current.name} Sales Car Request From Customer"
       elsif(user[:vehicle])
         subject = "#{Spree::Store.current.name} Story Submission"
+      elsif(user[:excel_upload])
+        subject = "Upload Results"
       else
       	subject = "#{Spree::Store.current.name} Contact From Customer"
       end
-      
+
       mail(to: from_address, from: from_address, subject: subject)
 
     end

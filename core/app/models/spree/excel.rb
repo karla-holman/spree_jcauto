@@ -1,5 +1,13 @@
 module Spree
-  class Excel
+  class Excel < Spree::Base
+    has_attached_file :spreadsheet, url: '/spreadsheets/:id/:style/:basename.:extension'
+    validates_attachment :spreadsheet, presence: true,
+                   content_type: { content_type: [
+                     "application/vnd.ms-excel",
+                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                   ]
+                   },
+                   message: ' Only EXCEL files are allowed.'
     # Class variables
     @@auto_tax_category_id = Spree::TaxCategory.where("name=?", "Auto Parts").first.id
     @@shipping_category_id = Spree::ShippingCategory.where("name=?", "Default").first.id
@@ -35,15 +43,17 @@ module Spree
     @@loc_attic = Spree::StockLocation.where("admin_name=?", "George's Attic").first
 
     # pass in file object from params[:file]
+=begin
     def initialize(file)
       uploaded_file = file #params[:file]
-      @workbook = RubyXL::Parser.parse(uploaded_file.to_io)
-      @worksheet_products = @workbook[0]
-      @errors = []
     end
+=end
 
     # Import spreadsheet that fits product structure
     def import_product_file()
+      @workbook = RubyXL::Parser.parse(self.spreadsheet.path)
+      @worksheet_products = @workbook[0]
+      @errors = []
       @worksheet_products.each { |row|
         if(@product_row = build_row_hash(row))
           import_product()
@@ -85,14 +95,14 @@ module Spree
       product_name = row.cells[0].value.to_s
 
       # If name is mopar part number
-      if product_name.match(/^\d{7}/) 
+      if product_name.match(/^\d{7}/)
         product_name = product_name[0,7]
       end
 
       # handle date formatting from excel
       if row.cells[1].value.is_a?(DateTime)
         my_category = row.cells[1].value.strftime("%-m-%-d")
-      else 
+      else
         my_category = row.cells[1].value.to_s
       end
 
@@ -184,12 +194,12 @@ module Spree
         description = @product_row[:description].gsub(/w\//i,"with ")
         description.strip!
       end
-      new_product = Spree::Product.create :name => @product_row[:name], 
+      new_product = Spree::Product.create :name => @product_row[:name],
                  :description => description,
                  :meta_keywords => @product_row[:meta_keywords],
                  :available_on => DateTime.new(2015,1,1),
                  :slug => slug,
-                 :tax_category_id => @@auto_tax_category_id, 
+                 :tax_category_id => @@auto_tax_category_id,
                  :shipping_category_id => @@shipping_category_id,
                  :promotionable => true,
                  :price => @product_row[:price], # Defines master price
@@ -244,7 +254,7 @@ module Spree
                      :property_id => @@cast_number_id
       end
 
-      # If cross reference present               
+      # If cross reference present
       if(@product_row[:cross_ref].present?)
         new_product_cross_num = Spree::ProductProperty.create :value => @product_row[:cross_ref],
                      :product_id => @new_product.id,
@@ -274,14 +284,14 @@ module Spree
         when /\d{1}/ # end year gets first digit of start year
           end_year = "19" + app_data[:start_year][0] + app_data[:end_year]
         else
-          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not match end year " + app_data[:end_year].to_s }   
+          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not match end year " + app_data[:end_year].to_s }
         end
 
         # get make, model, and notes
         make_model_sets = app_data[:text].split(/[,;]/)
         if make_model_sets.empty? # if empty text set could be all
           make_model_sets = [" "]
-          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "No application text sets for this product" }   
+          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "No application text sets for this product" }
         end
         make_model_sets_enum = make_model_sets.to_enum
 
@@ -356,7 +366,7 @@ module Spree
               end
             end # end if statement
           end # end word loop
-          
+
 
           if(my_make && my_model)
             my_application = Spree::Application.where("make_id=? AND model_id=?", my_make.id, my_model.id).first
@@ -410,7 +420,7 @@ module Spree
       # check for string starting with dates
       date_range = app.scan(/\A\W*(\d{2})-{0,1}(\d{0,2})\s(.*)/)
 
-      # if reverse format (text first, then date) 
+      # if reverse format (text first, then date)
       if(date_range.length == 0)
         # check if make/model are before date
         if((date_range2 = app.scan(/(\D*)(\d{2})-{0,1}(\d{0,2})\s*(.*)/)).length == 0)
@@ -433,7 +443,7 @@ module Spree
       @app_data << { :start_year => date_range[0][0], :end_year => date_range[0][1], :text => date_range[0][2].strip}
       # end
     end
-    
+
     # called if vendor specified in spreadsheet
     def add_vendor
       vendor = @product_row[:vendor].match(/[\D\s]*/)
@@ -449,7 +459,7 @@ module Spree
               :vendor_price => @product_row[:vendor_price],
               :notes => notes
       else
-        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not match vendor " + @product_row[:vendor] }   
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Could not match vendor " + @product_row[:vendor] }
       end
     end
 
@@ -476,7 +486,7 @@ module Spree
       @new_product_condition_price = Spree::Price.where("variant_id = ?", @new_product_condition.id)
       @new_product_condition_price.first.update_attribute("amount", @product_row[:price])
       @new_product_condition_price.first.update_attribute("core", @product_row[:core]) if @product_row[:core].present?
-      
+
       # Add option value
       @new_product_condition.option_values << option_value
 
@@ -571,10 +581,10 @@ module Spree
         when /george/
           @@loc_attic
         # NFS no matter what - JC10 OR buffalo display case OR back shop
-        when /jc\d{1,2}|buffalo|back\sshop|attic/ 
+        when /jc\d{1,2}|buffalo|back\sshop|attic/
           @@loc_home_nfs
         # NFS if listed as not for sale (don't count in quantity)
-        when /w\d{1,2}/ 
+        when /w\d{1,2}/
           (@product_row[:available] && @product_row[:available].downcase == "n") ? @@loc_home_nfs : @@loc_home
         when /[[:alpha:]]\d{2,3}|D\d{3}\.\d|h\d|file\scabinet|suite\s2/
           (@product_row[:available] && @product_row[:available].downcase == "n") ? @@loc_suite2_nfs : @@loc_suite2
@@ -630,7 +640,7 @@ module Spree
       product_name = row.cells[0].value.to_s
 
       # Get name (and condition if specified)
-      if matches = product_name.match(/^(\d{7})(.*)/) 
+      if matches = product_name.match(/^(\d{7})(.*)/)
         product_name = matches[1]
         condition = matches[2] != "" ? matches[2] : ""
       end
@@ -732,12 +742,12 @@ module Spree
         else
           states = []
         end
-        
+
         if states.empty?
           @errors << { :part_number => @vendor_row[:name], :condition => "N/A", :message => "Cannot identify state with name #{@vendor_row[:state]}"  }
         else
           state_id = states.first.id
-        end 
+        end
       end
 
       # make sure website is http://
@@ -767,7 +777,7 @@ module Spree
     ################################################################
     # DISPLAY ERRORS
     ################################################################
-    
+
     # { :part_number => "", :condition => "", :message => "" }
     def get_errors
       @errors

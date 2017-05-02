@@ -61,7 +61,8 @@ module Spree
           flash[:error] = "Errors in upload, see table below"
         end
 =end
-        Spree::ExcelWorker.perform_async(params[:file])
+        excel = Excel.create(name: 'test', parse_errors: nil, spreadsheet: params[:file])
+        ExcelWorker.perform_async(excel.id)
         render :action => :upload
       end
 
@@ -120,19 +121,19 @@ module Spree
 
         customer_requests = []
         Spree::User.all.each do |user|
-          customer_requests << 
-          { 
+          customer_requests <<
+          {
             :customer_add_rq => {
               :customer_add => {
-                :name => "#{user.bill_address ? user.bill_address.firstname : user.email} #{user.bill_address ? user.bill_address.lastname : "" }", 
+                :name => "#{user.bill_address ? user.bill_address.firstname : user.email} #{user.bill_address ? user.bill_address.lastname : "" }",
                 :is_active => true
               }
             }
-          } 
+          }
         end
 
         # Check XML for requests
-        customer_requests.each do |request| 
+        customer_requests.each do |request|
           if !QBWC.parser.to_qbxml(request, {:validate => true})
             flash[:error] = "Request " + request + " failed."
             render :action => :quickbooks_edit
@@ -156,12 +157,12 @@ module Spree
         # for each order, check customers, invoices, and payments
         my_orders.each do |order|
           # Add customer and order only if user attached (should always be the case)
-          if order.user 
+          if order.user
             # variables -------------------------------------------------------------
             my_user = order.user
             # get address (whether shipping or billing)
             address = my_user.bill_address ? my_user.bill_address : (my_user.ship_address ? my_user.ship_address : nil)
-          else 
+          else
             my_user = order
             address = order.bill_address ? order.bill_address : (order.ship_address ? order.ship_address : nil)
           end
@@ -170,11 +171,11 @@ module Spree
           full_name = "#{address ? address.firstname : order.email}#{address ? " " + address.lastname : "" }"
 
           # Add customer ----------------------------------------------------------
-          requests << 
-          { 
+          requests <<
+          {
             :customer_add_rq => {
               :customer_add => {
-                :name => name, 
+                :name => name,
                 :is_active => true,
                 :first_name => "#{address ? address.firstname : my_user.email}",
                 :last_name => "#{address ? address.lastname : ""}",
@@ -207,11 +208,11 @@ module Spree
           }
 
           # Add Order as Invoice ------------------------------------------------------
-          
+
           # generate line items
           invoice_lines = []
           order.line_items.each do |item|
-            invoice_lines << 
+            invoice_lines <<
             {
               :item_ref => {
                 :full_name => "inventory"
@@ -247,7 +248,7 @@ module Spree
           end
 
           # Add invoice
-          requests << 
+          requests <<
           {
             :invoice_add_rq => {
               :invoice_add => {
@@ -303,8 +304,8 @@ module Spree
                     :payment_method_ref => {
                       :full_name => payment.payment_method.name
                     },
-                    :deposit_to_account_ref => { 
-                      :full_name => "Undeposited Funds" 
+                    :deposit_to_account_ref => {
+                      :full_name => "Undeposited Funds"
                     },
                     :is_auto_apply => true
                   }
@@ -315,7 +316,7 @@ module Spree
         end # Loop through each order
 
         # Check XML for requests
-        requests.each do |request| 
+        requests.each do |request|
           if !QBWC.parser.to_qbxml(request, {:validate => true})
             flash[:error] = "Request " + request + " failed."
             render :action => :quickbooks_edit
@@ -348,7 +349,7 @@ module Spree
       def set_store
         @store = current_store
       end
-  
+
     end
   end
 end

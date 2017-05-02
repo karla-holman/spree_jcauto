@@ -1,11 +1,11 @@
-module Spree
+#module Spree
 	class ExcelWorker
 		include Sidekiq::Worker
 		errors = []
 
-		def perform(file)
+		def perform(excel_id)
 			begin
-				my_excel = Spree::Excel.new(file)
+				my_excel = Spree::Excel.find(excel_id)
 			rescue Exception => e
         errors = e.message
       end
@@ -15,9 +15,9 @@ module Spree
         errors = my_excel.get_errors
       end
 
-      my_excel.destroy
-      message = Spree::ContactMailer.contact_email(try_spree_current_user, errors)
+      # my_excel.destroy
+      message = Spree::ContactMailer.contact_email({excel_upload: true}, errors, [])
 	    message.deliver_later
 		end
 	end
-end
+#end
