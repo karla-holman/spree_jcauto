@@ -1,13 +1,7 @@
 module Spree
   class Excel < Spree::Base
     has_attached_file :spreadsheet, url: '/spreadsheets/:id/:style/:basename.:extension'
-    validates_attachment :spreadsheet, presence: true,
-                   content_type: { content_type: [
-                     "application/vnd.ms-excel",
-                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                   ]
-                   },
-                   message: ' Only EXCEL files are allowed.'
+
     # Class variables
     @@auto_tax_category_id = Spree::TaxCategory.where("name=?", "Auto Parts").first.id
     @@shipping_category_id = Spree::ShippingCategory.where("name=?", "Default").first.id
