@@ -1,8 +1,8 @@
 module Spree
   class Excel < Spree::Base
     has_attached_file :spreadsheet, url: '/spreadsheets/:id/:style/:basename.:extension'
-    validates_attachment :spreadsheet, presence: true
-
+    #validates_attachment :spreadsheet, presence: true
+    validates_attachment_file_name :spreadsheet, :matches => [/xlsx\Z/]
     # Class variables
     @@auto_tax_category_id = Spree::TaxCategory.where("name=?", "Auto Parts").first.id
     @@shipping_category_id = Spree::ShippingCategory.where("name=?", "Default").first.id
