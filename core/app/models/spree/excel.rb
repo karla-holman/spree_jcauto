@@ -46,7 +46,7 @@ module Spree
 
     # Import spreadsheet that fits product structure
     def import_product_file()
-      @workbook = RubyXL::Parser.parse(self.spreadsheet.path)
+      @workbook = RubyXL::Parser.parse(self.spreadsheet.url(:original))
       @worksheet_products = @workbook[0]
       @errors = []
       @worksheet_products.each { |row|

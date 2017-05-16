@@ -62,6 +62,8 @@ module Spree
         end
 =end
         excel = Excel.create(name: 'test', parse_errors: nil, spreadsheet: params[:file])
+        logger.info "********* File: #{params[:file]}"
+        logger.debug "********** Errors: #{excel.errors.full_messages}"
         ExcelWorker.perform_async(excel.id)
         render :action => :upload
       end
