@@ -40,7 +40,11 @@ module Spree
         protected
           def get_base_scope(part_num_words, taxon_words)
             # Get all available products
-            base_scope = Spree::Product.active
+            if current_user && current_user.admin?
+              base_scope = Spree::Product.not_deleted
+            else
+              base_scope = Spree::Product.active
+            end
 
             # returns products in child taxons
             base_scope = base_scope.in_taxon(taxon) unless taxon.blank?
@@ -55,7 +59,7 @@ module Spree
 
             # Handle regular search
             base_scope = get_products_conditions_for(base_scope, keywords)
-  
+
             # search based on filters (ex. price)
             base_scope = add_search_scopes(base_scope)
 
@@ -92,7 +96,7 @@ module Spree
           def perform_custom_search(base_scope, word_list, list_type)
             scope_name = list_type.to_sym # "with_part_number"
             found_match = false
-            word_list.each do |scope_attribute| 
+            word_list.each do |scope_attribute|
               if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
                 # Invokes scope_name method, passing *scope_attributes
                 if(!base_scope.send(scope_name, scope_attribute).empty? && !found_match)
@@ -108,13 +112,13 @@ module Spree
             else
               nil
             end
-          end 
+          end
 
           # find custom search results - return all matches
           # word_list: Hash containing conditions and values to search on (ex. {:make_id => "1"})
           def perform_custom_filter(base_scope, word_list, list_type)
             scope_name = list_type.to_sym # "with_part_number"
-            # word_list.each do |scope_attribute| 
+            # word_list.each do |scope_attribute|
               # word_list = {:make_id => "1", :model_id => "1", :year => 1955}
               if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
                 # Invokes scope_name method, passing *scope_attributes
@@ -128,7 +132,7 @@ module Spree
             # end if word_list
 
             base_scope
-          end 
+          end
 
           # add filters to search results
 =begin
@@ -168,7 +172,7 @@ module Spree
                   make = search[:product_applications_application_make_id_eq] ? search[:product_applications_application_make_id_eq].to_i : nil
                   model = search[:product_applications_application_model_id_eq] ? search[:product_applications_application_model_id_eq].to_i : nil
                   # handle just make
-                  if make && model 
+                  if make && model
                     model_object = Spree::Model.find(model)
                     word_list = {:make_id => make, :model_id => model, :year_start => model_object.start_year, :year_end => model_object.end_year}
                     base_scope = base_scope.send(:in_make_model, word_list)
@@ -181,7 +185,7 @@ module Spree
                 end
               end
             end if search
-            
+
             base_scope
           end
 

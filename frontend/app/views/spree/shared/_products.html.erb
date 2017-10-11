@@ -28,6 +28,9 @@
     <tr>
       <th>Image</th>
       <th>Info</th>
+      <% if spree_current_user && spree_current_user.admin? %>
+      <th>Active</th>
+      <% end %>
     </tr>
     <% products.each do |product| %>
       <!-- Spree Setup -->
@@ -35,7 +38,7 @@
       <% # url = spree.product_url(product, taxon_id: @taxon.try(:id)) %>
       <% cache(@taxon.present? ? [I18n.locale, current_currency, @taxon, product] : [I18n.locale, current_currency, product]) do %>
       <!-- End Spree Setup -->
-      
+
       <tr>
         <!-- Image and part number -->
         <td style="vertical-align: middle; text-align: center; max-width: 130px"><!-- Image -->
@@ -68,13 +71,13 @@
                 <% end %>
               <!--% end %--><br>
           <% end%>
-          <strong>Cross References:</strong> 
+          <strong>Cross References:</strong>
           <!-- Only show chrysler numbers -->
           <% cross_found = false %>
           <% if !product.product_properties.where("property_id=?", 3).empty? %>
             <% product.property("Cross Reference").gsub(/;/,",").split(",").each_with_index do |cross, index| %>
               <% if matches = cross.strip.match(/(\d{7})/) %>
-                  <%= ((index != 0 && cross_found) ? ", " : "") + matches[1] %> 
+                  <%= ((index != 0 && cross_found) ? ", " : "") + matches[1] %>
                   <% cross_found = true %>
               <% end %>
             <% end %>
@@ -82,8 +85,8 @@
           <% if !cross_found %>
             N/A
           <% end %><br>
-          <strong>Applications:</strong> 
-          <% if product.product_applications.empty? %> 
+          <strong>Applications:</strong>
+          <% if product.product_applications.empty? %>
             N/A
           <% else %>
               <% len = product.product_applications.length %>
@@ -92,6 +95,16 @@
               <% end %>
           <% end %>
         </td>
+
+        <% if spree_current_user && spree_current_user.admin? %>
+        <td>
+          <% if product.is_active && product.available? %>
+            true
+          <% else %>
+            false
+          <% end %>
+        </td>
+        <% end %>
       </tr>
       <% end %>
     <% end %>
