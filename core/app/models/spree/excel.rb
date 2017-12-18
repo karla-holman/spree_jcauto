@@ -113,7 +113,7 @@ module Spree
         :cost => (row.cells[15] ? row.cells[15].value : ''),
         :vendor => (row.cells[16] ? row.cells[16].value : ''),
         :vendor_price => (row.cells[17] ? row.cells[17].value : ''),
-        :vendor_part_number => (row.cells[18].value : ''),
+        :vendor_part_number => (row.cells[18] ? row.cells[18].value : ''),
         :length => (row.cells[19] ? row.cells[19].value : ''),
         :width => (row.cells[20] ? row.cells[20].value : ''),
         :height => (row.cells[21] ? row.cells[21].value : ''),
