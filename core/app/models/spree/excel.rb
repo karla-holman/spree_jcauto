@@ -147,9 +147,19 @@ module Spree
         logger.info "Creating Product"
         @new_product = create_product()
 
-=begin
+        if @new_product.present?
+          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition],
+                     :message => "New Product: name - #{@new_product.name}, description - #{@new_product.description}"}
+        end
+
         # Add part categories
         add_part_group_taxon()
+
+        if @new_product.present?
+          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition],
+                   :message => "New Product: taxon - #{@new_product.taxons.count.to_s}"}
+        end
+=begin
 
         @new_product_variant = update_master_variant()
 
