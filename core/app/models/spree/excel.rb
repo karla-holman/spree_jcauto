@@ -138,13 +138,16 @@ module Spree
       # create master product if not already exists - return existing product if already created
       if (matching_products = Spree::Product.where("name=?", @product_row[:name])).length > 0
         # Product and master variant exist
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Using Product" }
         logger.info "Using Product"
         @new_product = matching_products.first
       else
         # Create product and master variant
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Creating Product" }
         logger.info "Creating Product"
         @new_product = create_product()
 
+=begin
         # Add part categories
         add_part_group_taxon()
 
@@ -155,16 +158,18 @@ module Spree
 
         # add applications
         add_applications()
+=end
       end
-
+=begin
       # If condition option type does not exist
       if(@new_product.option_types.where("name=?", "Condition").length == 0)
-        update_condition_type
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Updating Condition Type" }
+        # update_condition_type
       end
 
       # only continue if this condition and part number does not already exist
       if update_conditions_value
-
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Updating Condition Value" }
         if @product_row[:quantity] && @product_row[:quantity] > 0
           add_quantity(@product_row[:quantity], @new_product_condition, @product_row[:location], @product_row)
         end
@@ -175,6 +180,7 @@ module Spree
       if @product_row[:vendor]
         add_vendor()
       end
+=end
     end
 
     # Return a new product from each row of worksheet
