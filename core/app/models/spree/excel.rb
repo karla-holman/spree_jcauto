@@ -228,16 +228,32 @@ module Spree
 
     # Update and return master variant for new product
     def update_master_variant()
-      @new_product_variant = Spree::Variant.where("product_id=?", @new_product.id).first
-      @new_product_variant.update_column("sku", @product_row[:name])
-      @new_product_variant.update_column("weight", @product_row[:weight]) if @product_row[:weight].present?
-      @new_product_variant.update_column("height", @product_row[:height]) if @product_row[:height].present?
-      @new_product_variant.update_column("width", @product_row[:width]) if @product_row[:width].present?
-      @new_product_variant.update_column("depth", @product_row[:length]) if @product_row[:length].present?
-      @new_product_variant.update_column("tax_category_id", @@auto_tax_category_id)
-      @new_product_variant.price = @product_row[:price]
-      @new_product_variant.core_price = @product_row[:core]
-      @new_product_variant
+      logger.info "New Product ID: " + @new_product.id
+      logger.info "Spree Last Variant: " + Spree::Variant.last.product_id
+      if Spree::Variant.where("product_id=?", @new_product.id).count > 0
+        @new_product_variant = Spree::Variant.where("product_id=?", @new_product.id).first
+        @new_product_variant.update_column("sku", @product_row[:name])
+        @new_product_variant.update_column("weight", @product_row[:weight]) if @product_row[:weight].present?
+        @new_product_variant.update_column("height", @product_row[:height]) if @product_row[:height].present?
+        @new_product_variant.update_column("width", @product_row[:width]) if @product_row[:width].present?
+        @new_product_variant.update_column("depth", @product_row[:length]) if @product_row[:length].present?
+        @new_product_variant.update_column("tax_category_id", @@auto_tax_category_id)
+        @new_product_variant.price = @product_row[:price]
+        @new_product_variant.core_price = @product_row[:core]
+        @new_product_variant
+      else
+        @new_product_variant = Spree::Variant.new(product_id: @new_product.id)
+        @new_product_variant.assign_attributes({ "sku" => @product_row[:name] })
+        @new_product_variant.assign_attributes({ "weight" => @product_row[:weight] }) if @product_row[:weight].present?
+        @new_product_variant.assign_attributes({ "height" => @product_row[:height] }) if @product_row[:height].present?
+        @new_product_variant.assign_attributes({ "width" => @product_row[:width] }) if @product_row[:width].present?
+        @new_product_variant.assign_attributes({ "depth" => @product_row[:length] }) if @product_row[:length].present?
+        @new_product_variant.assign_attributes({ "tax_category_id" => @@auto_tax_category_id })
+        @new_product_variant.save
+        @new_product_variant.price = @product_row[:price]
+        @new_product_variant.core_price = @product_row[:core]
+        @new_product_variant
+      end
     end
 
     # Create properties for new product
@@ -504,19 +520,24 @@ module Spree
       end
 
       if(!option_type_values[value]) # if value does not already exist
+        logger.info "****Value does not exist"
         @new_product_condition = create_condition_variant(value) # create new variant with value
         if(@notes != "") # if used part with additional condition information
           @new_product_condition.update_attribute("notes", @notes)
         end
       else # otherwise check for used condition variations
+        logger.info "**** Used Condition Variantions"
         if(@notes != "") # if used note variants
           if(option_type_values[value].first.notes != @notes) # create new variant with notes if does not exist
+            logger.info "**** Used Condition Variantions"
             @new_product_condition = create_condition_variant(value)
             @new_product_condition.update_attribute("notes", @notes)
           else # if value and notes already exists get existing variant
+            logger.info "**** Used Condition Variantions - existing"
             @new_product_condition = option_type_values[value].first
           end
         else # otherwise get existing condition
+          logger.info "****Existing Condition"
           @new_product_condition = option_type_values[value].first
         end
       end
