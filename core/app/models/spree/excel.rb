@@ -149,7 +149,7 @@ module Spree
 
         if @new_product.present?
           @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition],
-                     :message => "New Product: name - #{@new_product.name}, description - #{@new_product.description}"}
+                     :message => "New Product:  id - #{@new_product.id}, name - #{@new_product.name}, description - #{@new_product.description}, errors - #{@new_product.errors.full_messages.to_s}"}
         end
 
         # Add part categories
@@ -159,9 +159,9 @@ module Spree
           @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition],
                    :message => "New Product: taxon - #{@new_product.taxons.count.to_s}"}
         end
-=begin
 
         @new_product_variant = update_master_variant()
+=begin
 
         # Update properties based on spreadsheet
         update_properties()
@@ -246,32 +246,22 @@ module Spree
 
     # Update and return master variant for new product
     def update_master_variant()
-      logger.info "New Product ID: " + @new_product.id
-      logger.info "Spree Last Variant: " + Spree::Variant.last.product_id
-      if Spree::Variant.where("product_id=?", @new_product.id).count > 0
-        @new_product_variant = Spree::Variant.where("product_id=?", @new_product.id).first
-        @new_product_variant.update_column("sku", @product_row[:name])
-        @new_product_variant.update_column("weight", @product_row[:weight]) if @product_row[:weight].present?
-        @new_product_variant.update_column("height", @product_row[:height]) if @product_row[:height].present?
-        @new_product_variant.update_column("width", @product_row[:width]) if @product_row[:width].present?
-        @new_product_variant.update_column("depth", @product_row[:length]) if @product_row[:length].present?
-        @new_product_variant.update_column("tax_category_id", @@auto_tax_category_id)
-        @new_product_variant.price = @product_row[:price]
-        @new_product_variant.core_price = @product_row[:core]
-        @new_product_variant
-      else
-        @new_product_variant = Spree::Variant.new(product_id: @new_product.id)
-        @new_product_variant.assign_attributes({ "sku" => @product_row[:name] })
-        @new_product_variant.assign_attributes({ "weight" => @product_row[:weight] }) if @product_row[:weight].present?
-        @new_product_variant.assign_attributes({ "height" => @product_row[:height] }) if @product_row[:height].present?
-        @new_product_variant.assign_attributes({ "width" => @product_row[:width] }) if @product_row[:width].present?
-        @new_product_variant.assign_attributes({ "depth" => @product_row[:length] }) if @product_row[:length].present?
-        @new_product_variant.assign_attributes({ "tax_category_id" => @@auto_tax_category_id })
-        @new_product_variant.save
-        @new_product_variant.price = @product_row[:price]
-        @new_product_variant.core_price = @product_row[:core]
-        @new_product_variant
+      if @new_product.present?
+        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition],
+               :message => "Update Master: name - #{@new_product.name}, id - #{@new_product.id}"}
       end
+=begin
+      @new_product_variant = Spree::Variant.where("product_id=?", @new_product.id).first
+      @new_product_variant.update_column("sku", @product_row[:name])
+      @new_product_variant.update_column("weight", @product_row[:weight]) if @product_row[:weight].present?
+      @new_product_variant.update_column("height", @product_row[:height]) if @product_row[:height].present?
+      @new_product_variant.update_column("width", @product_row[:width]) if @product_row[:width].present?
+      @new_product_variant.update_column("depth", @product_row[:length]) if @product_row[:length].present?
+      @new_product_variant.update_column("tax_category_id", @@auto_tax_category_id)
+      @new_product_variant.price = @product_row[:price]
+      @new_product_variant.core_price = @product_row[:core]
+      @new_product_variant
+=end
     end
 
     # Create properties for new product
