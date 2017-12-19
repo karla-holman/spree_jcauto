@@ -138,9 +138,11 @@ module Spree
       # create master product if not already exists - return existing product if already created
       if (matching_products = Spree::Product.where("name=?", @product_row[:name])).length > 0
         # Product and master variant exist
+        logger.info "Using Product"
         @new_product = matching_products.first
       else
         # Create product and master variant
+        logger.info "Creating Product"
         @new_product = create_product()
 
         # Add part categories
