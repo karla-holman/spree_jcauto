@@ -138,39 +138,23 @@ module Spree
       # create master product if not already exists - return existing product if already created
       if (matching_products = Spree::Product.where("name=?", @product_row[:name])).length > 0
         # Product and master variant exist
-        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Using Product" }
-        logger.info "Using Product"
         @new_product = matching_products.first
       else
         # Create product and master variant
-        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Creating Product" }
-        logger.info "Creating Product"
         @new_product = create_product()
-
-        if @new_product.present?
-          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition],
-                     :message => "New Product:  id - #{@new_product.id}, name - #{@new_product.name}, description - #{@new_product.description}, errors - #{@new_product.errors.full_messages.to_s}"}
-        end
 
         # Add part categories
         add_part_group_taxon()
 
-        if @new_product.present?
-          @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition],
-                   :message => "New Product: taxon - #{@new_product.taxons.count.to_s}"}
-        end
-
         @new_product_variant = update_master_variant()
-=begin
 
         # Update properties based on spreadsheet
         update_properties()
 
         # add applications
         add_applications()
-=end
       end
-=begin
+
       # If condition option type does not exist
       if(@new_product.option_types.where("name=?", "Condition").length == 0)
         @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition], :message => "Updating Condition Type" }
@@ -190,7 +174,6 @@ module Spree
       if @product_row[:vendor]
         add_vendor()
       end
-=end
     end
 
     # Return a new product from each row of worksheet
@@ -246,11 +229,6 @@ module Spree
 
     # Update and return master variant for new product
     def update_master_variant()
-      if @new_product.present?
-        @errors << { :part_number => @product_row[:name], :condition => @product_row[:condition],
-               :message => "Update Master: name - #{@new_product.name}, id - #{@new_product.id}"}
-      end
-=begin
       @new_product_variant = Spree::Variant.where("product_id=?", @new_product.id).first
       @new_product_variant.update_column("sku", @product_row[:name])
       @new_product_variant.update_column("weight", @product_row[:weight]) if @product_row[:weight].present?
@@ -261,7 +239,6 @@ module Spree
       @new_product_variant.price = @product_row[:price]
       @new_product_variant.core_price = @product_row[:core]
       @new_product_variant
-=end
     end
 
     # Create properties for new product
@@ -528,24 +505,19 @@ module Spree
       end
 
       if(!option_type_values[value]) # if value does not already exist
-        logger.info "****Value does not exist"
         @new_product_condition = create_condition_variant(value) # create new variant with value
         if(@notes != "") # if used part with additional condition information
           @new_product_condition.update_attribute("notes", @notes)
         end
       else # otherwise check for used condition variations
-        logger.info "**** Used Condition Variantions"
         if(@notes != "") # if used note variants
           if(option_type_values[value].first.notes != @notes) # create new variant with notes if does not exist
-            logger.info "**** Used Condition Variantions"
             @new_product_condition = create_condition_variant(value)
             @new_product_condition.update_attribute("notes", @notes)
           else # if value and notes already exists get existing variant
-            logger.info "**** Used Condition Variantions - existing"
             @new_product_condition = option_type_values[value].first
           end
         else # otherwise get existing condition
-          logger.info "****Existing Condition"
           @new_product_condition = option_type_values[value].first
         end
       end
