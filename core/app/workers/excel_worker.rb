@@ -12,6 +12,7 @@
 
       if (my_excel)
         my_excel.import_product_file()
+				logger.info "File has been imported"
         errors = my_excel.get_errors
       end
 

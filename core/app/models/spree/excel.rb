@@ -46,6 +46,8 @@ module Spree
 
     # Import spreadsheet that fits product structure
     def import_product_file()
+      # local
+      # file = open(self.spreadsheet.path)
       file = open(self.spreadsheet.url(:original))
       full_file = File.open(file.path)
       @workbook = RubyXL::Parser.parse(full_file)
@@ -108,11 +110,11 @@ module Spree
         :category => my_category,
         :description => (row.cells[2] ? row.cells[2].value.tr('***', '').chomp('-') : ''),
         :meta_keywords => (row.cells[3] ? row.cells[3].value : ''),
-        :price => (row.cells[9] ? row.cells[9].value : ''),
-        :core => (row.cells[10] ? row.cells[10].value : ''),
-        :cost => (row.cells[15] ? row.cells[15].value : ''),
+        :price => (row.cells[9] ? row.cells[9].value : 0),
+        :core => (row.cells[10] ? row.cells[10].value : 0),
+        :cost => (row.cells[15] ? row.cells[15].value : 0),
         :vendor => (row.cells[16] ? row.cells[16].value : ''),
-        :vendor_price => (row.cells[17] ? row.cells[17].value : ''),
+        :vendor_price => (row.cells[17] ? row.cells[17].value : 0),
         :vendor_part_number => (row.cells[18] ? row.cells[18].value : ''),
         :length => (row.cells[19] ? row.cells[19].value : ''),
         :width => (row.cells[20] ? row.cells[20].value : ''),
@@ -124,9 +126,9 @@ module Spree
         :condition => (row.cells[6] ? row.cells[6].value : ''),
         :cross_ref => (row.cells[7] ? row.cells[7].value : ''),
         :cast_num => (row.cells[8] ? row.cells[8].value : ''),
-        :available => (row.cells[13] ? row.cells[13].value : ''), # for sale? (count in inventory)
-        :active => (row.cells[14] ? row.cells[14].value : ''), # active (visible to users)
-        :quantity => (row.cells[11] ? row.cells[11].value : ''),
+        :available => (row.cells[13] ? row.cells[13].value : 'N'), # for sale? (count in inventory)
+        :active => (row.cells[14] ? row.cells[14].value : 'FALSE'), # active (visible to users)
+        :quantity => (row.cells[11] ? row.cells[11].value : 0),
         :package => (row.cells[23] ? row.cells[23].value : '')
       }
 
