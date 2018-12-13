@@ -7,24 +7,25 @@
         <ul class="footer-info">
           <li>
             <%= image_tag "footer/hours.png", class: "icon" %>
-            <%= link_to "Hours", "/contact" %> 
-            <p>Monday-Friday<br>8:00 am - 5:00 pm <%= DateTime.now.in_time_zone("Pacific Time (US & Canada)").to_a[9] %></p>
+            <%= link_to "Hours", "/contact" %>
+            <p>Monday-Thursday<br>8:00 am - 5:00 pm <%= DateTime.now.in_time_zone("Pacific Time (US & Canada)").to_a[9] %></p>
+            <p>Friday by appointment only.</p>
           </li>
           <li>
             <%= image_tag "footer/location.png", class: "icon" %>
-            <%= link_to "Visit Us", "http://maps.google.com/?q=JC Auto Restoration, Inc., 52nd Avenue West, Lynnwood, WA 98036", target: "_blank" %> 
+            <%= link_to "Visit Us", "http://maps.google.com/?q=JC Auto Restoration, Inc., 52nd Avenue West, Lynnwood, WA 98036", target: "_blank" %>
             <p>20815 52nd Ave W<br>
             Lynnwood, WA 98036</p>
           </li>
           <li>
             <%= image_tag "footer/phone.png", class: "icon" %>
-            <%= link_to "Call Us", "tel: 4256728324", class: "hidden-sm hidden-md hidden-lg" %> 
-            <%= link_to "Call Us", "/contact", class: "hidden-xs" %> 
+            <%= link_to "Call Us", "tel: 4256728324", class: "hidden-sm hidden-md hidden-lg" %>
+            <%= link_to "Call Us", "/contact", class: "hidden-xs" %>
             <p>425.672.8324</p>
           </li>
           <li>
             <%= image_tag "footer/email.png", class: "icon" %>
-            <%= link_to "Email", "/contact" %> 
+            <%= link_to "Email", "/contact" %>
             <p>jcauto@jcauto.com</p>
           </li>
         </ul>
@@ -34,22 +35,22 @@
         <hr style="margin-top: -3px">
         <ul class="footer-info no-icon">
           <li>
-            <%= link_to "Store", spree.root_path %> 
+            <%= link_to "Store", spree.root_path %>
           </li>
           <li>
-            <%= link_to "Privacy Policy", "/privacy-policy" %> 
+            <%= link_to "Privacy Policy", "/privacy-policy" %>
           </li>
           <li>
-            <%= link_to "Terms and Conditions", "/policies" %> 
+            <%= link_to "Terms and Conditions", "/policies" %>
           </li>
           <li>
-            <span style="font-weight: 400">Gift Cards (Coming Soon!)</span> 
+            <span style="font-weight: 400">Gift Cards (Coming Soon!)</span>
           </li>
           <li>
-              <%= link_to "Wishlists", spree.wishlists_path %> 
+              <%= link_to "Wishlists", spree.wishlists_path %>
           </li>
           <li>
-            <%= link_to "Contact Us", "/contact" %> 
+            <%= link_to "Contact Us", "/contact" %>
           </li>
         </ul>
       </div>
@@ -59,22 +60,22 @@
         <hr style="margin-top: -3px">
         <ul class="footer-info no-icon">
           <li>
-            <%= link_to "About Us", "/about" %> 
+            <%= link_to "About Us", "/about" %>
           </li>
           <li>
-            <%= link_to "Gallery", "/gallery" %> 
+            <%= link_to "Gallery", "/gallery" %>
           </li>
           <li>
-            <%= link_to "Parts", "/parts" %> 
+            <%= link_to "Parts", "/parts" %>
           </li>
           <li>
-            <%= link_to "Services", "/our-services" %> 
+            <%= link_to "Services", "/our-services" %>
           </li>
           <li>
-            <%= link_to "Community", "/community" %> 
+            <%= link_to "Community", "/community" %>
           </li>
           <li>
-            <%= link_to "Cars for Sale", "/sale-cars" %> 
+            <%= link_to "Cars for Sale", "/sale-cars" %>
           </li>
         </ul>
       </div>
@@ -85,17 +86,17 @@
         <ul class="footer-info">
           <li>
             <%= image_tag "footer/facebook.png", class: "icon" %>
-            <%= link_to "Facebook", "https://www.facebook.com/jcautorestorationinc/", :target => "_blank" %> 
+            <%= link_to "Facebook", "https://www.facebook.com/jcautorestorationinc/", :target => "_blank" %>
             <p>facebook.com/jcautorestorationinc</p>
           </li>
           <li>
             <%= image_tag "footer/twitter.png", class: "icon" %>
-            <%= link_to "Twitter", "https://twitter.com/JCAutoRestore", :target => "_blank" %> 
+            <%= link_to "Twitter", "https://twitter.com/JCAutoRestore", :target => "_blank" %>
             <p>@JCAutoRestore</p>
           </li>
           <li>
             <%= image_tag "footer/instagram.png", class: "icon" %>
-            <%= link_to "Instagram", "https://www.instagram.com/jcautorestoration/", :target => "_blank" %> 
+            <%= link_to "Instagram", "https://www.instagram.com/jcautorestoration/", :target => "_blank" %>
             <p>instagram.com/jcautorestoration</p>
           </li>
         </ul>
