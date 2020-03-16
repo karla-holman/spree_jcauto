@@ -8,7 +8,7 @@ module Spree
     def paramstring()
       # set search params
       params_string = ""
-      if params.length != 0 && params[:search]
+      if !params.empty? && params[:search]
         search_make_id = params[:search][:product_applications_application_make_id_eq] ? params[:search][:product_applications_application_make_id_eq] : ""
         search_model_id = params[:search][:product_applications_application_model_id_eq] ? params[:search][:product_applications_application_model_id_eq] : ""
         search_year_any = params[:search][:year_range_any] ? params[:search][:year_range_any] : ""

@@ -2,9 +2,9 @@
 //= require jquery.cookie
 //= require jquery.jstree/jquery.jstree
 //= require jquery_ujs
-//= require jquery-ui/datepicker
-//= require jquery-ui/sortable
-//= require jquery-ui/autocomplete
+//= require jquery-ui/widgets/datepicker
+//= require jquery-ui/widgets/sortable
+//= require jquery-ui/widgets/autocomplete
 //= require bootstrap-sprockets
 //= require modernizr
 //= require underscore-min.js

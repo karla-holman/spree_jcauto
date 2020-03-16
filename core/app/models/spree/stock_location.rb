@@ -12,7 +12,7 @@ module Spree
     scope :active, -> { where(active: true) }
     scope :order_default, -> { order(default: :desc, name: :asc) }
 
-    after_create :create_stock_items, :if => "self.propagate_all_variants?"
+    after_create :create_stock_items #, :if => self.propagate_all_variants?
     after_save :ensure_one_default
 
     def state_text
@@ -105,13 +105,13 @@ module Spree
         # find first viable sub location
         new_sub_location = nil
         variant.stock_items.each do |my_stock_item|
-          if my_stock_item.sub_location 
+          if my_stock_item.sub_location
             new_sub_location = my_stock_item.sub_location
             break
           end
         end
         # movements = variant.stock_items.stock_movments.where(originator: originator)
-        
+
         stock_item_or_create(variant, new_sub_location).stock_movements.create!(quantity: my_quantity,
                                                             originator: originator)
       end
