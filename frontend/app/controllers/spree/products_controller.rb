@@ -11,7 +11,7 @@ module Spree
     def index
       taxon_words = []
 
-      part_cast_words = process_keywords 
+      part_cast_words = process_keywords
 
       # Get general search results
       @searcher = build_searcher(params.merge(include_images: true))
@@ -27,6 +27,7 @@ module Spree
     end
 
     def show
+      # byebug
       @variants = @product.variants_including_master.active(current_currency).includes([:option_values, :images])
       @product_properties = @product.product_properties.includes(:property)
       @product_applications = @product.product_applications
@@ -34,7 +35,60 @@ module Spree
       redirect_if_legacy_path
     end
 
+    def new
+      # byebug
+      @product = Spree::Product.new()
+      @application = Spree::Application.new()
+    end
+
+    def create
+      byebug
+
+      # Create Product
+      # add cross references
+      if @product = Spree::Product.where(name: params[:my_product][:name]).first
+
+      else
+        @product = Spree::Product.new(product_params)
+        @product.slug = @product.name
+        @product.tax_category = Spree::TaxCategory.first
+        @product.shipping_category = Spree::ShippingCategory.where(name: 'Default').first
+        # Create Variant (Condition, Active)
+        # byebug
+        @product.save
+      end
+
+      # find or create variant
+      @variant = @product.variants.first
+
+      # Create Image
+      # @image = Spree::Image.create(image_params)
+
+      # Create Product Application
+      @product_application = Spree::ProductApplication.create(application_params.merge(product_id: @product.id).merge(notes: ''))
+      # Render show
+      @variants = @product.variants_including_master.active(current_currency).includes([:option_values, :images])
+      @product_properties = @product.product_properties.includes(:property)
+      @product_applications = @product.product_applications
+      byebug
+      @taxon = Spree::Taxon.find(params[:my_product][:taxon_id]) if params[:my_product][:taxon_id]
+      @product.taxons << @taxon
+      render :show
+    end
+
     private
+
+      def product_params
+        params.require(:my_product).permit(:name, :description, :price)
+      end
+
+      def image_params
+        params.require(:my_product).permit(:attachment)
+      end
+
+      def application_params
+        params.require(:my_product).permit(:application_id, :start_year, :end_year)
+      end
 
       def accurate_title
         if @product
@@ -85,7 +139,7 @@ module Spree
         # return array
         part_cast_words = []
         remaining_words = []
-        
+
         # symbols for search params
         make_sym = :product_applications_application_make_id_eq
         model_sym = :product_applications_application_model_id_eq
@@ -145,7 +199,7 @@ module Spree
               remaining_words.delete_if{ |w| w.downcase == model.make.name.downcase || w.downcase == model.make.abbreviation.downcase}
             end
           end
-          
+
           # remove from keyword search if identified above
           if added
             remaining_words.delete_if{ |w| w.downcase == word.downcase }

@@ -1,0 +1,70 @@
+<div class="col-md-8 col-md-offset-2">
+  <h1>New Product</h1>
+</div>
+
+<%= form_for :my_product, method: :post, url: products_path do |f| %>
+  <div class="col-md-8 col-md-offset-2">
+    <div class="form-group">
+      <h4 style="margin-top: 10px">Part Number</h4>
+      <%= f.text_field :name, class: 'form-control', placeholder: 'Part Number' %>
+    </div>
+    <div class="form-group">
+      <h4 style="margin-top: 10px">Price</h4>
+      <%= f.number_field :price, class: 'form-control', placeholder: 'Price', value: 0.00, :step => 'any' %>
+    </div>
+    <div class="form-group">
+      <h4 style="margin-top: 10px">Description</h4>
+      <%= f.text_area :description, class: 'form-control', placeholder: 'Description' %>
+    </div>
+    <div class="form-group">
+      <h4 style="margin-top: 10px">Application</h4>
+      <div class="row">
+        <div class="col-md-4">
+          <%= f.select :application_id, Spree::Application.all.order(name: :asc).collect {|m| [ m.name, m.id ] }, {:include_blank => "Select Application"}, {:class => "form-control"} %>
+        </div>
+        <div class="col-md-4">
+          <%= f.select :start_year, (1924)..(Time.zone.now.year + 1), {:include_blank => "Select Start Year"}, {:class => "form-control"} %>
+        </div>
+        <div class="col-md-4">
+          <%= f.select :end_year, (1924)..(Time.zone.now.year + 1), {:include_blank => "Select End Year"}, {:class => "form-control"} %>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <h4 style="margin-top: 10px">Taxons</h4>
+      <%= f.select :taxon_id, Spree::Taxon.all.collect{|l|[l.permalink, l.id]}, {include_blank: "Select Taxon"}, {class: 'select2 form-control'} %>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-6">
+          <h4 style="margin-top: 10px">Location (ex. f101)</h4>
+          <%= f.select :stock_location_id, Spree::StockLocation.all.order(:name).collect{|l|[l.admin_name, l.id]}, {include_blank: "Select Location"}, {class: 'select2 form-control', "data-placeholder" => Spree.t(:select_a_stock_location)} %>
+        </div>
+        <div class="col-md-6">
+          <h4 style="margin-top: 10px">Sub Location</h4>
+          <%= f.text_field :sub_location, class: 'form-control', placeholder: 'Sub Location' %>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <h4 style="margin-top: 10px">Condition</h4>
+      <%= f.select :option_value, Spree::OptionValue.all.collect{|l|[l.presentation, l.id]}, {include_blank: "Select Condition"}, {class: 'select2 form-control'} %>
+    </div>
+    <div class="form-group">
+      <%= f.label :attachment, Spree.t(:filename) %>
+      <%= f.file_field :attachment %>
+    </div>
+    <div class="form-group">
+      <%= f.label :active %>
+      <%= f.check_box :active %>
+    </div>
+  </div>
+
+  <div class="col-md-8 col-md-offset-2">
+    <div class="form-actions" data-hook="buttons">
+      <%= button Spree.t(:create), 'save' %>
+      <span class="or"><%= Spree.t(:or) %></span>
+      <%= button_link_to Spree.t('actions.cancel'), admin_products_path, icon: 'delete' %>
+    </div>
+  </div>
+<% end %>
