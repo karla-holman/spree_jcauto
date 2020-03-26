@@ -1,9 +1,9 @@
 module Spree
   module Api
     class StatesController < Spree::Api::BaseController
-      skip_before_action :set_expiry
+      skip_before_action :set_expiry, raise: false
       skip_before_action :check_for_user_or_api_key, raise: false
-      skip_before_action :authenticate_user
+      skip_before_action :authenticate_user, raise: false
 
       def index
         @states = scope.ransack(params[:q]).result.

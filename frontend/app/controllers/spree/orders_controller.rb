@@ -7,7 +7,7 @@ module Spree
     respond_to :html
 
     before_action :assign_order_with_lock, only: :update
-    skip_before_action :verify_authenticity_token, only: [:populate]
+    skip_before_action :verify_authenticity_token, only: [:populate], raise: false
 
     def show
       @order = Order.find_by_number!(params[:id])

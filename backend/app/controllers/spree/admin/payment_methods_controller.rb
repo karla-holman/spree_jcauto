@@ -1,7 +1,7 @@
 module Spree
   module Admin
     class PaymentMethodsController < ResourceController
-      skip_before_action :load_resource, only: :create
+      skip_before_action :load_resource, only: :create, raise: false
       before_action :load_data
       before_action :validate_payment_method_provider, only: :create
 

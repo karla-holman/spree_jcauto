@@ -2,7 +2,7 @@ module Spree
   class StoreController < Spree::BaseController
     include Spree::Core::ControllerHelpers::Order
 
-    skip_before_action :set_current_order, only: :cart_link
+    skip_before_action :set_current_order, only: :cart_link, raise: false
 
     def unauthorized
       render 'spree/shared/unauthorized', layout: Spree::Config[:layout], status: 401

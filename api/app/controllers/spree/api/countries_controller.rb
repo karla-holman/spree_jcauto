@@ -2,7 +2,7 @@ module Spree
   module Api
     class CountriesController < Spree::Api::BaseController
       skip_before_action :check_for_user_or_api_key, raise: false
-      skip_before_action :authenticate_user
+      skip_before_action :authenticate_user, raise: false
 
       def index
         @countries = Spree::Country.accessible_by(current_ability, :read).ransack(params[:q]).result.
