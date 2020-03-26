@@ -93,7 +93,7 @@
 
 <% cache [I18n.locale, current_currency, @product, @product.possible_promotions] do %>
   <% lowest_taxon = @product.taxons.order("description desc").first %>
-  <% byebug %>
+
   <ol class="breadcrumb">
     <li><%= link_to products_path do %>Products<% end %></li>
     <% lowest_taxon.ancestors.each do |taxon| %>
