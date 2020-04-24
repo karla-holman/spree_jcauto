@@ -29,10 +29,7 @@
             </ul>
           </li>
           <li id="link-to-cart" data-hook>
-            <noscript>
-              <%= link_to Spree.t(:cart), '/cart' %>
-            </noscript>
-            &nbsp;
+            <%= link_to Spree.t(:cart), '/cart' %>
           </li>
           <script>
             try {
@@ -64,7 +61,7 @@
     <div id="main-nav-bar" class="container">
         <!-- Not displayed when width > $screen-md-min -->
         <div id="collapseSearch">
-        
+
         </div>
       <ul class="nav navbar-nav navbar-left" data-hook>
         <span id = "collapseAccount">
