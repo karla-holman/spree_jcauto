@@ -104,7 +104,7 @@ module Spree
 
       def ProductFilters.brand_filter
         brand_property = Spree::Property.find_by(name: 'brand')
-        brands = brand_property ? Spree::ProductProperty.where(property_id: brand_property.id).pluck(:value).uniq.map(&:to_s) : []
+        brands = brand_property ? Spree::ProductProperty.where(property_id: brand_property.id).pluck(:value).distinct.map(&:to_s) : []
         pp = Spree::ProductProperty.arel_table
         conds = Hash[*brands.map { |b| [b, pp[:value].eq(b)] }.flatten]
         {
@@ -144,7 +144,7 @@ module Spree
         scope = Spree::ProductProperty.where(property: brand_property).
           joins(product: :taxons).
           where("#{Spree::Taxon.table_name}.id" => [taxon] + taxon.descendants)
-        brands = scope.pluck(:value).uniq
+        brands = scope.pluck(:value).distinct
         {
           name:   'Applicable Brands',
           scope:  :selective_brand_any,

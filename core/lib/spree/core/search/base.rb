@@ -66,7 +66,7 @@ module Spree
             base_scope = add_eagerload_scopes(base_scope)
 
             # Sort by name and uniq entries if no taxon present, otherwise already sorted
-            base_scope = base_scope.uniq.order("name ASC") unless !taxon.blank?
+            base_scope = base_scope.distinct.order("name ASC") unless !taxon.blank?
 
             base_scope_hash = {"base" => base_scope, "part_num" => part_num_scope, "taxon" => taxon_scope} #, "application" => application_scope, "application_filter" => application_filter_scope}
           end

@@ -40,7 +40,7 @@ module Spree
           zone.state_ids,
           zone.states.pluck(:country_id),
           true
-        ).uniq
+        ).distinct
       end
     end
 
@@ -106,7 +106,7 @@ module Spree
                        zoneables.collect(&:country)
                      else
                        []
-                     end.flatten.compact.uniq
+                     end.flatten.compact.distinct
     end
 
     def <=>(other)

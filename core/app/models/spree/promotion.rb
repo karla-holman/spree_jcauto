@@ -30,7 +30,7 @@ module Spree
 
     order_join_table = reflect_on_association(:orders).join_table
 
-    scope :applied, -> { joins("INNER JOIN #{order_join_table} ON #{order_join_table}.promotion_id = #{table_name}.id").uniq }
+    scope :applied, -> { joins("INNER JOIN #{order_join_table} ON #{order_join_table}.promotion_id = #{table_name}.id").distinct }
 
     self.whitelisted_ransackable_attributes = ['code', 'path', 'promotion_category_id']
 
@@ -119,7 +119,7 @@ module Spree
     end
 
     def products
-      rules.where(type: "Spree::Promotion::Rules::Product").map(&:products).flatten.uniq
+      rules.where(type: "Spree::Promotion::Rules::Product").map(&:products).flatten.distinct
     end
 
     def usage_limit_exceeded?(promotable)
