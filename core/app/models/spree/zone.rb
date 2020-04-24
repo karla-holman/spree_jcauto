@@ -27,7 +27,7 @@ module Spree
         joins(countries: :zones).
           where('zone_members_spree_countries_join.zone_id = ? OR ' +
                 'spree_zones.default_tax = ?', zone.id, true).
-          uniq
+          distinct
       else
         # Match zones of the same kind with similar states in AND match zones
         # that have the states countries in
